@@ -1,5 +1,5 @@
 // import { Link } from "react-router-dom";
-import Auth from '../../utils/auth';
+import Auth from '../../../../../legendary-journey/client/src/utils/auth';
 import { CubeAlt } from '@styled-icons/boxicons-regular';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
