@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
 import { useQuery } from "@apollo/client"
-import { AUSTIN_CONCERT_SCRAPER } from "@/utils/queries"
-import { getTodaysDate } from "@/utils/helpers"
-import AustinDbUpdater from "@/components/DB_Updaters/AustinDbUpdater"
+import { AUSTIN_CONCERT_SCRAPER } from "../../../utils/queries"
+import { getTodaysDate } from "../../../utils/helpers"
+import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater'
 
 const AustinScraper = () => {
     //get today's date with imported helper function

@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react"
-import { useLazyQuery, useQuery } from '@apollo/client'
-import { AUSTIN_CONCERT_SCRAPER } from "@/utils/queries"
+import { useState } from "react"
+// import { useLazyQuery, useQuery } from '@apollo/client'
+// import { AUSTIN_CONCERT_SCRAPER } from "@/utils/queries"
 import { getTodaysDate } from '../utils/helpers';
-import Header from "@/components/Header"
 import Switch from 'react-switch'
-import styles from '@/styles/Control.module.css'
-import AustinScraper from "@/components/Scrapers/AustinScraper";
-import AustinDbCleaner from "@/components/DB_Cleaners/AustinDbCleaner";
+// import styles from '@/styles/Control.module.css'
+// import AustinScraper from "@/components/Scrapers/AustinScraper";
+import AustinScraper from "../components/Scrapers/AustinScraper";
+// import AustinDbCleaner from "@/components/DB_Cleaners/AustinDbCleaner";
+import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 
 
 
@@ -26,10 +27,9 @@ const ControlCenter = () => {
 
     return (
         <div>
-            <Header />
-            <main id={styles.main}>
-                <div className={styles.container}>
-                    <div className={styles.date}>{today}</div>
+            <main id={'control-main'}>
+                <div className={'control-container'}>
+                    <div className={'control-date'}>{today}</div>
                     <Switch
                         onChange={handleControlSwitch}
                         checked={controlSwitch}

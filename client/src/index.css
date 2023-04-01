@@ -227,3 +227,41 @@ header nav ul li a {
   flex-direction: column;
   background-color: var(--background);
 }
+
+/* CONTROL STYLES START */
+#control-main {
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--darker);
+    width: 100vw;
+    height: 100vh;
+}
+
+.control-container {
+    width: 30vw;
+    height: 40vh;
+    border: solid 2px antiquewhite;
+    border-radius: 8px;
+    background-color: var(--darkest);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.control-date {
+  margin-bottom: 3vh;
+}
+
+.control-scrapeButton {
+  background-color: var(--darker);
+  padding: 15px;
+  margin-top: 3vh;
+  color: antiquewhite;
+  border-radius: 8px;
+}
+
+.control-scrapeButton:hover {
+  cursor: pointer;
+}
