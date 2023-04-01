@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useMutation } from '@apollo/client';
-import { ADD_CONCERT } from '@/utils/mutations';
+// import { ADD_CONCERT } from '@/utils/mutations';
+import { ADD_CONCERT } from '../../../utils/mutations';
 
 const AustinDbUpdater = ({ today, date, austinScraper }) => {
     const [addConcert] = useMutation(ADD_CONCERT)
@@ -27,7 +28,7 @@ const AustinDbUpdater = ({ today, date, austinScraper }) => {
 
     return (
         <div>
-
+            DB Updater is running
         </div>
     )
 }

@@ -12,7 +12,7 @@ import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 
 
 
-const ControlCenter = () => {
+const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
 
     const handleControlSwitch = () => {
@@ -56,4 +56,4 @@ const ControlCenter = () => {
     )
 }
 
-export default ControlCenter
+export default Control;
