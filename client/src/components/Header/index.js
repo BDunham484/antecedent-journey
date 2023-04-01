@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import Auth from '../../../../../legendary-journey/client/src/utils/auth';
+// import Auth from '../../../../../legendary-journey/client/src/utils/auth';
+import Auth from '../../utils/auth'
 import { CubeAlt } from '@styled-icons/boxicons-regular';
 // import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -43,7 +44,7 @@ const Header = () => {
     return (
             <header>
                 <div className="display-flex title-wrapper">
-                    <Link href="/">
+                    <Link to="/">
                         <h1 id="title">NOISEBX</h1>
                         <h1 id="title-mobile">NBX</h1>
                     </Link>
@@ -55,10 +56,10 @@ const Header = () => {
                     {isLoggedIn ? (
                         <ul>
                             <li>
-                                <Link href="/Control">Control</Link>
+                                <Link to="/Control">Control</Link>
                             </li>
                             <li>
-                                <Link href="/" onClick={logout}>
+                                <Link to="/" onClick={logout}>
                                     Logout
                                 </Link>
                             </li>
@@ -66,10 +67,10 @@ const Header = () => {
                     ) : (
                         <ul>
                             <li>
-                                <Link href="/Login">Login</Link>
+                                <Link to="/Login">Login</Link>
                             </li>
                             <li>
-                                <Link href="/signup">Signup</Link>
+                                <Link to="/signup">Signup</Link>
                             </li>
                         </ul>
                     )}

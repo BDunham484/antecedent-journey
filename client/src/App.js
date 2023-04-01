@@ -9,7 +9,7 @@ import NoMatch from './pages/NoMatch';
 import Signup from './pages/Signup';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { ConcertProvider } from './utils/GlobalState';
+// import { ConcertProvider } from './utils/GlobalState';
 
 
 // const SERVER_URL = 
@@ -44,7 +44,7 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <ConcertProvider>
+      {/* <ConcertProvider> */}
         <Router>
           <div>
             <div>
@@ -77,7 +77,7 @@ function App() {
             <Footer />
           </div>
         </Router>
-      </ConcertProvider>
+      {/* </ConcertProvider> */}
     </ApolloProvider>
   );
 }

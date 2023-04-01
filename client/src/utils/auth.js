@@ -1,5 +1,4 @@
 import decode from 'jwt-decode';
-import { useEffect } from 'react';
 
 
 class AuthService {
@@ -55,3 +54,4 @@ class AuthService {
 }
 
 export default new AuthService();
+
