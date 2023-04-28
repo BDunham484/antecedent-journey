@@ -212,9 +212,23 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            const headliner = artists.split(',')[0];
+                            // const headliner = artists.split(',')[0];
+                            // console.log('HEADLINER')
+                            // console.log(headliner.split(' '));
+                            // this block catches the first instance of 'w/' in artistst string
+                            let headliner;
+                            let unfilteredHeadliner = artists.split(',')[0];
+                            const splitHeadliner = unfilteredHeadliner.split(' ');
+                            // the headliner is what's used in the url so that should only be the one that I have to replace.  not everything. 
+                            if (splitHeadliner.includes('w/')) {
+                                const wIndex = splitHeadliner.indexOf('w/')
+                                splitHeadliner[wIndex] = 'with';
+                                headliner = splitHeadliner.join(' ');
+                            } else {
+                                headliner = unfilteredHeadliner;
+                            };
                             console.log('HEADLINER')
-                            console.log(headliner.split(' '));
+                            console.log(headliner)
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
@@ -254,9 +268,22 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            const headliner = artists.split(',')[0];
+                            // const headliner = artists.split(',')[0];
+                            // console.log('HEADLINER')
+                            // console.log(headliner.split(' '));
+                            let headliner;
+                            let unfilteredHeadliner = artists.split(',')[0];
+                            const splitHeadliner = unfilteredHeadliner.split(' ');
+                            // the headliner is what's used in the url so that should only be the one that I have to replace.  not everything. 
+                            if (splitHeadliner.includes('w/')) {
+                                const wIndex = splitHeadliner.indexOf('w/')
+                                splitHeadliner[wIndex] = 'with';
+                                headliner = splitHeadliner.join(' ');
+                            } else {
+                                headliner = unfilteredHeadliner;
+                            };
                             console.log('HEADLINER')
-                            console.log(headliner.split(' '));
+                            console.log(headliner)
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
