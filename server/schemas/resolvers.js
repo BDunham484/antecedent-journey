@@ -181,7 +181,17 @@ const resolvers = {
                     var events = [];
                     if ($('ul:eq(-1)').length === 0) {
                         $('ul:eq(0) .list-item', data).each(function () {
-                            const artists = $(this).find('h2').text()
+                            // const artists = $(this).find('h2').text()
+
+                            let artists = $(this).find('h2').text()
+                            const splitArtists = artists.split(' ');
+                            if (splitArtists.includes('w/')) {
+                                const wIndex = splitArtists.indexOf('w/')
+                                splitArtists[wIndex] = 'with';
+                                artists = splitArtists.join(' ');
+                            }
+                            console.log('ARTISTS')
+                            console.log(artists);
                             const artistsLink = $(this).find('a').attr('href');
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
