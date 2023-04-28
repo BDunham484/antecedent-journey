@@ -182,13 +182,15 @@ const resolvers = {
                     if ($('ul:eq(-1)').length === 0) {
                         $('ul:eq(0) .list-item', data).each(function () {
                             // const artists = $(this).find('h2').text()
-
-                            let artists = $(this).find('h2').text()
-                            const splitArtists = artists.split(' ');
+                            let artists;
+                            let unfilteredArtists = $(this).find('h2').text()
+                            const splitArtists = unfilteredArtists.split(' ');
                             if (splitArtists.includes('w/')) {
                                 const wIndex = splitArtists.indexOf('w/')
                                 splitArtists[wIndex] = 'with';
                                 artists = splitArtists.join(' ');
+                            } else {
+                                artists = unfilteredArtists;
                             }
                             console.log('ARTISTS')
                             console.log(artists);
@@ -197,6 +199,8 @@ const resolvers = {
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
                             const headliner = artists.split(',')[0];
+                            console.log('HEADLINER')
+                            console.log(headliner);
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
@@ -219,7 +223,19 @@ const resolvers = {
                         })
                     } else {
                         $('ul:eq(-1) .list-item', data).each(function () {
-                            const artists = $(this).find('h2').text()
+                            // const artists = $(this).find('h2').text()
+                            let artists;
+                            let unfilteredArtists = $(this).find('h2').text()
+                            const splitArtists = unfilteredArtists.split(' ');
+                            if (splitArtists.includes('w/')) {
+                                const wIndex = splitArtists.indexOf('w/')
+                                splitArtists[wIndex] = 'with';
+                                artists = splitArtists.join(' ');
+                            } else {
+                                artists = unfilteredArtists;
+                            }
+                            console.log('ARTISTS')
+                            console.log(artists);
                             const artistsLink = $(this).find('a').attr('href');
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
