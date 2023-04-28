@@ -10,6 +10,7 @@ const AustinScraper = () => {
     console.log("TODAY: " + today);
     //set initial state using today's date
     const [date, setDate] = useState(today);
+    const [scrapeIndex, setScrapeIndex] = useState(0);
 
     const [scraperDate, setScraperDate] = useState(today);
 
@@ -39,6 +40,7 @@ const AustinScraper = () => {
 
         let interval = setInterval(function () {
             index += 1;
+            setScrapeIndex(index)
             if (index >= 90) {
                 return () => clearInterval(interval);
             }
@@ -73,8 +75,8 @@ const AustinScraper = () => {
 
     return (
         <div>
-            {scraperDate &
-                {scraperDate}
+            {scrapeIndex &
+                {scrapeIndex}
             }
             <div>
                 Austin Scraper is running...
