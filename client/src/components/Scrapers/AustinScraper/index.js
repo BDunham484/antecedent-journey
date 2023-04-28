@@ -73,6 +73,9 @@ const AustinScraper = () => {
 
     return (
         <div>
+            {scraperDate &
+                {scraperDate}
+            }
             <div>
                 Austin Scraper is running...
             </div>
