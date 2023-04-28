@@ -75,9 +75,9 @@ const AustinScraper = () => {
 
     return (
         <div>
-            {scrapeIndex &
-                {scrapeIndex}
-            }
+            <div>
+                Index Scraped: {scrapeIndex};
+            </div>
             <div>
                 Austin Scraper is running...
             </div>
