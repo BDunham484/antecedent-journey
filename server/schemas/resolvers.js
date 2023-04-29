@@ -186,7 +186,7 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            //lines 190-200 focus on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            //the following 'headliner' block focuses on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
@@ -225,7 +225,7 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            //lines 190-200 focus on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            //the following headliner block focuses on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
@@ -308,8 +308,7 @@ const resolvers = {
                 concertData.push(events);
 
             }));
-            console.log('CONCERTDATA');
-            console.log(concertData.length / 2 + ' days of concerts scraped');
+            console.log(year + '-' + month + '-' + day + ': SCRAPED')
             return concertData;
         },
 
@@ -590,7 +589,7 @@ const resolvers = {
             //save date to another variable for the for loop
             let arrayDate = date;
             //for loop that gets previous weeks worth of date and pushes the to array
-            for (let i = 0; i < 18; i++) {
+            for (let i = 0; i < 89; i++) {
                 let yesterday = dayBefore(arrayDate);
                 dateArr.push(yesterday);
                 arrayDate = yesterday;

@@ -81,7 +81,7 @@ const AustinScraper = () => {
             <div>
                 Austin Scraper is running...
             </div>
-            {/* <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} /> */}
+            <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} />
         </div>
 
     )
