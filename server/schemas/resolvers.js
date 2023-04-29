@@ -182,44 +182,14 @@ const resolvers = {
                     if ($('ul:eq(-1)').length === 0) {
                         $('ul:eq(0) .list-item', data).each(function () {
                             const artists = $(this).find('h2').text()
-
-                            // this block catches the first instance of 'w/' in artistst string
-                            // let artists;
-                            // let unfilteredArtists = $(this).find('h2').text()
-                            // const splitArtists = unfilteredArtists.split(' ');
-                            // // the headliner is what's used in the url so that should only be the one that I have to replace.  not everything. 
-                            // if (splitArtists.includes('w/')) {
-                            //     const wIndex = splitArtists.indexOf('w/')
-                            //     splitArtists[wIndex] = 'with';
-                            //     artists = splitArtists.join(' ');
-                            // } else {
-                            //     artists = unfilteredArtists;
-                            // };
-
-                            // this bit of code was to catch extra instances of '/' in the artists string.  don't think i need it.
-                            // const artistsCharSplit = artists.split('');
-
-                            // if (artistsCharSplit.includes('/')) {
-                            //     const charIndex = artistsCharSplit.indexOf('/');
-                            //     artistsCharSplit[charIndex] = '-';
-                            //     artists = artistsCharSplit.join('');
-                            //     console.log('TESTYTESTTEST');
-                            //     console.log(artists);
-                            // }
-                            // console.log('ARTISTS')
-                            // console.log(artists);
                             const artistsLink = $(this).find('a').attr('href');
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            // const headliner = artists.split(',')[0];
-                            // console.log('HEADLINER')
-                            // console.log(headliner.split(' '));
-                            // this block catches the first instance of 'w/' in artistst string
+                            //lines 190-200 focus on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
-                            // the headliner is what's used in the url so that should only be the one that I have to replace.  not everything. 
                             if (splitHeadliner.includes('w/')) {
                                 const wIndex = splitHeadliner.indexOf('w/')
                                 splitHeadliner[wIndex] = 'with';
@@ -227,8 +197,7 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
-                            console.log('HEADLINER')
-                            console.log(headliner)
+
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
