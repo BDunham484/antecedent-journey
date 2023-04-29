@@ -10,7 +10,8 @@ const AustinDbCleaner = ({ today }) => {
 
     const getYesterdaysDate = (date) => {
         const before = new Date(date);
-        before.setDate(before.getDate() - 1);
+        before.setDate(before.getDate() - 2);
+        // before.setDate(before.getDate() - 1);
         const yesterday = before.toDateString();
         return yesterday;
     }
