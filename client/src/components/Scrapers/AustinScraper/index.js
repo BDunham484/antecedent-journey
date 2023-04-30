@@ -11,8 +11,15 @@ const AustinScraper = () => {
     //set initial state using today's date
     const [date, setDate] = useState(today);
     const [scrapeIndex, setScrapeIndex] = useState(0);
+    const [arr, setArr] = useState([])
 
     const [scraperDate, setScraperDate] = useState(today);
+
+    let totalConcerts
+
+    if (arr.length > 0) {
+        totalConcerts = arr.reduce((total, amount) => total + amount)
+    }
 
     useEffect(() => {
         //  delcare empty array for dates
@@ -40,7 +47,7 @@ const AustinScraper = () => {
 
         let interval = setInterval(function () {
             index += 1;
-            setScrapeIndex(index)
+            // setScrapeIndex(index)
             if (index >= 90) {
                 return () => clearInterval(interval);
             }
@@ -57,8 +64,9 @@ const AustinScraper = () => {
         variables: { date: scraperDate }
     })
 
+
     if (concertData) {
-        console.log(concertData.austinConcertScraper.length / 2 + ' days of concerts have been scraped.');
+        console.log('SCRAPER RUN: ');
         console.log(concertData);
     };
 
@@ -75,13 +83,13 @@ const AustinScraper = () => {
 
     return (
         <div>
+            <h3>
+                Austin Scraper: ✅
+            </h3>
             <div>
-                Index Scraped: {scrapeIndex};
+                Indexes Scraped: {scrapeIndex}
             </div>
-            <div>
-                Austin Scraper is running...
-            </div>
-            <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} />
+            <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} setArr={setArr} totalConcerts={totalConcerts} />
         </div>
 
     )

@@ -1,33 +1,35 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { ADD_CONCERT } from '../../../utils/mutations';
 
-const AustinDbUpdater = ({ today, date, austinScraper }) => {
+const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) => {
     const [addConcert] = useMutation(ADD_CONCERT)
-
-    let successCount = 0;
-    let errorCount = 0;
+    const [concertsAdded, setConcertsAdded] = useState(0);
 
     useEffect(() => {
+
         const dbConcertUpdater = async (arr) => {
             console.log('dbConcertUpdater is running');
-            await Promise.all(arr.map(async (dailyArr) => {
+            const response = await Promise.all(arr.map(async (dailyArr) => {
                 try {
-                    await Promise.all(dailyArr.map(async (concert) => {
+                    const outerResult = await Promise.all(dailyArr.map(async (concert) => {
                         try {
-                            const result = await addConcert({
+                            const innerResult = await addConcert({
                                 variables: { ...concert }
                             })
-                            result && successCount++
+                            return innerResult
                         } catch (e) {
                             console.error(e)
+                            return e
                         }
                     }))
+                    return outerResult
                 } catch (e) {
                     console.error(e)
-                    errorCount++
-                }   
+                    return e
+                }
             }));
+            return response
         };
         // const dbConcertUpdater = async (arr) => {
         //     console.log('dbConcertUpdater is running');
@@ -43,15 +45,36 @@ const AustinDbUpdater = ({ today, date, austinScraper }) => {
         //         }));
         //     }));
         // };
-        dbConcertUpdater(austinScraper);
+        // dbConcertUpdater(austinScraper);
+        
+        let updaterResults = dbConcertUpdater(austinScraper);
+        
 
-    }, [addConcert, austinScraper, successCount, errorCount])
+        const printUpdaterResults = async () => {
+            const a = await updaterResults;
+            
+            if (a.length) {
+                let mapResult = a.map((b) => {
+                    return b.length
+                })
+                const sum = mapResult.reduce((total, amount) => total + amount)
+                setArr(current => [...current, sum])
+                setConcertsAdded(sum)
+                return sum;
+            }
+        }
+
+        printUpdaterResults();
+
+    }, [addConcert, austinScraper, setArr, setConcertsAdded])
+
+    
 
     return (
         <div className='dbUpdater-wrapper'>
-            DB Updater: ✅
-            DB Successes: {successCount}
-            DB Errors: {errorCount}
+            <h3>DB Updater: ✅</h3>
+            <div>Updated: {concertsAdded}</div>
+            <div>Total: {totalConcerts}</div>
         </div>
     )
 }
