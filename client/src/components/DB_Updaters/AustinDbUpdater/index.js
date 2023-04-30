@@ -5,7 +5,7 @@ import { ADD_CONCERT } from '../../../utils/mutations';
 const AustinDbUpdater = ({ today, date, austinScraper }) => {
     const [addConcert] = useMutation(ADD_CONCERT)
 
-    let concertCount = 0;
+    let successCount = 0;
     let errorCount = 0;
 
     useEffect(() => {
@@ -18,8 +18,7 @@ const AustinDbUpdater = ({ today, date, austinScraper }) => {
                             const result = await addConcert({
                                 variables: { ...concert }
                             })
-                            console.log('DBRESULT');
-                            console.log(result);
+                            result && successCount++
                         } catch (e) {
                             console.error(e)
                         }
@@ -46,11 +45,12 @@ const AustinDbUpdater = ({ today, date, austinScraper }) => {
         // };
         dbConcertUpdater(austinScraper);
 
-    }, [addConcert, austinScraper])
+    }, [addConcert, austinScraper, successCount, errorCount])
 
     return (
         <div className='dbUpdater-wrapper'>
             DB Updater: ✅
+            DB Successes: {successCount}
             DB Errors: {errorCount}
         </div>
     )

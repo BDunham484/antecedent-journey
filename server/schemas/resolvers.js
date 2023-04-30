@@ -511,13 +511,13 @@ const resolvers = {
                     )
                     console.log('UPDATEDCONCERT');
                     console.log(updatedConcert.artists + ' has been updated');
-                    return 'updated';
+                    return updatedConcert;
                 } else {
                     const concert = await Concert.create({ ...data })
                     // .select(-__v);
                     console.log('SAVEDCONCERT');
                     console.log(concert.artists + ' has been added');
-                    return 'saved';
+                    return concert;
                 }
             })
             return result;
