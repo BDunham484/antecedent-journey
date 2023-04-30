@@ -31,21 +31,6 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
             }));
             return response
         };
-        // const dbConcertUpdater = async (arr) => {
-        //     console.log('dbConcertUpdater is running');
-        //     await Promise.all(arr.map(async (dailyArr) => {
-        //         await Promise.all(dailyArr.map(async (concert) => {
-        //             try {
-        //                 await addConcert({
-        //                     variables: { ...concert }
-        //                 })
-        //             } catch (e) {
-        //                 console.error(e)
-        //             };
-        //         }));
-        //     }));
-        // };
-        // dbConcertUpdater(austinScraper);
         
         let updaterResults = dbConcertUpdater(austinScraper);
         
