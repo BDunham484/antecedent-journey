@@ -485,7 +485,7 @@ const resolvers = {
             return { token, user };
         },
         addConcert: async (parent, { ...data }) => {
-            await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
+            const result = await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
                 if (err) return handleError(err);
 
                 if (custom) {
@@ -511,15 +511,16 @@ const resolvers = {
                     )
                     console.log('UPDATEDCONCERT');
                     console.log(updatedConcert.artists + ' has been updated');
-                    return updatedConcert;
+                    return 'updated';
                 } else {
                     const concert = await Concert.create({ ...data })
                     // .select(-__v);
                     console.log('SAVEDCONCERT');
                     console.log(concert.artists + ' has been added');
-                    return concert;
+                    return 'saved';
                 }
             })
+            return result;
         },
         addFriend: async (parent, { friendId }, context) => {
             if (context.user) {
