@@ -47,16 +47,14 @@ const AustinScraper = () => {
 
         let interval = setInterval(function () {
             index += 1;
-            // setScrapeIndex(index)
+            setScrapeIndex(index)
             if (index >= 90) {
                 return () => clearInterval(interval);
             }
-            console.log('interval has run: ' + index);
+            console.log('INTERVAL RUN: ' + index);
             console.log('DATE TO BE SCRAPED: ' + dateArr[index])
             setScraperDate(dateArr[index]);
         }, delay);
-
-
     }, [today])
 
     const { data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
@@ -64,30 +62,24 @@ const AustinScraper = () => {
         variables: { date: scraperDate }
     })
 
-
-    if (concertData) {
-        console.log('SCRAPER RUN: ');
-        console.log(concertData);
-    };
-
     const [austinScraper, setAustinScraper] = useState([[]]);
 
     useEffect(() => {
         if (concertData) {
+            console.log('SCRAPER RUN: ');
+            console.log(concertData);
             const concertDataArr = concertData.austinConcertScraper
             setAustinScraper(concertDataArr)
         }
-
     }, [concertData, austinScraper])
-
 
     return (
         <div>
             <h3>
-                Austin Scraper: ✅
+                SCRAPER: ✅
             </h3>
-            <div>
-                Indexes Scraped: {scrapeIndex}
+            <div className="indent">
+                Scrape Index: {scrapeIndex}
             </div>
             <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} setArr={setArr} totalConcerts={totalConcerts} />
         </div>

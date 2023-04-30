@@ -57,9 +57,9 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
 
     return (
         <div className='dbUpdater-wrapper'>
-            <h3>DB Updater: ✅</h3>
-            <div>Updated: {concertsAdded}</div>
-            <div>Total: {totalConcerts}</div>
+            <h3>UPDATER: ✅</h3>
+            <div className='indent'>Updated: {concertsAdded}</div>
+            <div className='indent'>Total: {totalConcerts}</div>
         </div>
     )
 }

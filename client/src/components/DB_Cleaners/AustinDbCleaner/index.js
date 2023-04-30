@@ -47,9 +47,9 @@ const AustinDbCleaner = ({ today }) => {
     }, [deleteConcerts, yesterdaysConcertData?.getYesterdaysConcerts])
 
     return (
-        <div>
-            Austin Cleaner is Running...
-        </div>
+        <h3>
+            CLEANER: ✅
+        </h3>
     )
 }
 

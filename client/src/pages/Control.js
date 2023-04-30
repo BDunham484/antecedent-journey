@@ -29,6 +29,7 @@ const Control = () => {
         <div>
             <main id={'control-main'}>
                 <div className={'control-container'}>
+                    <h2>AUSTIN</h2>
                     <div className={'control-date'}>{today}</div>
                     <Switch
                         onChange={handleControlSwitch}
