@@ -12,7 +12,7 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
             console.log('dbConcertUpdater is running');
             // add conditional to check arr.length index 30 something causes error
 
-            const response = await Promise.all(arr.map(async (dailyArr) => {
+            const response = await Promise.all(arr.filter((x) => x).map(async (dailyArr) => {
                 try {
                     const outerResult = await Promise.all(dailyArr.map(async (concert) => {
                         try {
@@ -34,11 +34,12 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
             return response
         };
 
-        let updaterResults;
+        // let testArr = [4,5,null, 6,5, undefined];
+        // let filtered = testArr.filter((x) => x)
+        // console.log('FILTERED')
+        // console.log(filtered)
 
-        if (austinScraper.length > 0) {
-            updaterResults = dbConcertUpdater(austinScraper);
-        }
+        const updaterResults = dbConcertUpdater(austinScraper);
 
         const printUpdaterResults = async () => {
             const a = await updaterResults;

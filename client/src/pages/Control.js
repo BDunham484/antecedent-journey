@@ -14,6 +14,8 @@ import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
+    console.log('CONTROOOOOOOOOOOOOOOOOOOOL')
+    console.log(controlSwitch)
 
     const handleControlSwitch = () => {
         controlSwitch ? setControlSwitch(false) : setControlSwitch(true)

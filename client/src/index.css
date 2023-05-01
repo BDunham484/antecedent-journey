@@ -240,7 +240,7 @@ header nav ul li a {
 
 .control-container {
     width: 30vw;
-    height: 40vh;
+    min-height: 40vh;
     border: solid 2px antiquewhite;
     border-radius: 8px;
     background-color: var(--darkest);
@@ -248,6 +248,7 @@ header nav ul li a {
     justify-content: start;
     align-items: center;
     flex-direction: column;
+    padding: 3%;
 }
 
 .control-date {
@@ -268,6 +269,9 @@ header nav ul li a {
 
 h2, h3 {
   letter-spacing: 2px;
+}
+
+h3 {
   margin-top: 10%;
 }
 
