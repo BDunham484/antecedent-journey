@@ -1,12 +1,7 @@
 import { useState } from "react"
-// import { useLazyQuery, useQuery } from '@apollo/client'
-// import { AUSTIN_CONCERT_SCRAPER } from "@/utils/queries"
 import { getTodaysDate } from '../utils/helpers';
 import Switch from 'react-switch'
-// import styles from '@/styles/Control.module.css'
-// import AustinScraper from "@/components/Scrapers/AustinScraper";
 import AustinScraper from "../components/Scrapers/AustinScraper";
-// import AustinDbCleaner from "@/components/DB_Cleaners/AustinDbCleaner";
 import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 
 
@@ -14,8 +9,6 @@ import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
-    console.log('CONTROOOOOOOOOOOOOOOOOOOOL')
-    console.log(controlSwitch)
 
     const handleControlSwitch = () => {
         controlSwitch ? setControlSwitch(false) : setControlSwitch(true)
@@ -48,7 +41,6 @@ const Control = () => {
                             <AustinDbCleaner today={today}/>
                         </div>
                     }
-
                 </div>
             </main>
         </div>

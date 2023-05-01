@@ -50,8 +50,9 @@ const AustinScraper = ({ setControlSwitch }) => {
             if (index === 90) {
             // if (index >= 90) {
                 setControlSwitch(false)
-                return () => clearInterval(interval);
+                clearInterval(interval);
             }
+
             console.log('INTERVAL RUN: ' + index);
             console.log('DATE TO BE SCRAPED: ' + dateArr[index])
             setScraperDate(dateArr[index]);
