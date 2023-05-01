@@ -1,9 +1,10 @@
+import { CubeAlt } from '@styled-icons/boxicons-regular';
 
 
 const Home = () => {
     return (
-        <div>
-            HOME
+        <div className="home">
+            <CubeAlt id="home-icon" />
         </div>
     )
 }

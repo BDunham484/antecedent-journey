@@ -28,13 +28,13 @@ const Header = () => {
     useEffect(() => {
         // const loggedIn = () => {
         //     const token = localStorage.getItem('id_token');
-            
-            
+
+
         //     // return !!token && !Auth.isTokenExpired(token);
         // }
 
         const token = Auth.loggedIn();
-        console.log(token);
+
         if (token) {
             setIsLoggedIn(true);
         }
@@ -42,40 +42,38 @@ const Header = () => {
 
 
     return (
-            <header>
-                <div className="display-flex title-wrapper">
-                    <Link to="/">
-                        <h1 id="title">NOISEBX</h1>
-                        <h1 id="title-mobile">NBX</h1>
-                    </Link>
+        <header>
+            <div className="display-flex title-wrapper">
+                <Link to="/">
                     <CubeAlt id="cube-icon" />
+                </Link>
 
-                </div>
+            </div>
 
-                <nav id="navigation">
-                    {isLoggedIn ? (
-                        <ul>
-                            <li>
-                                <Link to="/Control">Control</Link>
-                            </li>
-                            <li>
-                                <Link to="/" onClick={logout}>
-                                    Logout
-                                </Link>
-                            </li>
-                        </ul>
-                    ) : (
-                        <ul>
-                            <li>
-                                <Link to="/Login">Login</Link>
-                            </li>
-                            <li>
-                                <Link to="/signup">Signup</Link>
-                            </li>
-                        </ul>
-                    )}
-                </nav>
-            </header>
+            <nav id="navigation">
+                {isLoggedIn ? (
+                    <ul>
+                        <li>
+                            <Link to="/Control">Control</Link>
+                        </li>
+                        <li>
+                            <Link to="/" onClick={logout}>
+                                Logout
+                            </Link>
+                        </li>
+                    </ul>
+                ) : (
+                    <ul>
+                        <li>
+                            <Link to="/Login">Login</Link>
+                        </li>
+                        <li>
+                            <Link to="/signup">Signup</Link>
+                        </li>
+                    </ul>
+                )}
+            </nav>
+        </header>
     );
 };
 
