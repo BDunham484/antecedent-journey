@@ -16,14 +16,11 @@ const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
 
     const handleControlSwitch = () => {
-        console.log('SWITCHED');
         controlSwitch ? setControlSwitch(false) : setControlSwitch(true)
-        console.log(controlSwitch);
     }
 
     //get today's date with imported helper function
     var today = getTodaysDate();
-    console.log("TODAY: " + today);
 
     return (
         <div>
@@ -45,7 +42,7 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
-                            <AustinScraper />
+                            <AustinScraper setControlSwitch={setControlSwitch} />
                             <AustinDbCleaner today={today}/>
                         </div>
                     }

@@ -10,6 +10,8 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
 
         const dbConcertUpdater = async (arr) => {
             console.log('dbConcertUpdater is running');
+            // add conditional to check arr.length index 30 something causes error
+
             const response = await Promise.all(arr.map(async (dailyArr) => {
                 try {
                     const outerResult = await Promise.all(dailyArr.map(async (concert) => {
@@ -31,13 +33,16 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
             }));
             return response
         };
-        
-        let updaterResults = dbConcertUpdater(austinScraper);
-        
+
+        let updaterResults;
+
+        if (austinScraper.length > 0) {
+            updaterResults = dbConcertUpdater(austinScraper);
+        }
 
         const printUpdaterResults = async () => {
             const a = await updaterResults;
-            
+
             if (a.length) {
                 let mapResult = a.map((b) => {
                     return b.length
@@ -53,7 +58,7 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
 
     }, [addConcert, austinScraper, setArr, setConcertsAdded])
 
-    
+
 
     return (
         <div className='dbUpdater-wrapper'>

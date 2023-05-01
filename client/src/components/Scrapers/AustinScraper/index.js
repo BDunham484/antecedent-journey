@@ -4,10 +4,9 @@ import { AUSTIN_CONCERT_SCRAPER } from "../../../utils/queries"
 import { getTodaysDate } from "../../../utils/helpers"
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater'
 
-const AustinScraper = () => {
+const AustinScraper = ({ setControlSwitch }) => {
     //get today's date with imported helper function
     var today = getTodaysDate();
-    console.log("TODAY: " + today);
     //set initial state using today's date
     const [date, setDate] = useState(today);
     const [scrapeIndex, setScrapeIndex] = useState(0);
@@ -48,14 +47,16 @@ const AustinScraper = () => {
         let interval = setInterval(function () {
             index += 1;
             setScrapeIndex(index)
-            if (index >= 90) {
+            if (index === 90) {
+            // if (index >= 90) {
+                setControlSwitch(false)
                 return () => clearInterval(interval);
             }
             console.log('INTERVAL RUN: ' + index);
             console.log('DATE TO BE SCRAPED: ' + dateArr[index])
             setScraperDate(dateArr[index]);
         }, delay);
-    }, [today])
+    }, [today, setControlSwitch])
 
     const { data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
         // variables: { date: today }
