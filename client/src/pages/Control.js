@@ -17,6 +17,8 @@ const Control = () => {
     //get today's date with imported helper function
     var today = getTodaysDate();
 
+    console.log('butts')
+
     return (
         <div>
             <main id={'control-main'}>
