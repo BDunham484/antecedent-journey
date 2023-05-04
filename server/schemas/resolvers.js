@@ -197,16 +197,12 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
-                            console.log('FIRSTHEADLINER')
-                            console.log(headliner)
                             const secondSplitHeadliner = headliner.split('');
                             if (secondSplitHeadliner.includes('/')) {
                                 const slashIndex = secondSplitHeadliner.indexOf('/')
                                 secondSplitHeadliner[slashIndex] = ':'
                                 headliner = secondSplitHeadliner.join('')
                             } 
-                            console.log('SECONDHEADLINER')
-                            console.log(headliner)
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
@@ -245,16 +241,12 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
-                            console.log('FIRSTHEADLINER')
-                            console.log(headliner)
                             const secondSplitHeadliner = headliner.split('');
                             if (secondSplitHeadliner.includes('/')) {
                                 const slashIndex = secondSplitHeadliner.indexOf('/')
                                 secondSplitHeadliner[slashIndex] = ':'
                                 headliner = secondSplitHeadliner.join('')
                             } 
-                            console.log('SECONDHEADLINER')
-                            console.log(headliner)
                             
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
@@ -277,8 +269,6 @@ const resolvers = {
                             })
                         })
                     }
-                    // console.log('AAAAAAAAAARRRRRRRGGGGGG!!!!!');
-                    // console.log(events);
                     const newEventsArr = await Promise.all(events.map((event) => {
                         const eventUrl = `https://www.austinchronicle.com${event.artistsLink}`;
 
@@ -528,14 +518,14 @@ const resolvers = {
                         update,
                         { new: true }
                     )
-                    console.log('UPDATEDCONCERT');
-                    console.log(updatedConcert.artists + ' has been updated');
+                    // console.log('UPDATEDCONCERT');
+                    // console.log(updatedConcert.artists + ' has been updated');
                     return updatedConcert;
                 } else {
                     const concert = await Concert.create({ ...data })
                     // .select(-__v);
-                    console.log('SAVEDCONCERT');
-                    console.log(concert.artists + ' has been added');
+                    // console.log('SAVEDCONCERT');
+                    // console.log(concert.artists + ' has been added');
                     return concert;
                 }
             })
