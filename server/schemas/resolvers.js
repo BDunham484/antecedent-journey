@@ -176,6 +176,9 @@ const resolvers = {
             ];
             await Promise.all(urlArr.map(async (url, index) => {
                 try {
+                    // changelog-start
+                    console.log('🍟🍟🍟🍟 url: ', url);
+                    // changelog-end
                     const { data } = await axios.get(url);
                     const $ = cheerio.load(data);
                     var events = [];
