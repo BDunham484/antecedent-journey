@@ -180,7 +180,7 @@ const resolvers = {
                     console.log('🍟🍟🍟🍟 url: ', url);
                     // changelog-end
                     const { data } = await axios.get(url);
-                    console.log('🍟🍟🍟🍟 url: ', url);
+                    console.log('🍟🍟🍟🍟 data: ', data);
                     const $ = cheerio.load(data);
                     var events = [];
                     if ($('ul:eq(-1)').length === 0) {
