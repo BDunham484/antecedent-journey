@@ -21,7 +21,7 @@ const AustinScraper = ({ setControlSwitch }) => {
     }
 
     useEffect(() => {
-        //  delcare empty array for dates
+        //  declare empty array for dates
         const dateArr = [];
         //push todays date into dateArr
         dateArr.push(today);
@@ -42,7 +42,10 @@ const AustinScraper = ({ setControlSwitch }) => {
         }
 
         let index = 0;
-        const delay = (1000 * 20)
+        // changelog-start
+        const delay = (1000 * 60)
+        // const delay = (1000 * 20)
+        // changelog-end
 
         let interval = setInterval(function () {
             index += 1;

@@ -190,7 +190,7 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            //the following 'headliner' block focuses on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            //the following 'headliner' block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
@@ -283,7 +283,7 @@ const resolvers = {
                             $('.venue-details:eq(0)', data).each(function () {
                                 var addressPhone = $(this).text();
                                 const addressArr = addressPhone.split(',');
-                                //assign regex to recoginze 1-9 to variable num
+                                //assign regex to recognize 1-9 to variable num
                                 let num = /\d/
                                 var address = addressArr[0];
                                 var address2 = addressArr[1];
@@ -322,6 +322,9 @@ const resolvers = {
 
             }));
             console.log(year + '-' + month + '-' + day + ': SCRAPED')
+            // // changelog-start
+            // console.log('concertData-----------------: ', concertData);
+            // // changelog-end
             return concertData;
         },
 
