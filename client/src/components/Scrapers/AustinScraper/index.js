@@ -32,9 +32,9 @@ const AustinScraper = ({ setControlSwitch }) => {
             const theNextDay = next.toDateString();
             return theNextDay;
         }
-        //save date to another variable for for loop
+        //save date to another variable for for-loop
         let arrayDate = today;
-        //for loop that continously gets upcoming dates and pushes them to array
+        //for loop that continuously gets upcoming dates and pushes them to array
         for (let i = 0; i < 89; i++) {
             let nextDate = nextDay(arrayDate);
             dateArr.push(nextDate);
@@ -42,10 +42,8 @@ const AustinScraper = ({ setControlSwitch }) => {
         }
 
         let index = 0;
-        // changelog-start
-        const delay = (1000 * 60)
-        // const delay = (1000 * 20)
-        // changelog-end
+        const delay = (1000 * 30);
+        // const delay = (1000 * 20);
 
         let interval = setInterval(function () {
             index += 1;
@@ -63,7 +61,6 @@ const AustinScraper = ({ setControlSwitch }) => {
     }, [today, setControlSwitch])
 
     const { data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
-        // variables: { date: today }
         variables: { date: scraperDate }
     })
 

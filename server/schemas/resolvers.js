@@ -164,28 +164,24 @@ const resolvers = {
         austinConcertScraper: async (parent, { date }) => {
             const concertData = [];
             const day = date.slice(8, 10);
-            // const month = ('0' + (new Date(date).getMonth()) + 1).slice(-2);
-            const month = ('0' + (new Date(date).getMonth() + 1));
+            const monthNum = (new Date(date).getMonth() + 1).toString();
+            const month = monthNum.length === 1 ? '0' + monthNum : monthNum;
             const year = new Date().getFullYear();
             console.log('DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
             const urlArr = [
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`
+                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
             ];
             await Promise.all(urlArr.map(async (url, index) => {
                 try {
-                    // changelog-start
-                    console.log('🍟🍟🍟🍟 url: ', url);
-                    // changelog-end
                     const { data } = await axios.get(url);
                     const $ = cheerio.load(data);
                     var events = [];
                     if ($('ul:eq(-1)').length === 0) {
                         $('ul:eq(0) .list-item', data).each(function () {
                             const artists = $(this).find('h2').text();
-                            console.log('🍟🍟🍟🍟 artists: ', artists);
                             const artistsLink = $(this).find('a').attr('href');
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
@@ -234,7 +230,7 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            //the following headliner block focuses on finding any instance of 'w/' within `unfilitered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            //the following headliner block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
@@ -322,9 +318,6 @@ const resolvers = {
 
             }));
             console.log(year + '-' + month + '-' + day + ': SCRAPED')
-            // // changelog-start
-            // console.log('concertData-----------------: ', concertData);
-            // // changelog-end
             return concertData;
         },
 
