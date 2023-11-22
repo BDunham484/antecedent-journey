@@ -188,7 +188,8 @@ header nav ul {
 }
 
 header nav ul li a {
-  font-family: 'Bungee Hairline', cursive;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  /* font-family: 'Bungee Hairline', cursive; */
   letter-spacing: 3px;
   font-size: 20px;
   font-weight: bold;
