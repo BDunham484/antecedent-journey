@@ -301,3 +301,16 @@ footer {
   height: 10vh;
   background-color: var(--darkest);
 }
+
+/* MEDIA QUERIES */
+@media screen and (max-width: 800px) {
+  .control-container {
+    width: 85%;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 801px) {
+  .control-container {
+    width: 65%;
+  }
+}
