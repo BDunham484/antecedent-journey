@@ -170,28 +170,28 @@ const resolvers = {
             console.log('DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
             const urlArr = [
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
+                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
+                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
+                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
             ];
             // changelog-start
-            const newUrlArr = await Promise.all(urlArr.map(async (url) => {
-                const { data } = await axios.get(url);
-                const $ = cheerio.load(data);
+            // const newUrlArr = await Promise.all(urlArr.map(async (url) => {
+            //     const { data } = await axios.get(url);
+            //     const $ = cheerio.load(data);
 
-                const partialUrl = `https://www.austinchronicle.com`
-                const nextUrl = $("[title='next']").attr('href');
+            //     const partialUrl = `https://www.austinchronicle.com`
+            //     const nextUrl = $("[title='next']").attr('href');
 
-                var newUrl;
-                    if (nextUrl) {
-                        newUrl = partialUrl + nextUrl;
-                        console.log('newUrl: ', newUrl)
-                        urlArr.push(newUrl);
-                        console.log('🍟🍟🍟🍟 urlArr: ', urlArr);
-                    }
-            }))
+            //     var newUrl;
+            //         if (nextUrl) {
+            //             newUrl = partialUrl + nextUrl;
+            //             console.log('newUrl: ', newUrl)
+            //             urlArr.push(newUrl);
+            //             console.log('🍟🍟🍟🍟 urlArr: ', urlArr);
+            //         }
+            // }))
 
-            console.log('newUrlArr: ', newUrlArr);
+            // console.log('newUrlArr: ', newUrlArr);
 
             // changelog-end
             await Promise.all(urlArr.map(async (url, index) => {
