@@ -20,48 +20,53 @@ const AustinScraper = ({ setControlSwitch }) => {
         totalConcerts = arr.reduce((total, amount) => total + amount)
     }
 
-    useEffect(() => {
-        //  declare empty array for dates
-        const dateArr = [];
-        //push todays date into dateArr
-        dateArr.push(today);
-        //function to get the next day based on the date passed in to it
-        const nextDay = (date) => {
-            const next = new Date(date);
-            next.setDate(next.getDate() + 1);
-            const theNextDay = next.toDateString();
-            return theNextDay;
-        }
-        //save date to another variable for for-loop
-        let arrayDate = today;
-        //for loop that continuously gets upcoming dates and pushes them to array
-        for (let i = 0; i < 89; i++) {
-            let nextDate = nextDay(arrayDate);
-            dateArr.push(nextDate);
-            arrayDate = nextDate;
-        }
+    // useEffect(() => {
+    //     //  declare empty array for dates
+    //     const dateArr = [];
+    //     //push todays date into dateArr
+    //     dateArr.push(today);
+    //     //function to get the next day based on the date passed in to it
+    //     const nextDay = (date) => {
+    //         const next = new Date(date);
+    //         next.setDate(next.getDate() + 1);
+    //         const theNextDay = next.toDateString();
+    //         return theNextDay;
+    //     }
+    //     //save date to another variable for for-loop
+    //     let arrayDate = today;
+    //     //for loop that continuously gets upcoming dates and pushes them to array
+    //     for (let i = 0; i < 89; i++) {
+    //         let nextDate = nextDay(arrayDate);
+    //         dateArr.push(nextDate);
+    //         arrayDate = nextDate;
+    //     }
 
-        let index = 0;
-        const delay = (1000 * 30);
-        // const delay = (1000 * 20);
+    //     let index = 0;
+    //     const delay = (1000 * 30);
+    //     // const delay = (1000 * 20);
 
-        let interval = setInterval(function () {
-            index += 1;
-            setScrapeIndex(index)
-            if (index === 90) {
-            // if (index >= 90) {
-                setControlSwitch(false)
-                clearInterval(interval);
-            }
+    //     let interval = setInterval(function () {
+    //         index += 1;
+    //         setScrapeIndex(index)
+    //         if (index === 90) {
+    //         // if (index >= 90) {
+    //             setControlSwitch(false)
+    //             clearInterval(interval);
+    //         }
 
-            console.log('INTERVAL RUN: ' + index);
-            console.log('DATE TO BE SCRAPED: ' + dateArr[index])
-            setScraperDate(dateArr[index]);
-        }, delay);
-    }, [today, setControlSwitch])
+    //         console.log('INTERVAL RUN: ' + index);
+    //         console.log('DATE TO BE SCRAPED: ' + dateArr[index])
+    //         setScraperDate(dateArr[index]);
+    //     }, delay);
+    // }, [today, setControlSwitch])
+
+    // changelog-start
+
+    // changelog-end
 
     const { data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
-        variables: { date: scraperDate }
+        variables: { date: today }
+        // variables: { date: scraperDate }
     })
 
     const [austinScraper, setAustinScraper] = useState([[]]);

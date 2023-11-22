@@ -170,15 +170,51 @@ const resolvers = {
             console.log('DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
             const urlArr = [
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
+                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
+                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
+                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
             ];
+            // changelog-start
+            const newUrlArr = await Promise.all(urlArr.map(async (url) => {
+                const { data } = await axios.get(url);
+                const $ = cheerio.load(data);
+
+                const partialUrl = `https://www.austinchronicle.com`
+                const nextUrl = $("[title='next']").attr('href');
+
+                var newUrl;
+                    if (nextUrl) {
+                        newUrl = partialUrl + nextUrl;
+                        console.log('newUrl: ', newUrl)
+                        urlArr.push(newUrl);
+                        console.log('🍟🍟🍟🍟 urlArr: ', urlArr);
+                    }
+            }))
+
+            console.log('newUrlArr: ', newUrlArr);
+
+            // changelog-end
             await Promise.all(urlArr.map(async (url, index) => {
                 try {
                     const { data } = await axios.get(url);
                     const $ = cheerio.load(data);
                     var events = [];
+                    // // changelog-start
+                    // console.log('urlArl: ', urlArr);
+
+                    // const partialUrl = `https://www.austinchronicle.com`
+                    // const nextUrl = $("[title='next']").attr('href');
+                    // var newUrl;
+                    // if (nextUrl) {
+                    //     newUrl = partialUrl + nextUrl;
+                    //     console.log('newUrl: ', newUrl)
+                    //     urlArr.push(newUrl);
+                    // }
+                    // console.log('urlArl: ', urlArr);
+
+                    // console.log('🍕🍕🍕🍕 partialUrl: ', partialUrl);
+                    // console.log('🍕🍕🍕🍕  nextUrl: ', nextUrl);
+                    // // changelog-end
                     if ($('ul:eq(-1)').length === 0) {
                         $('ul:eq(0) .list-item', data).each(function () {
                             const artists = $(this).find('h2').text();
@@ -202,7 +238,7 @@ const resolvers = {
                                 const slashIndex = secondSplitHeadliner.indexOf('/')
                                 secondSplitHeadliner[slashIndex] = ':'
                                 headliner = secondSplitHeadliner.join('')
-                            } 
+                            }
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
@@ -246,8 +282,8 @@ const resolvers = {
                                 const slashIndex = secondSplitHeadliner.indexOf('/')
                                 secondSplitHeadliner[slashIndex] = ':'
                                 headliner = secondSplitHeadliner.join('')
-                            } 
-                            
+                            }
+
                             const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
@@ -753,7 +789,7 @@ const resolvers = {
                 if (!user) {
                     throw new Error('User does not exist');
                 }
-                
+
                 return user
             }
             throw new AuthenticationError('You need to be logged in!');
@@ -851,19 +887,19 @@ const resolvers = {
             if (context.user) {
                 let user = await User.findOneAndUpdate(
                     { '_id': context.user._id },
-                    { $push: { blockedUsers: blockedId }},
+                    { $push: { blockedUsers: blockedId } },
                     { new: true }
                 ).populate('blockedUsers');
 
                 await User.findOneAndUpdate(
                     { '_id': context.user._id },
-                    { $pull: { friends: blockedId }},
+                    { $pull: { friends: blockedId } },
                     { new: true }
                 ).populate('friends');
 
                 await User.findOneAndUpdate(
                     { '_id': blockedId },
-                    { $pull: { friends: context.user._id }},
+                    { $pull: { friends: context.user._id } },
                     { new: true }
                 )
 
@@ -877,7 +913,7 @@ const resolvers = {
             if (context.user) {
                 let user = await User.findOneAndUpdate(
                     { '_id': context.user._id },
-                    { $pull: { blockedUsers: blockedId }},
+                    { $pull: { blockedUsers: blockedId } },
                     { new: true }
                 )
                 return user;
