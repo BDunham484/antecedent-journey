@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { ADD_CONCERT } from '../../../utils/mutations';
 
-const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) => {
+const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
     const [addConcert] = useMutation(ADD_CONCERT)
     const [concertsAdded, setConcertsAdded] = useState(0);
 
@@ -49,7 +49,7 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
                     return b.length
                 })
                 const sum = mapResult.reduce((total, amount) => total + amount)
-                setArr(current => [...current, sum])
+                setTotals(current => [...current, sum])
                 setConcertsAdded(sum)
                 return sum;
             }
@@ -57,7 +57,7 @@ const AustinDbUpdater = ({ today, date, austinScraper, setArr, totalConcerts }) 
 
         printUpdaterResults();
 
-    }, [addConcert, austinScraper, setArr, setConcertsAdded])
+    }, [addConcert, austinScraper, setTotals, setConcertsAdded])
 
 
 

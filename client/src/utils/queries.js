@@ -36,6 +36,14 @@ export const GET_CONCERTS_BY_DATE = gql`
     }
 `;
 
+export const GET_URL_ARRAY = gql`
+    query getUrlArray($date: String) {
+        getUrlArray(date: $date) {
+            artistsLink
+        }
+    }
+`;
+
 export const AUSTIN_CONCERT_SCRAPER = gql`
     query austinConcertScraper($date: String) {
         austinConcertScraper(date: $date) {
@@ -56,7 +64,7 @@ export const AUSTIN_CONCERT_SCRAPER = gql`
 
 export const QUERY_USER_CONCERTS = gql`
     query userConcerts($username: String) {
-        userConcerts(username: $usernmae) {
+        userConcerts(username: $username) {
             _id
             artists
             artistsLink

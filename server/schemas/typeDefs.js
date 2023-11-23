@@ -51,6 +51,7 @@ const typeDefs = gql`
         concertsFromDb(date: String!): [Concert]
         austinConcertScraper(date: String): [[Concert]]
         getYesterdaysConcerts(date: String!): [Concert]
+        getUrlArray(date: String!): [String]
     }
 
     type Mutation {

@@ -1,29 +1,26 @@
-import { useState, useEffect } from "react"
-import { useQuery } from "@apollo/client"
-import { AUSTIN_CONCERT_SCRAPER } from "../../../utils/queries"
-import { getTodaysDate } from "../../../utils/helpers"
-import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater'
+import { useState, useEffect, useMemo } from "react";
+import { useQuery } from "@apollo/client";
+import { AUSTIN_CONCERT_SCRAPER } from "../../../utils/queries";
+import { getTodaysDate } from "../../../utils/helpers";
+import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
 
 const AustinScraper = ({ setControlSwitch }) => {
     //get today's date with imported helper function
     var today = getTodaysDate();
-    //set initial state using today's date
-    const [date, setDate] = useState(today);
-    const [scrapeIndex, setScrapeIndex] = useState(0);
-    const [arr, setArr] = useState([])
-
+    const [scrapeIndex, setScrapeIndex] = useState(1);
+    const [totals, setTotals] = useState([]);
     const [scraperDate, setScraperDate] = useState(today);
+    const [austinScraper, setAustinScraper] = useState([[]]);
 
-    let totalConcerts
+    const { loading, data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
+        variables: { date: scraperDate }
+    })
 
-    if (arr.length > 0) {
-        totalConcerts = arr.reduce((total, amount) => total + amount)
-    }
+    // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
+    let dateArr = useMemo(() => [], []);
 
     useEffect(() => {
-        //  declare empty array for dates
-        const dateArr = [];
-        //push todays date into dateArr
+        // push todays date into dateArr
         dateArr.push(today);
         //function to get the next day based on the date passed in to it
         const nextDay = (date) => {
@@ -40,45 +37,54 @@ const AustinScraper = ({ setControlSwitch }) => {
             dateArr.push(nextDate);
             arrayDate = nextDate;
         }
+    }, [today, dateArr])
 
-        let index = 0;
-        const delay = (1000 * 30);
-        // const delay = (1000 * 20);
-
-        let interval = setInterval(function () {
-            index += 1;
-            setScrapeIndex(index)
-            if (index === 90) {
-            // if (index >= 90) {
-                setControlSwitch(false)
-                clearInterval(interval);
+    useEffect(() => {
+        const checkDates = () => {
+            if (scrapeIndex === 90)  {
+                setControlSwitch(false);
+                return;
             }
+            console.log('👻👻👻👻👻👻👻👻👻👻👻👻👻👻')
+            console.log('🥩🥩🥩🥩 concertData: ', concertData);
+            const testResult = concertData?.austinConcertScraper[0][0]?.date || '';
 
-            console.log('INTERVAL RUN: ' + index);
-            console.log('DATE TO BE SCRAPED: ' + dateArr[index])
-            setScraperDate(dateArr[index]);
-        }, delay);
-    }, [today, setControlSwitch])
+            console.log('🥩🥩🥩🥩 testResult: ', testResult);
+            console.log('🥩🥩🥩🥩 scraperDate: ', scraperDate);
 
-    // changelog-start
+            if (testResult === scraperDate) {
+                setScrapeIndex(prevIndex => prevIndex + 1);
 
-    // changelog-end
+                console.log('🍖🍖🍖🍖 scrapeIndex: ', scrapeIndex);
+                console.log('🍖🍖🍖🍖 dateArr[scrapeIndex]: ', dateArr[scrapeIndex]);
 
-    const { data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
-        // variables: { date: today }
-        variables: { date: scraperDate }
-    })
+                setScraperDate(prevDate => {
+                    return dateArr[scrapeIndex];
+                });
+                console.log('🍖🍖🍖🍖 scraperDate: ', scraperDate);
+            }
+        };
 
-    const [austinScraper, setAustinScraper] = useState([[]]);
+        if (concertData) {
+            checkDates();
+        }
+
+        console.log('✅✅✅✅ scraperDate: ', scraperDate);
+    }, [today, setControlSwitch, scraperDate, concertData, loading, dateArr])
 
     useEffect(() => {
         if (concertData) {
-            console.log('SCRAPER RUN: ');
-            console.log(concertData);
+            console.log('RETURNED SCRAPER DATA: ', concertData);
             const concertDataArr = concertData.austinConcertScraper
             setAustinScraper(concertDataArr)
         }
     }, [concertData, austinScraper])
+
+    let totalConcerts;
+
+    if (totals.length > 0) {
+        totalConcerts = totals.reduce((total, amount) => total + amount)
+    }
 
     return (
         <div>
@@ -86,9 +92,9 @@ const AustinScraper = ({ setControlSwitch }) => {
                 SCRAPER: ✅
             </h3>
             <div className="indent">
-                Scrape Index: {scrapeIndex}
+                Scrape Index: {scrapeIndex - 1}
             </div>
-            <AustinDbUpdater today={today} date={date} austinScraper={austinScraper} setArr={setArr} totalConcerts={totalConcerts} />
+            <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
         </div>
 
     )
