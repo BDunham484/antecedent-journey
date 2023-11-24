@@ -61,8 +61,8 @@ export const AUSTIN_CONCERT_SCRAPER = gql`
 `;
 
 export const AUSTIN_TX_CONCERT_SCRAPER = gql`
-    query austinTxConcertScraper($result: [String], $date: String) {
-        austinTxConcertScraper(result: $result, date: $date) {
+    query austinTxConcertScraper($urlData: [String], $date: String) {
+        austinTxConcertScraper(urlData: $urlData, date: $date) {
             customId
             artists
             date

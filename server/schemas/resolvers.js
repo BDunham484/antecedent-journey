@@ -193,7 +193,8 @@ const resolvers = {
                             eventURLs.push(innerResult);
                         }
                     } catch (err) {
-                        throw err;
+                        console.error(err);
+                        // throw err;
                     }
                 };
                 return eventURLs;
@@ -202,10 +203,11 @@ const resolvers = {
             console.log('result: ', result);
             return result;
         },
-        austinTxConcertScraper: async (parent, { result, date }) => {
-            console.log('result: ', result);
+        austinTxConcertScraper: async (parent, { urlData, date }) => {
+            console.log('urlData: ', urlData);
+            console.log('date: ', date);
             const concertData = [];
-            await Promise.all(result.map(async (url, index) => {
+            await Promise.all(urlData.map(async (url, index) => {
                 // await Promise.all(urlArr.map(async (url, index) => {
                 // changelog-end
                 try {
@@ -350,9 +352,9 @@ const resolvers = {
                 concertData.push(events);
 
             }));
-        // console.log(year + '-' + month + '-' + day + ': SCRAPED')
-        console.log('MINI-SCRAPER-CONCERT-DATA: ', concertData);
-        return concertData;
+            // console.log(year + '-' + month + '-' + day + ': SCRAPED')
+            console.log('austinTxConcertScraper: ', concertData.length);
+            return concertData;
         },
         //scrape one day at a time
         austinConcertScraper: async (parent, { date }) => {

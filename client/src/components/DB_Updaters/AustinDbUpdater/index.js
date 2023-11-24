@@ -9,7 +9,7 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
     useEffect(() => {
 
         const dbConcertUpdater = async (arr) => {
-            console.log('dbConcertUpdater is running');
+            // console.log('dbConcertUpdater is running');
             // add conditional to check arr.length index 30 something causes error
 
             const response = await Promise.all(arr.filter((x) => x).map(async (dailyArr) => {

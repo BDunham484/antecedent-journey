@@ -32,8 +32,8 @@ const AustinDbCleaner = ({ today }) => {
             for (let i = 0; i < yesterdaysConcerts.length; i++) {
                 yesterdaysIdsArr.push(yesterdaysConcerts[i]._id)
             }
-            console.log('YESTERDAYS IDs TO BE DELETED');
-            console.log(yesterdaysIdsArr);
+            // console.log('YESTERDAYS IDs TO BE DELETED');
+            // console.log(yesterdaysIdsArr);
             try {
                 await deleteConcerts({
                     variables: { concertId: yesterdaysIdsArr }
