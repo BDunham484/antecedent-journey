@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { AUSTIN_CONCERT_SCRAPER } from "../../../utils/queries";
+import { AUSTIN_CONCERT_SCRAPER, GET_URL_ARRAY, AUSTIN_TX_CONCERT_SCRAPER } from "../../../utils/queries";
 import { getTodaysDate } from "../../../utils/helpers";
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
 
@@ -12,9 +12,29 @@ const AustinScraper = ({ setControlSwitch }) => {
     const [scraperDate, setScraperDate] = useState(today);
     const [austinScraper, setAustinScraper] = useState([[]]);
 
-    const { loading, data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
-        variables: { date: scraperDate }
+    // const { loading, data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
+    //     variables: { date: scraperDate }
+    // })
+
+    const { data } = useQuery(GET_URL_ARRAY, {
+        variables: { date: "Fri Nov 24 23"}
     })
+
+    let result = data?.getUrlArray || [];
+
+    if (result) {
+        console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ result: ', result);
+    };
+
+    const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
+
+    const { data: concertStuffs } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
+        variables: { result: addressData, date: 'Fri Nov 24 23'}
+    });
+
+    if (concertStuffs) {
+        console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ concertStuffs: ', concertStuffs);
+    }
 
     // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
     let dateArr = useMemo(() => [], []);
@@ -39,46 +59,46 @@ const AustinScraper = ({ setControlSwitch }) => {
         }
     }, [today, dateArr])
 
-    useEffect(() => {
-        const checkDates = () => {
-            if (scrapeIndex === 90)  {
-                setControlSwitch(false);
-                return;
-            }
-            console.log('👻👻👻👻👻👻👻👻👻👻👻👻👻👻')
-            console.log('🥩🥩🥩🥩 concertData: ', concertData);
-            const testResult = concertData?.austinConcertScraper[0][0]?.date || '';
+    // useEffect(() => {
+    //     const checkDates = () => {
+    //         if (scrapeIndex === 90)  {
+    //             setControlSwitch(false);
+    //             return;
+    //         }
+    //         console.log('👻👻👻👻👻👻👻👻👻👻👻👻👻👻')
+    //         console.log('🥩🥩🥩🥩 concertData: ', concertData);
+    //         const testResult = concertData?.austinConcertScraper[0][0]?.date || '';
 
-            console.log('🥩🥩🥩🥩 testResult: ', testResult);
-            console.log('🥩🥩🥩🥩 scraperDate: ', scraperDate);
+    //         console.log('🥩🥩🥩🥩 testResult: ', testResult);
+    //         console.log('🥩🥩🥩🥩 scraperDate: ', scraperDate);
 
-            if (testResult === scraperDate) {
-                setScrapeIndex(prevIndex => prevIndex + 1);
+    //         if (testResult === scraperDate) {
+    //             setScrapeIndex(prevIndex => prevIndex + 1);
 
-                console.log('🍖🍖🍖🍖 scrapeIndex: ', scrapeIndex);
-                console.log('🍖🍖🍖🍖 dateArr[scrapeIndex]: ', dateArr[scrapeIndex]);
+    //             console.log('🍖🍖🍖🍖 scrapeIndex: ', scrapeIndex);
+    //             console.log('🍖🍖🍖🍖 dateArr[scrapeIndex]: ', dateArr[scrapeIndex]);
 
-                setScraperDate(prevDate => {
-                    return dateArr[scrapeIndex];
-                });
-                console.log('🍖🍖🍖🍖 scraperDate: ', scraperDate);
-            }
-        };
+    //             setScraperDate(prevDate => {
+    //                 return dateArr[scrapeIndex];
+    //             });
+    //             console.log('🍖🍖🍖🍖 scraperDate: ', scraperDate);
+    //         }
+    //     };
 
-        if (concertData) {
-            checkDates();
-        }
+    //     if (concertData) {
+    //         checkDates();
+    //     }
 
-        console.log('✅✅✅✅ scraperDate: ', scraperDate);
-    }, [today, setControlSwitch, scraperDate, concertData, loading, dateArr])
+    //     console.log('✅✅✅✅ scraperDate: ', scraperDate);
+    // }, [today, setControlSwitch, scraperDate, concertData, loading, dateArr])
 
-    useEffect(() => {
-        if (concertData) {
-            console.log('RETURNED SCRAPER DATA: ', concertData);
-            const concertDataArr = concertData.austinConcertScraper
-            setAustinScraper(concertDataArr)
-        }
-    }, [concertData, austinScraper])
+    // useEffect(() => {
+    //     if (concertData) {
+    //         console.log('RETURNED SCRAPER DATA: ', concertData);
+    //         const concertDataArr = concertData.austinConcertScraper
+    //         setAustinScraper(concertDataArr)
+    //     }
+    // }, [concertData, austinScraper])
 
     let totalConcerts;
 

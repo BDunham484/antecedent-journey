@@ -167,18 +167,15 @@ const resolvers = {
             const month = monthNum.length === 1 ? '0' + monthNum : monthNum;
             const year = new Date().getFullYear();
             console.log('DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
-            const urlArr = [
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-2`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-3`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/page-4`,
-            ];
             // changelog-start
             const urlUpdater = async () => {
-                for (let i = 0; i < urlArr.length; i++) {
+                const eventURLs = [
+                    `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                ];
+                for (let i = 0; i < eventURLs.length; i++) {
                     try {
-                        const testFunc = async () => {
-                            const { data } = await axios.get(url);
+                        const getNewUrl = async () => {
+                            const { data } = await axios.get(eventURLs[i]);
                             const $ = cheerio.load(data);
 
                             const partialUrl = `https://www.austinchronicle.com`
@@ -188,21 +185,174 @@ const resolvers = {
                             if (nextUrl) {
                                 newUrl = partialUrl + nextUrl;
                                 console.log('newUrl: ', newUrl);
-                                urlArr.push(newUrl);
-                                console.log('🍟🍟🍟🍟 urlArr: ', urlArr);
+                                return newUrl;
                             }
                         }
-                        return await testFunc();
+                        const innerResult = await getNewUrl();
+                        if (innerResult) {
+                            eventURLs.push(innerResult);
+                        }
                     } catch (err) {
                         throw err;
                     }
                 };
-                console.log('🍟🍟🍟🍟 urlArr: ', urlArr);
+                return eventURLs;
             }
             const result = await urlUpdater();
             console.log('result: ', result);
-            return urlArr;
-            // changelog-end
+            return result;
+        },
+        austinTxConcertScraper: async (parent, { result, date }) => {
+            console.log('result: ', result);
+            const concertData = [];
+            await Promise.all(result.map(async (url, index) => {
+                // await Promise.all(urlArr.map(async (url, index) => {
+                // changelog-end
+                try {
+                    const { data } = await axios.get(url);
+                    const $ = cheerio.load(data);
+                    var events = [];
+                    if ($('ul:eq(-1)').length === 0) {
+                        $('ul:eq(0) .list-item', data).each(function () {
+                            const artists = $(this).find('h2').text();
+                            const artistsLink = $(this).find('a').attr('href');
+                            const description = $(this).find('.description').text()
+                            const dateTime = $(this).find('.date-time').text()
+                            const venue = $(this).find('.venue').text()
+                            //the following 'headliner' block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            let headliner;
+                            let unfilteredHeadliner = artists.split(',')[0];
+                            const splitHeadliner = unfilteredHeadliner.split(' ');
+                            if (splitHeadliner.includes('w/')) {
+                                const wIndex = splitHeadliner.indexOf('w/')
+                                splitHeadliner[wIndex] = 'with';
+                                headliner = splitHeadliner.join(' ');
+                            } else {
+                                headliner = unfilteredHeadliner;
+                            };
+                            const secondSplitHeadliner = headliner.split('');
+                            if (secondSplitHeadliner.includes('/')) {
+                                const slashIndex = secondSplitHeadliner.indexOf('/')
+                                secondSplitHeadliner[slashIndex] = ':'
+                                headliner = secondSplitHeadliner.join('')
+                            }
+                            const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                            const timeArr = dateTime.split(",")
+                            const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
+                            let times
+                            timeArr.map((time) => {
+                                if (timex.test(time)) {
+                                    times = time;
+                                    return times;
+                                }
+                            })
+                            events.push({
+                                customId,
+                                artists,
+                                artistsLink,
+                                description,
+                                date,
+                                times,
+                                venue
+                            })
+                        })
+                    } else {
+                        $('ul:eq(-1) .list-item', data).each(function () {
+                            const artists = $(this).find('h2').text()
+                            const artistsLink = $(this).find('a').attr('href');
+                            const description = $(this).find('.description').text()
+                            const dateTime = $(this).find('.date-time').text()
+                            const venue = $(this).find('.venue').text()
+                            //the following headliner block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            let headliner;
+                            let unfilteredHeadliner = artists.split(',')[0];
+                            const splitHeadliner = unfilteredHeadliner.split(' ');
+                            if (splitHeadliner.includes('w/')) {
+                                const wIndex = splitHeadliner.indexOf('w/')
+                                splitHeadliner[wIndex] = 'with';
+                                headliner = splitHeadliner.join(' ');
+                            } else {
+                                headliner = unfilteredHeadliner;
+                            };
+                            const secondSplitHeadliner = headliner.split('');
+                            if (secondSplitHeadliner.includes('/')) {
+                                const slashIndex = secondSplitHeadliner.indexOf('/')
+                                secondSplitHeadliner[slashIndex] = ':'
+                                headliner = secondSplitHeadliner.join('')
+                            }
+
+                            const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                            const timeArr = dateTime.split(",")
+                            const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
+                            let times
+                            timeArr.map((time) => {
+                                if (timex.test(time)) {
+                                    times = time;
+                                    return times;
+                                }
+                            })
+                            events.push({
+                                customId,
+                                artists,
+                                artistsLink,
+                                description,
+                                date,
+                                times,
+                                venue
+                            })
+                        })
+                    }
+                    const newEventsArr = await Promise.all(events.map((event) => {
+                        const eventUrl = `https://www.austinchronicle.com${event.artistsLink}`;
+
+                        let moreEventDetails = async () => {
+                            var { data } = await axios.get(eventUrl)
+                            var $ = cheerio.load(data);
+
+                            $('.venue-details:eq(0)', data).each(function () {
+                                var addressPhone = $(this).text();
+                                const addressArr = addressPhone.split(',');
+                                //assign regex to recognize 1-9 to variable num
+                                let num = /\d/
+                                var address = addressArr[0];
+                                var address2 = addressArr[1];
+                                var address3 = addressArr[2];
+                                if (address2) {
+                                    if (num.test(address2[1])) {
+                                        event["phone"] = address2;
+                                    } else {
+                                        event["phone"] = address3;
+                                        event["address2"] = address2;
+                                    }
+                                }
+                                event["address"] = address
+                                return event;
+                            })
+                            $('.venue-details:eq(1)', data).each(function () {
+                                var website = $(this).find('a').attr('href');
+                                var email = $(this).find('b:eq(1)').text()
+                                event["website"] = website
+                                event["email"] = email
+                                return event;
+                            })
+                            $('.ticket-link', data).each(function () {
+                                var ticketLink = $(this).attr('href')
+                                event["ticketLink"] = ticketLink
+                                return event;
+                            })
+                            return event;
+                        }
+                        return moreEventDetails();
+                    }, events))
+                } catch (error) {
+                    console.error(error);
+                }
+                concertData.push(events);
+
+            }));
+        // console.log(year + '-' + month + '-' + day + ': SCRAPED')
+        console.log('MINI-SCRAPER-CONCERT-DATA: ', concertData);
+        return concertData;
         },
         //scrape one day at a time
         austinConcertScraper: async (parent, { date }) => {

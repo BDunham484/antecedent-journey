@@ -37,16 +37,32 @@ export const GET_CONCERTS_BY_DATE = gql`
 `;
 
 export const GET_URL_ARRAY = gql`
-    query getUrlArray($date: String) {
-        getUrlArray(date: $date) {
-            artistsLink
-        }
+    query getUrlArray($date: String!) {
+        getUrlArray(date: $date) 
     }
 `;
 
 export const AUSTIN_CONCERT_SCRAPER = gql`
     query austinConcertScraper($date: String) {
         austinConcertScraper(date: $date) {
+            customId
+            artists
+            date
+            times
+            venue
+            address
+            address2
+            phone
+            website
+            email
+            ticketLink
+        }
+    }
+`;
+
+export const AUSTIN_TX_CONCERT_SCRAPER = gql`
+    query austinTxConcertScraper($result: [String], $date: String) {
+        austinTxConcertScraper(result: $result, date: $date) {
             customId
             artists
             date
