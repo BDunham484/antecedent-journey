@@ -119,10 +119,10 @@ const AustinScraper = ({ setControlSwitch }) => {
             const datesMatched = compareDates(concertResults, scraperDate);
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ datesMatched: ', datesMatched);
             if (concertResults?.austinTxConcertScraper[0]?.length > 0) {
-            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ returnedConcertDate: ', concertResults?.austinTxConcertScraper[0][0].date);
+                console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ returnedConcertDate: ', concertResults?.austinTxConcertScraper[0][0].date);
             }
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ scraperDate: ', scraperDate)
-            
+
             setIsFinished_Concert(true);
             setIsFinished_URL(false)
             if (datesMatched) {
@@ -208,16 +208,38 @@ const AustinScraper = ({ setControlSwitch }) => {
     }
 
     return (
-        <div>
-            <h3>
-                SCRAPER: ✅
-            </h3>
-            <div className="indent">
-                <p>URL Index: {urlScrapeIndex - 1}</p>
-                <p>Concert Index: {scrapeIndex - 1}</p>
+        <>
+            <div>
+                <h3>
+                    SCRAPER: ✅
+                </h3>
+                <div className="indent">
+                    <p>URL Index: {urlScrapeIndex - 1}</p>
+                    <p>Concert Index: {scrapeIndex - 1}</p>
+                </div>
+                <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
             </div>
-            <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
-        </div>
+            {(urlErr) &&
+                <div>
+                    <h2>{urlErr}</h2>
+                    {urlErr &&
+                        urlErr.graphQLErrors.map(({ message }, i) => (
+                            <span key={i}>{ message }</span>
+                        ))}
+                </div>
+            }
+            {(concertErr) &&
+                <div>
+                    <h2>{concertErr}</h2>
+                    {concertErr &&
+                        concertErr.graphQLErrors.map(({ message }, i) => (
+                            <span key={i}>{ message }</span>
+                        ))}
+                </div>
+            }
+
+        </>
+
 
     )
 }
