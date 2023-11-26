@@ -15,11 +15,12 @@ import Footer from './components/Footer';
 // const SERVER_URL = 
 //   process.env.NODE_ENV === 'production' ? 'https://whispering-retreat-35925.herokuapp.com' : 'http://localhost:3001'
 
-//establish link to GraphQL server
+// establish link to GraphQL server
 const httpLink = createHttpLink({
   // uri: `${SERVER_URL}/graphql`,
   uri: '/graphql',
 });
+
 
 //middleware function that retrieves token and combines with exiisting HTTP Link
 const authLink = setContext((_, { headers }) => {

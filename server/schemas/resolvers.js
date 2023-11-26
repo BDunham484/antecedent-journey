@@ -161,7 +161,6 @@ const resolvers = {
             return concerts;
         },
         getUrlArray: async (parent, { date }) => {
-            const concertData = [];
             const day = date.slice(8, 10);
             const monthNum = (new Date(date).getMonth() + 1).toString();
             const month = monthNum.length === 1 ? '0' + monthNum : monthNum;
@@ -192,8 +191,8 @@ const resolvers = {
                         if (innerResult) {
                             eventURLs.push(innerResult);
                         }
-                    } catch (err) {
-                        console.error(err);
+                    } catch (error) {
+                        console.error(error);
                         // throw err;
                     }
                 };
@@ -347,7 +346,8 @@ const resolvers = {
                         return moreEventDetails();
                     }, events))
                 } catch (error) {
-                    console.error(error);
+                    console.log('Whoopsies');
+                    // console.error(error);
                 }
                 concertData.push(events);
 
@@ -745,7 +745,7 @@ const resolvers = {
         //     return concertData;
         // },
         getYesterdaysConcerts: async (parent, { date }) => {
-            console.log('GETYESTERDAYSCONCERTS HAS RUN');
+            // console.log('GETYESTERDAYSCONCERTS HAS RUN');
             const yesterdaysConcerts = await Concert.find({ date: date })
                 .exec();
 
@@ -861,8 +861,9 @@ const resolvers = {
             return concert;
         },
         deleteConcerts: async (parent, { concertId }) => {
-            console.log('DELETED IDS');
-            console.log(concertId);
+            if (concertId) {
+            console.log('deleteConcerts concertId: ', concertId);
+            }
             const concerts = await Concert.deleteMany({
                 _id: { $in: concertId }
             });

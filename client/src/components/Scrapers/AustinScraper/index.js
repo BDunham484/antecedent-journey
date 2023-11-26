@@ -17,13 +17,14 @@ const AustinScraper = ({ setControlSwitch }) => {
     const [isFinished_Concert, setIsFinished_Concert] = useState(true);
     // changelog-start
     const [testState, setTestState] = useState([]);
+    const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
     // const { loading, data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
     //     variables: { date: scraperDate }
     // })
 
-    const { data: urlResults } = useQuery(GET_URL_ARRAY, {
+    const { error: urlErr, data: urlResults } = useQuery(GET_URL_ARRAY, {
         variables: { date: scraperDate },
         skip: !isFinished_Concert
     });
@@ -32,12 +33,17 @@ const AustinScraper = ({ setControlSwitch }) => {
 
     const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
 
-    const { data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
+    const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
         // variables: { urlData: addressData, date: 'Fri Nov 24 23'},
         variables: { urlData: testState, date: scraperDate },
-        // variables: { urlData: urlData, date: scraperDate },
         skip: !isFinished_URL
     });
+
+    if (urlErr || concertErr) {
+        console.log('❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
+        urlErr ? console.log('❌❌❌❌ urlErr: ', urlErr) : console.log('❌❌❌❌ concertErr: ', concertErr);
+        
+    }
     // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
     let dateArr = useMemo(() => [], []);
 
@@ -63,7 +69,7 @@ const AustinScraper = ({ setControlSwitch }) => {
 
     useEffect(() => {
         const checkUrlDates = () => {
-            if (urlScrapeIndex === 90) {
+            if (urlScrapeIndex === 3) {
                 setIsFinished_URL(true);
                 setScraperDate(today);
                 // setControlSwitch(false);
@@ -112,6 +118,7 @@ const AustinScraper = ({ setControlSwitch }) => {
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ returnedConcertDate: ', concertResults?.austinTxConcertScraper[0][0].date);
             }
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ scraperDate: ', scraperDate)
+            
             setIsFinished_Concert(true);
             setIsFinished_URL(false)
             if (datesMatched) {
@@ -180,7 +187,7 @@ const AustinScraper = ({ setControlSwitch }) => {
     //         setAustinScraper(concertDataArr)
     //     }
     // }, [concertData, austinScraper])
-
+    // THIS ONE BELOW IS THE NEWEST
     useEffect(() => {
         if (concertResults) {
             console.log('👻👻👻👻👻👻👻👻👻👻👻👻👻👻');
