@@ -31,7 +31,7 @@ const AustinScraper = ({ setControlSwitch }) => {
 
     let urlData = urlResults?.getUrlArray || [];
 
-    const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
+    // const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
 
     const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
         // variables: { urlData: addressData, date: 'Fri Nov 24 23'},
@@ -42,12 +42,13 @@ const AustinScraper = ({ setControlSwitch }) => {
     if (urlErr || concertErr) {
         console.log('❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
         urlErr ? console.log('❌❌❌❌ urlErr: ', urlErr) : console.log('❌❌❌❌ concertErr: ', concertErr);
-        
+        setControlSwitch(false);
+        setTimeout(() => {
+            setControlSwitch(true);
+        }, 3000);
     }
     // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
     let dateArr = useMemo(() => [], []);
-
-    console.log('🗓️🗓️🗓️🗓️ dateArr: ', dateArr[37]);
 
     useEffect(() => {
         // push todays date into dateArr
@@ -82,7 +83,8 @@ const AustinScraper = ({ setControlSwitch }) => {
             console.log('🎃🎃🎃🎃 urlResults: ', urlResults);
             const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[5];
             const urlDate = new Date(`${returnedUrlDate}T00:00`).toDateString();
-            console.log('🎃🎃🎃🎃 returnedUrlDate: ', urlDate);
+            console.log('🎃🎃🎃🎃 returnedUrlDate: ', returnedUrlDate);
+            console.log('🎃🎃🎃🎃 urlDate: ', urlDate);
             console.log('🎃🎃🎃🎃 scraperDate: ', scraperDate);
             setIsFinished_URL(true);
             setIsFinished_Concert(false);
@@ -116,7 +118,7 @@ const AustinScraper = ({ setControlSwitch }) => {
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ concertResults: ', concertResults);
             const datesMatched = compareDates(concertResults, scraperDate);
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ datesMatched: ', datesMatched);
-            if (concertResults?.austinTxConcertScraper[0].length > 0) {
+            if (concertResults?.austinTxConcertScraper[0]?.length > 0) {
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ returnedConcertDate: ', concertResults?.austinTxConcertScraper[0][0].date);
             }
             console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ scraperDate: ', scraperDate)

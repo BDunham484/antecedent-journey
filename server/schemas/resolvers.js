@@ -164,8 +164,9 @@ const resolvers = {
             const day = date.slice(8, 10);
             const monthNum = (new Date(date).getMonth() + 1).toString();
             const month = monthNum.length === 1 ? '0' + monthNum : monthNum;
-            const year = new Date().getFullYear();
-            console.log('DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
+            const year = new Date(date).getFullYear();
+            console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃')
+            console.log('🎃🎃🎃🎃 DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
             // changelog-start
             const urlUpdater = async () => {
                 const eventURLs = [
@@ -200,12 +201,15 @@ const resolvers = {
                 return eventURLs;
             }
             const result = await urlUpdater();
-            console.log('result: ', result);
+            console.log('🎃🎃🎃🎃 result: ', result);
+            console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
             return result;
         },
         austinTxConcertScraper: async (parent, { urlData, date }) => {
-            console.log('urlData: ', urlData);
-            console.log('date: ', date);
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️');
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper')
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper urlData: ', urlData);
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper date: ', date);
             const concertData = [];
             await Promise.all(urlData.map(async (url, index) => {
                 // await Promise.all(urlArr.map(async (url, index) => {
@@ -354,7 +358,8 @@ const resolvers = {
 
             }));
             // console.log(year + '-' + month + '-' + day + ': SCRAPED')
-            console.log('austinTxConcertScraper: ', concertData.length);
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper concertData.length: ', concertData.length);
+            console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️');
             return concertData;
         },
         //scrape one day at a time
