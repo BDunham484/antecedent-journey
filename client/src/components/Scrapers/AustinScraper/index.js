@@ -47,6 +47,8 @@ const AustinScraper = ({ setControlSwitch }) => {
     // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
     let dateArr = useMemo(() => [], []);
 
+    console.log('🗓️🗓️🗓️🗓️ dateArr: ', dateArr[37]);
+
     useEffect(() => {
         // push todays date into dateArr
         dateArr.push(today);
@@ -69,7 +71,7 @@ const AustinScraper = ({ setControlSwitch }) => {
 
     useEffect(() => {
         const checkUrlDates = () => {
-            if (urlScrapeIndex === 3) {
+            if (urlScrapeIndex === 90) {
                 setIsFinished_URL(true);
                 setScraperDate(today);
                 // setControlSwitch(false);
@@ -195,7 +197,7 @@ const AustinScraper = ({ setControlSwitch }) => {
             const concertDataArr = concertResults.austinTxConcertScraper
             setAustinScraper(concertDataArr);
         }
-    })
+    }, [concertResults])
 
     let totalConcerts;
 

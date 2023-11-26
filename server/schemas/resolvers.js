@@ -192,7 +192,8 @@ const resolvers = {
                             eventURLs.push(innerResult);
                         }
                     } catch (error) {
-                        console.error(error);
+                        console.log('Whoopsies');
+                        // console.error(error);
                         // throw err;
                     }
                 };
@@ -862,7 +863,7 @@ const resolvers = {
         },
         deleteConcerts: async (parent, { concertId }) => {
             if (concertId) {
-            console.log('deleteConcerts concertId: ', concertId);
+                console.log('deleteConcerts concertId: ', concertId);
             }
             const concerts = await Concert.deleteMany({
                 _id: { $in: concertId }
