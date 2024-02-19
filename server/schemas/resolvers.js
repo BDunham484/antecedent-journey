@@ -194,7 +194,7 @@ const resolvers = {
                         }
                     } catch (error) {
                         console.log('Whoopsies');
-                        // console.error(error);
+                        console.error(error.response.data);
                         // throw err;
                     }
                 };
@@ -352,7 +352,7 @@ const resolvers = {
                     }, events))
                 } catch (error) {
                     console.log('Whoopsies');
-                    // console.error(error);
+                    console.error(error.response.error);
                 }
                 concertData.push(events);
 

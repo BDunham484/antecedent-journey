@@ -17,7 +17,7 @@ const AustinScraper = ({ setControlSwitch }) => {
     const [isFinished_Concert, setIsFinished_Concert] = useState(true);
     // changelog-start
     const [testState, setTestState] = useState([]);
-    const [singleUrlState, setSingleUrlState] = useState([]);
+    // const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
     // const { loading, data: concertData } = useQuery(AUSTIN_CONCERT_SCRAPER, {
@@ -30,6 +30,30 @@ const AustinScraper = ({ setControlSwitch }) => {
     });
 
     let urlData = urlResults?.getUrlArray || [];
+
+    // changelog-start
+    // useEffect(() => {
+    //     let urlData = urlResults?.getUrlArray || [];
+
+    //     const checkUrlDates = () => {
+    //         if (urlScrapeIndex === 90) {
+    //             setIsFinished_URL(true);
+    //             setScraperDate(today);
+    //             // setControlSwitch(false);
+    //             return;
+    //         }
+    //     }
+
+    //     if (urlResults && isFinished_Concert) {
+    //         setTestState(prevState => {
+    //             return urlData
+    //         });
+    //         console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 testState: ', testState);
+    //         checkUrlDates();
+    //     }
+
+    // }, []);
+    // changelog-emd
 
     // const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
 
@@ -71,6 +95,7 @@ const AustinScraper = ({ setControlSwitch }) => {
     }, [today, dateArr])
 
     useEffect(() => {
+        // changelog-start
         const checkUrlDates = () => {
             if (urlScrapeIndex === 90) {
                 setIsFinished_URL(true);
@@ -78,6 +103,7 @@ const AustinScraper = ({ setControlSwitch }) => {
                 // setControlSwitch(false);
                 return;
             }
+            // changelog-end
 
             console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
             console.log('🎃🎃🎃🎃 urlResults: ', urlResults);
@@ -98,6 +124,11 @@ const AustinScraper = ({ setControlSwitch }) => {
             }
         }
 
+        // changelog-start
+        // let urlData = urlResults?.getUrlArray || [];
+        // changelog-end
+
+        // changelog-start
         if (urlResults && isFinished_Concert) {
             setTestState(prevState => {
                 return urlData
@@ -105,7 +136,8 @@ const AustinScraper = ({ setControlSwitch }) => {
             console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 testState: ', testState);
             checkUrlDates();
         }
-    }, [urlResults, dateArr, scraperDate, urlScrapeIndex, today, isFinished_Concert, urlData, testState]);
+        // changelog-end
+    }, [urlResults, dateArr, scraperDate, urlScrapeIndex, today, isFinished_Concert, testState, urlData]);
 
     useEffect(() => {
         const checkConcertDates = () => {
@@ -125,6 +157,17 @@ const AustinScraper = ({ setControlSwitch }) => {
 
             setIsFinished_Concert(true);
             setIsFinished_URL(false)
+            if (!datesMatched) {
+                console.log('❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
+                console.log('❌❌❌❌ !DATESMATCHED');
+                setIsFinished_Concert(false);
+                setIsFinished_URL(true);
+                setControlSwitch(false);
+                // setTimeout(() => {
+                //     setControlSwitch(true);
+                // }, 3000);
+            }
+
             if (datesMatched) {
                 setScrapeIndex(prevIndex => prevIndex + 1);
                 console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ scrapeIndex: ', scrapeIndex);
@@ -136,20 +179,25 @@ const AustinScraper = ({ setControlSwitch }) => {
         };
 
         const compareDates = (concertResults, scraperDate) => {
+            console.log('🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️🗓️');
+            console.log('🗓️🗓️🗓️🗓️ concertResults?.austinTxConcertScraper: ', concertResults?.austinTxConcertScraper);
             // const dates = concertResults?.austinTxConcertScraper.map(x => x[0].date ? x[0].date : null);
             const dates = concertResults?.austinTxConcertScraper.map(x => {
+                console.log('🗓️🗓️🗓️🗓️ x: ', x);
                 if (!x) {
                     return '';
                 }
                 return x[0].date;
             });
+            console.log('🗓️🗓️🗓️🗓️ dates: ', dates);
+            console.log('🗓️🗓️🗓️🗓️ scraperDate: ', scraperDate);
             return dates.includes(scraperDate) ? true : false;
         }
 
         if (isFinished_URL && concertResults) {
             checkConcertDates();
         }
-    }, [concertResults, isFinished_URL, scrapeIndex, setControlSwitch, dateArr, scraperDate, urlScrapeIndex]);
+    }, [concertResults, isFinished_URL, scrapeIndex, setControlSwitch, dateArr, scraperDate]);
 
     // useEffect(() => {
     //     const checkDates = () => {
@@ -224,7 +272,7 @@ const AustinScraper = ({ setControlSwitch }) => {
                     <h2>{urlErr}</h2>
                     {urlErr &&
                         urlErr.graphQLErrors.map(({ message }, i) => (
-                            <span key={i}>{ message }</span>
+                            <span key={i}>{message}</span>
                         ))}
                 </div>
             }
@@ -233,7 +281,7 @@ const AustinScraper = ({ setControlSwitch }) => {
                     <h2>{concertErr}</h2>
                     {concertErr &&
                         concertErr.graphQLErrors.map(({ message }, i) => (
-                            <span key={i}>{ message }</span>
+                            <span key={i}>{message}</span>
                         ))}
                 </div>
             }
