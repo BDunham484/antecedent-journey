@@ -166,6 +166,7 @@ const resolvers = {
             const month = monthNum.length === 1 ? '0' + monthNum : monthNum;
             const year = new Date(date).getFullYear();
             console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃')
+            console.log('🎃🎃🎃🎃 DATE PASSED INTO "getUrlArray()" :', date);
             console.log('🎃🎃🎃🎃 DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
             // changelog-start
             const urlUpdater = async () => {
