@@ -171,15 +171,20 @@ const resolvers = {
             // changelog-start
             const urlUpdater = async () => {
                 const eventURLs = [
-                    `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                    // changelog-start
+                    `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                    // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                    // changelog-end
                 ];
                 for (let i = 0; i < eventURLs.length; i++) {
                     try {
                         const getNewUrl = async () => {
                             const { data } = await axios.get(eventURLs[i]);
                             const $ = cheerio.load(data);
-
-                            const partialUrl = `https://www.austinchronicle.com`
+                            // changelog-start
+                            const partialUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com`
+                            // const partialUrl = `https://www.austinchronicle.com`
+                            // changelog-end
                             const nextUrl = $("[title='next']").attr('href');
 
                             let newUrl;
