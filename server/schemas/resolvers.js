@@ -194,9 +194,8 @@ const resolvers = {
                                 return newUrl;
                             }
                         }
-                        setTimeout(() => {
-                            console.log('waiting...');
-                        }, 3000);
+                        const delay = ms = new Promise(resolve => setTimeout(resolve, 5000));
+                        await delay();
                         const innerResult = await getNewUrl();
                         if (innerResult) {
                             eventURLs.push(innerResult);
