@@ -194,19 +194,13 @@ const resolvers = {
                                 return newUrl;
                             }
                         }
-                        // changelog-start
                         setTimeout(() => {
-                            const innerResult = await getNewUrl();
-                            if (innerResult) {
-                                eventURLs.push(innerResult);
-                            }
+                            console.log('waiting...');
                         }, 3000);
-
-                        // const innerResult = await getNewUrl();
-                        // if (innerResult) {
-                        //     eventURLs.push(innerResult);
-                        // }
-                        // changelog-end
+                        const innerResult = await getNewUrl();
+                        if (innerResult) {
+                            eventURLs.push(innerResult);
+                        }
                     } catch (error) {
                         console.log('Whoopsies');
                         console.error(error.response.data);
