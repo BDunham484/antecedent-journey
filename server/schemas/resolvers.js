@@ -207,7 +207,7 @@ const resolvers = {
                 // changelog-start
                 // `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
                 `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                changelog-end
+                // changelog-end
             ];
             for (let i = 0; i < eventURLs.length; i++) {
                 try {
@@ -235,6 +235,7 @@ const resolvers = {
                     }
                     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
                     await delay(5000);
+                    // TODO: wrap the next 4 lines in a setTimeout
                     const innerResult = await getNewUrl();
                     if (innerResult) {
                         eventURLs.push(innerResult);
