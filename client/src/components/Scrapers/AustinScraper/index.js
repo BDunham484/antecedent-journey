@@ -114,7 +114,10 @@ const AustinScraper = ({ setControlSwitch }) => {
 
             console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
             console.log('🎃🎃🎃🎃 urlResults: ', urlResults);
-            const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[8];
+            // changelog-start
+            const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[5];
+            // const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[8];
+            // changelog-end
             const urlDate = new Date(`${returnedUrlDate}T00:00`).toDateString();
             console.log('🎃🎃🎃🎃 returnedUrlDate: ', returnedUrlDate);
             console.log('🎃🎃🎃🎃 urlDate: ', urlDate);
