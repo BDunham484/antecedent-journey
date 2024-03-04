@@ -14,8 +14,9 @@ export const getTodaysDate = () => {
 
 export const setProxyObject = (data) => {
     let randomNumber = Math.floor(Math.random() * 100);
-    const ipAddresses = data[0];
-    const portNumbers = data[1]
+
+    const ipAddresses = data.ipProxyRotator[0];
+    const portNumbers = data.ipProxyRotator[1]
 
     const host = `${ipAddresses[randomNumber]}`;
     const port = `${portNumbers[randomNumber]}`;
@@ -24,8 +25,6 @@ export const setProxyObject = (data) => {
         host: host,
         port: port
     }
-
-    console.log('🍔🍔🍔🍔 proxy: ', proxy);
 
     return proxy;
 }

@@ -22,16 +22,18 @@ const AustinScraper = ({ setControlSwitch }) => {
     // const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
-    const { loading, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
+    const { loading: loadingProxy, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
 
-    const proxyObject = setProxyObject(proxyData);
-
-
-    console.log('🍔🍔🍔🍔 proxyData: ', proxyData);
+    let proxyObject;
+    if (!loadingProxy && proxyData) {
+        // console.log('🍔🍔🍔🍔 proxyData: ', proxyData);
+        proxyObject = setProxyObject(proxyData);
+        // console.log('🍔🍔🍔🍔 proxyObject: ', proxyObject);
+    }
 
     const { error: urlErr, data: urlResults } = useQuery(GET_URL_ARRAY, {
         variables: { date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_Concert
+        skip: !isFinished_Concert, loadingProxy, 
     });
 
     let urlData = urlResults?.getUrlArray || [];
@@ -65,7 +67,7 @@ const AustinScraper = ({ setControlSwitch }) => {
     const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
         // variables: { urlData: addressData, date: 'Fri Nov 24 23'},
         variables: { urlData: testState, date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_URL
+        skip: !isFinished_URL, loadingProxy
     });
 
     if (urlErr || concertErr) {
