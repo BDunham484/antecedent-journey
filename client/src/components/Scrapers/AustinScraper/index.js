@@ -3,7 +3,8 @@ import { useQuery } from "@apollo/client";
 import { GET_IPS_AND_PORTS, GET_URL_ARRAY, AUSTIN_TX_CONCERT_SCRAPER } from "../../../utils/queries";
 import { getTodaysDate } from "../../../utils/helpers";
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
-import IpProxyRotator from '../../IpProxyRotator';
+// import IpProxyRotator from '../../IpProxyRotator';
+import { setProxyObject } from "../../../utils/helpers";
 
 const AustinScraper = ({ setControlSwitch }) => {
     //get today's date with imported helper function
@@ -21,10 +22,15 @@ const AustinScraper = ({ setControlSwitch }) => {
     // const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
-    console.log('🍔🍔🍔🍔 IpProxyRotator: ', IpProxyRotator);
+    const { loading, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
+
+    const proxyObject = setProxyObject(proxyData);
+
+
+    console.log('🍔🍔🍔🍔 proxyData: ', proxyData);
 
     const { error: urlErr, data: urlResults } = useQuery(GET_URL_ARRAY, {
-        variables: { date: scraperDate, proxy: IpProxyRotator },
+        variables: { date: scraperDate, proxy: proxyObject },
         skip: !isFinished_Concert
     });
 
@@ -58,7 +64,7 @@ const AustinScraper = ({ setControlSwitch }) => {
 
     const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
         // variables: { urlData: addressData, date: 'Fri Nov 24 23'},
-        variables: { urlData: testState, date: scraperDate, proxy: IpProxyRotator },
+        variables: { urlData: testState, date: scraperDate, proxy: proxyObject },
         skip: !isFinished_URL
     });
 
