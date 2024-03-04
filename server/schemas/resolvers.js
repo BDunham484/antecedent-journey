@@ -205,9 +205,9 @@ const resolvers = {
         const urlUpdater = async () => {
             const eventURLs = [
                 // changelog-start
-                `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                // changelog-end
+                // `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                changelog-end
             ];
             for (let i = 0; i < eventURLs.length; i++) {
                 try {
@@ -221,8 +221,8 @@ const resolvers = {
                         // const { data } = await axios.get(eventURLs[i]);
                         const $ = cheerio.load(data);
                         // changelog-start
-                        const partialUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com`
-                        // const partialUrl = `https://www.austinchronicle.com`
+                        // const partialUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com`
+                        const partialUrl = `https://www.austinchronicle.com`
                         // changelog-end
                         const nextUrl = $("[title='next']").attr('href');
 
@@ -240,7 +240,7 @@ const resolvers = {
                         eventURLs.push(innerResult);
                     }
                 } catch (error) {
-                    console.log('Whoopsies');
+                    console.log('url_Whoopsies');
                     console.error(error.response.data);
                     // throw err;
                 }
@@ -252,11 +252,12 @@ const resolvers = {
         console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
         return result;
     },
-    austinTxConcertScraper: async (parent, { urlData, date }) => {
+    austinTxConcertScraper: async (parent, { urlData, date, proxy }) => {
         console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️');
         console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper')
         console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper urlData: ', urlData);
         console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper date: ', date);
+        console.log('🧛‍♂️🧛‍♂️🧛‍♂️🧛‍♂️ austinTxConcertScraper proxy: ', proxy);
         const concertData = [];
         await Promise.all(urlData.map(async (url, index) => {
             // await Promise.all(urlArr.map(async (url, index) => {
@@ -264,12 +265,12 @@ const resolvers = {
             try {
                 // changelog-start
                 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-                    await delay(5000);
+                // await delay(5000);
                 const { data } = await axios.get(url, {
                     params: {
                         proxy: proxy,
                     }
-                });
+                }).then(await delay(5000));
                 // const { data } = await axios.get(url);
                 // changelog-end
                 const $ = cheerio.load(data);
@@ -407,7 +408,7 @@ const resolvers = {
                     return moreEventDetails();
                 }, events))
             } catch (error) {
-                console.log('Whoopsies');
+                console.log('concert_Whoopsies');
                 console.error(error.response.error);
             }
             concertData.push(events);
