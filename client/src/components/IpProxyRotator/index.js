@@ -8,7 +8,15 @@ const IpProxyRotator = () => {
     const ipAddresses = ipProxyRotator[0];
     const portNumbers = ipProxyRotator[1]
 
-    let proxy = `http://${ipAddresses[randomNumber]}:${portNumbers[randomNumber]}`;
+    // let proxy = `http://${ipAddresses[randomNumber]}:${portNumbers[randomNumber]}`;
+
+    const host = `${ipAddresses[randomNumber]}`;
+    const port = `${portNumbers[randomNumber]}`;
+    const proxy = {
+        protocol: 'http',
+        host: host,
+        port: port
+    }
 
     console.log('🍔🍔🍔🍔 proxy: ', proxy);
     // console.log('🍔🍔🍔🍔 ipProxyRotator: ', ipProxyRotator);
