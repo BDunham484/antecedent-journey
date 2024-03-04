@@ -3,7 +3,7 @@ import { getTodaysDate } from '../utils/helpers';
 import Switch from 'react-switch'
 import AustinScraper from "../components/Scrapers/AustinScraper";
 import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
-
+import IpProxyRotator from "../components/IpProxyRotator";
 
 
 
@@ -39,6 +39,7 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
+                            {/* <IpProxyRotator /> */}
                             <AustinScraper setControlSwitch={setControlSwitch} />
                             <AustinDbCleaner today={today}/>
                         </div>

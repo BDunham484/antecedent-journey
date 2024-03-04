@@ -49,6 +49,7 @@ const typeDefs = gql`
         concerts(date: String): [Concert]
         allConcerts: [Concert]
         concertsFromDb(date: String!): [Concert]
+        ipProxyRotator: [[String]]
         austinConcertScraper(date: String): [[Concert]]
         getYesterdaysConcerts(date: String!): [Concert]
         getUrlArray(date: String!): [String]

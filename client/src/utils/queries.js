@@ -36,6 +36,12 @@ export const GET_CONCERTS_BY_DATE = gql`
     }
 `;
 
+export const GET_IPS_AND_PORTS = gql`
+    query ipProxyRotator {
+        ipProxyRotator
+    }
+`;
+
 export const GET_URL_ARRAY = gql`
     query getUrlArray($date: String!) {
         getUrlArray(date: $date) 
