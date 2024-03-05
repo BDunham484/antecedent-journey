@@ -21,7 +21,8 @@ const AustinScraper = ({ setControlSwitch, proxies: proxiesArr }) => {
     const [testState, setTestState] = useState([]);
     const [proxies, setProxies] = useState(proxiesArr);
     const [proxyObject, setProxyObject] = useState();
-    const [urlData, setUrlData] = useState();
+    const [isProxyObject, setIsProxyObject] = useState(false);
+    // const [urlData, setUrlData] = useState();
     // const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
@@ -30,21 +31,27 @@ const AustinScraper = ({ setControlSwitch, proxies: proxiesArr }) => {
 
         setProxyObject(proxies[randomNumber]);
         console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀');
-        console.log('proxies: ', proxies);
-        console.log('proxyObject: ', proxyObject);
-    }, [proxies, isFinished_Concert, isFinished_URL, proxyObject]);
 
+        if (proxyObject && Object.keys(proxyObject).length > 0) {
+            setIsProxyObject(true);
+        }
+    }, [isFinished_Concert, isFinished_URL]);
+
+    console.log('🥷🥷🥷🥷 proxyObject: ', proxyObject);
+    console.log('🥷🥷🥷🥷 isProxyObject: ', isProxyObject);
     const { error: urlErr, data: urlResults } = useQuery(GET_URL_ARRAY, {
         variables: { date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_Concert,
+        skip: !isFinished_Concert || !(proxyObject && Object.keys(proxyObject).length > 0)
     });
 
 
-    useEffect(() => {
-        const results = urlResults?.getUrlArray || [];
+    // useEffect(() => {
+    //     const results = urlResults?.getUrlArray || [];
 
-        setUrlData(results);
-    }, [urlResults]);
+    //     setUrlData(results);
+    // }, [urlResults]);
+    let urlData = urlResults?.getUrlArray || [];
+
 
     // changelog-start
     // useEffect(() => {
@@ -75,7 +82,7 @@ const AustinScraper = ({ setControlSwitch, proxies: proxiesArr }) => {
     const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
         // variables: { urlData: addressData, date: 'Fri Nov 24 23', proxy: proxyObject},
         variables: { urlData: testState, date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_URL,
+        skip: !isFinished_URL || !(proxyObject && Object.keys(proxyObject).length > 0)
     });
 
     if (urlErr || concertErr) {
@@ -123,8 +130,8 @@ const AustinScraper = ({ setControlSwitch, proxies: proxiesArr }) => {
             console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
             console.log('🎃🎃🎃🎃 urlResults: ', urlResults);
             // changelog-start
-            const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[5];
-            // const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[8];
+            // const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[5];
+            const returnedUrlDate = urlResults?.getUrlArray[0].split('/')[8];
             // changelog-end
             const urlDate = new Date(`${returnedUrlDate}T00:00`).toDateString();
             console.log('🎃🎃🎃🎃 returnedUrlDate: ', returnedUrlDate);

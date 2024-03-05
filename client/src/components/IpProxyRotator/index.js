@@ -3,9 +3,9 @@ import { GET_IPS_AND_PORTS } from "../../utils/queries";
 import { createProxyObject, createProxiesArray } from "../../utils/helpers";
 import { useState, useEffect } from "react";
 
-const IpProxyRotator = ({ proxies, setProxies, proxyObject, setProxyObject }) => {
+const IpProxyRotator = ({ setProxies, proxyObject, setProxyObject }) => {
     // const [proxyObject, setProxyObject] = useState([]);
-    const [isProxyObject, setIsProxyObject] = useState(false);
+    // const [isProxyObject, setIsProxyObject] = useState(false);
 
     const { loading: loadingProxy, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
 
@@ -20,17 +20,16 @@ const IpProxyRotator = ({ proxies, setProxies, proxyObject, setProxyObject }) =>
             {
             const ipAddresses = [...proxyData.ipProxyRotator[0]];
             const portNumbers = [...proxyData.ipProxyRotator[1]];
-            // console.log('🤞🤞🤞🤞 ipAddresses.length: ', ipAddresses.length);
-            // console.log('🤞🤞🤞🤞 portNumbers.length: ', portNumbers.length);
+
             const difference = Math.abs(ipAddresses.length - portNumbers.length);
-            // console.log('🤞🤞🤞🤞 difference: ', difference);
+
             (ipAddresses.length > portNumbers.length) ?
                 ipAddresses.splice(((ipAddresses.length - difference)-1), difference) :
                 portNumbers.splice(((portNumbers.length - difference)-1), difference);
-            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 ipAddresses.length: ', ipAddresses.length);
-            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 portNumbers.length: ', portNumbers.length);
 
-            setProxies(createProxiesArray(ipAddresses, portNumbers));
+            const newProxies = createProxiesArray(ipAddresses, portNumbers)
+
+            setProxies(newProxies);
 
             // const newProxy = createProxyObject(proxyData)
             // setProxyObject(newProxy);
@@ -39,10 +38,7 @@ const IpProxyRotator = ({ proxies, setProxies, proxyObject, setProxyObject }) =>
 
     return (
         <div>
-            <h2>proxyObject</h2>
-            <p>protocol: {proxyObject.protocol}</p>
-            <p>host: {proxyObject.host}</p>
-            <p>port: {proxyObject.port}</p>
+            <h2>Proxies</h2>
         </div>
     );
 };

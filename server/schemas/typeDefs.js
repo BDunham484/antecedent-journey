@@ -52,8 +52,8 @@ const typeDefs = gql`
         ipProxyRotator: [[String]]
         austinConcertScraper(date: String): [[Concert]]
         getYesterdaysConcerts(date: String!): [Concert]
-        getUrlArray(date: String!): [String]
-        austinTxConcertScraper(urlData: [String], date: String): [[Concert]]
+        getUrlArray(date: String!, proxy: [String]): [String]
+        austinTxConcertScraper(urlData: [String], date: String, proxy: [String]): [[Concert]]
     }
 
     type Mutation {

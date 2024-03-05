@@ -20,8 +20,8 @@ const Control = () => {
     var today = getTodaysDate();
 
     useEffect(() => {
-        console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
-    }, [proxyObject]);
+        console.log('🎃🎃🎃🎃 Control.js proxies: ', proxies);
+    }, [proxies]);
 
     return (
         <div>
@@ -44,12 +44,12 @@ const Control = () => {
                     {controlSwitch &&
                         <div>
                             <IpProxyRotator 
-                                proxies={proxies}
                                 setProxies={setProxies}
                                 proxyObject={proxyObject}
                                 setProxyObject={setProxyObject}
                             />
-                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} />
+                            {(proxies.length > 0) &&
+                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} />}
                             <AustinDbCleaner today={today}/>
                         </div>
                     }
