@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_IPS_AND_PORTS, GET_URL_ARRAY, AUSTIN_TX_CONCERT_SCRAPER } from "../../../utils/queries";
+import { GET_URL_ARRAY, AUSTIN_TX_CONCERT_SCRAPER } from "../../../utils/queries";
 import { getTodaysDate } from "../../../utils/helpers";
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
 // import IpProxyRotator from '../../IpProxyRotator';
-import { setProxyObject } from "../../../utils/helpers";
+// import { createProxyObject } from "../../../utils/helpers";
 
-const AustinScraper = ({ setControlSwitch }) => {
+const AustinScraper = ({ setControlSwitch, proxies: proxiesArr }) => {
     //get today's date with imported helper function
     var today = getTodaysDate();
     const [scrapeIndex, setScrapeIndex] = useState(1);
@@ -19,24 +19,32 @@ const AustinScraper = ({ setControlSwitch }) => {
     const [isFinished_Concert, setIsFinished_Concert] = useState(true);
     // changelog-start
     const [testState, setTestState] = useState([]);
+    const [proxies, setProxies] = useState(proxiesArr);
+    const [proxyObject, setProxyObject] = useState();
+    const [urlData, setUrlData] = useState();
     // const [singleUrlState, setSingleUrlState] = useState([]);
     // changelog-end
 
-    const { loading: loadingProxy, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
+    useEffect(() => {
+        let randomNumber = Math.floor((Math.random() * proxies.length) - 1);
 
-    let proxyObject;
-    if (!loadingProxy && proxyData) {
-        // console.log('🍔🍔🍔🍔 proxyData: ', proxyData);
-        proxyObject = setProxyObject(proxyData);
-        // console.log('🍔🍔🍔🍔 proxyObject: ', proxyObject);
-    }
+        setProxyObject(proxies[randomNumber]);
+        console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀');
+        console.log('proxies: ', proxies);
+        console.log('proxyObject: ', proxyObject);
+    }, [proxies, isFinished_Concert, isFinished_URL, proxyObject]);
 
     const { error: urlErr, data: urlResults } = useQuery(GET_URL_ARRAY, {
         variables: { date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_Concert, loadingProxy, 
+        skip: !isFinished_Concert,
     });
 
-    let urlData = urlResults?.getUrlArray || [];
+
+    useEffect(() => {
+        const results = urlResults?.getUrlArray || [];
+
+        setUrlData(results);
+    }, [urlResults]);
 
     // changelog-start
     // useEffect(() => {
@@ -65,9 +73,9 @@ const AustinScraper = ({ setControlSwitch }) => {
     // const addressData = ['https://www.austinchronicle.com/events/music/2023-11-24/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-2/', 'https://www.austinchronicle.com/events/music/2023-11-24/page-3/']
 
     const { error: concertErr, data: concertResults } = useQuery(AUSTIN_TX_CONCERT_SCRAPER, {
-        // variables: { urlData: addressData, date: 'Fri Nov 24 23'},
+        // variables: { urlData: addressData, date: 'Fri Nov 24 23', proxy: proxyObject},
         variables: { urlData: testState, date: scraperDate, proxy: proxyObject },
-        skip: !isFinished_URL, loadingProxy
+        skip: !isFinished_URL,
     });
 
     if (urlErr || concertErr) {

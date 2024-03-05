@@ -201,12 +201,13 @@ const resolvers = {
         console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃')
         console.log('🎃🎃🎃🎃 DATE PASSED INTO "getUrlArray()" :', date);
         console.log('🎃🎃🎃🎃 DATE TO BE SCRAPED: ' + year + '-' + month + '-' + day)
+        console.log('🎃🎃🎃🎃 proxy: ', proxy);
         // changelog-start
         const urlUpdater = async () => {
             const eventURLs = [
                 // changelog-start
-                // `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
-                `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
+                // `https://www.austinchronicle.com/events/music/${year}-${month}-${day}/`,
                 // changelog-end
             ];
             for (let i = 0; i < eventURLs.length; i++) {
@@ -221,8 +222,8 @@ const resolvers = {
                         // const { data } = await axios.get(eventURLs[i]);
                         const $ = cheerio.load(data);
                         // changelog-start
-                        // const partialUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com`
-                        const partialUrl = `https://www.austinchronicle.com`
+                        const partialUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com`
+                        // const partialUrl = `https://www.austinchronicle.com`
                         // changelog-end
                         const nextUrl = $("[title='next']").attr('href');
 
@@ -367,7 +368,10 @@ const resolvers = {
                     })
                 }
                 const newEventsArr = await Promise.all(events.map((event) => {
-                    const eventUrl = `https://www.austinchronicle.com${event.artistsLink}`;
+                    // changelog-start
+                    const eventUrl = `https://webcache.googleusercontent.com/search?q=cache:https://www.austinchronicle.com${event.artistsLink}`;
+                    // const eventUrl = `https://www.austinchronicle.com${event.artistsLink}`;
+                    // changelog-end
 
                     let moreEventDetails = async () => {
                         var { data } = await axios.get(eventUrl)

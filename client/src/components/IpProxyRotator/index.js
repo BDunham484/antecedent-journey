@@ -1,31 +1,52 @@
-// import { useQuery } from "@apollo/client";
-// import { GET_IPS_AND_PORTS } from "../../utils/queries";
+import { useQuery } from "@apollo/client";
+import { GET_IPS_AND_PORTS } from "../../utils/queries";
+import { createProxyObject, createProxiesArray } from "../../utils/helpers";
+import { useState, useEffect } from "react";
 
-// const IpProxyRotator = () => {
-//     const { loading, data: { ipProxyRotator } } = useQuery(GET_IPS_AND_PORTS);
+const IpProxyRotator = ({ proxies, setProxies, proxyObject, setProxyObject }) => {
+    // const [proxyObject, setProxyObject] = useState([]);
+    const [isProxyObject, setIsProxyObject] = useState(false);
 
-//     let randomNumber = Math.floor(Math.random() * 100);
-//     const ipAddresses = ipProxyRotator[0];
-//     const portNumbers = ipProxyRotator[1]
+    const { loading: loadingProxy, data: proxyData } = useQuery(GET_IPS_AND_PORTS);
 
-//     // let proxy = `http://${ipAddresses[randomNumber]}:${portNumbers[randomNumber]}`;
+    useEffect(() => {
+        console.log('🤞🤞🤞🤞 proxyData: ', proxyData);
 
-//     const host = `${ipAddresses[randomNumber]}`;
-//     const port = `${portNumbers[randomNumber]}`;
-//     const proxy = {
-//         protocol: 'http',
-//         host: host,
-//         port: port
-//     }
+        if (
+            !loadingProxy &&
+            (proxyData.ipProxyRotator[0].length > 0) &&
+            (proxyData.ipProxyRotator[1].length > 0)
+            ) 
+            {
+            const ipAddresses = [...proxyData.ipProxyRotator[0]];
+            const portNumbers = [...proxyData.ipProxyRotator[1]];
+            // console.log('🤞🤞🤞🤞 ipAddresses.length: ', ipAddresses.length);
+            // console.log('🤞🤞🤞🤞 portNumbers.length: ', portNumbers.length);
+            const difference = Math.abs(ipAddresses.length - portNumbers.length);
+            // console.log('🤞🤞🤞🤞 difference: ', difference);
+            (ipAddresses.length > portNumbers.length) ?
+                ipAddresses.splice(((ipAddresses.length - difference)-1), difference) :
+                portNumbers.splice(((portNumbers.length - difference)-1), difference);
+            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 ipAddresses.length: ', ipAddresses.length);
+            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 portNumbers.length: ', portNumbers.length);
 
-//     console.log('🍔🍔🍔🍔 proxy: ', proxy);
-//     // console.log('🍔🍔🍔🍔 ipProxyRotator: ', ipProxyRotator);
-//     // console.log('🍔🍔🍔🍔 ipAddresses: ', ipAddresses);
-//     // console.log('🍔🍔🍔🍔 portNumbers: ', portNumbers);
+            setProxies(createProxiesArray(ipAddresses, portNumbers));
 
-//     return proxy;
-// };
+            // const newProxy = createProxyObject(proxyData)
+            // setProxyObject(newProxy);
+        };
+    }, [loadingProxy, proxyData, setProxies]);
 
-// export default IpProxyRotator;
+    return (
+        <div>
+            <h2>proxyObject</h2>
+            <p>protocol: {proxyObject.protocol}</p>
+            <p>host: {proxyObject.host}</p>
+            <p>port: {proxyObject.port}</p>
+        </div>
+    );
+};
 
-export {};
+export default IpProxyRotator;
+
+// export {};

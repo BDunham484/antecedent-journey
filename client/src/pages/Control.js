@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { getTodaysDate } from '../utils/helpers';
 import Switch from 'react-switch'
 import AustinScraper from "../components/Scrapers/AustinScraper";
@@ -9,6 +9,8 @@ import IpProxyRotator from "../components/IpProxyRotator";
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
+    const [proxies, setProxies] = useState([]);
+    const [proxyObject, setProxyObject] = useState([]);
 
     const handleControlSwitch = () => {
         controlSwitch ? setControlSwitch(false) : setControlSwitch(true)
@@ -17,7 +19,9 @@ const Control = () => {
     //get today's date with imported helper function
     var today = getTodaysDate();
 
-    console.log('butts')
+    useEffect(() => {
+        console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
+    }, [proxyObject]);
 
     return (
         <div>
@@ -39,8 +43,13 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
-                            {/* <IpProxyRotator /> */}
-                            <AustinScraper setControlSwitch={setControlSwitch} />
+                            <IpProxyRotator 
+                                proxies={proxies}
+                                setProxies={setProxies}
+                                proxyObject={proxyObject}
+                                setProxyObject={setProxyObject}
+                            />
+                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} />
                             <AustinDbCleaner today={today}/>
                         </div>
                     }
