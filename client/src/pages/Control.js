@@ -21,6 +21,7 @@ const Control = () => {
 
     useEffect(() => {
         console.log('🎃🎃🎃🎃 Control.js proxies: ', proxies);
+        console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
     }, [proxies]);
 
     return (
@@ -48,8 +49,8 @@ const Control = () => {
                                 proxyObject={proxyObject}
                                 setProxyObject={setProxyObject}
                             />
-                            {(proxies.length > 0) &&
-                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} />}
+                            {(Object.values(proxyObject).length > 0) &&
+                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />}
                             <AustinDbCleaner today={today}/>
                         </div>
                     }

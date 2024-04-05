@@ -31,8 +31,13 @@ const IpProxyRotator = ({ setProxies, proxyObject, setProxyObject }) => {
 
             setProxies(newProxies);
 
-            // const newProxy = createProxyObject(proxyData)
-            // setProxyObject(newProxy);
+            const randoProxyObject = () => {
+                let randomIndex = Math.floor((Math.random() * newProxies.length) - 1);
+        
+                setProxyObject(newProxies[randomIndex]);
+            };
+
+            randoProxyObject()
         };
     }, [loadingProxy, proxyData, setProxies]);
 

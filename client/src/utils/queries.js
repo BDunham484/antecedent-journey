@@ -43,7 +43,7 @@ export const GET_IPS_AND_PORTS = gql`
 `;
 
 export const GET_URL_ARRAY = gql`
-    query getUrlArray($date: String!, $proxy: [String]) {
+    query getUrlArray($date: String!, $proxy: Proxy) {
         getUrlArray(date: $date, proxy: $proxy) 
     }
 `;
@@ -67,7 +67,7 @@ export const AUSTIN_CONCERT_SCRAPER = gql`
 `;
 
 export const AUSTIN_TX_CONCERT_SCRAPER = gql`
-    query austinTxConcertScraper($urlData: [String], $date: String, $proxy: [String]) {
+    query austinTxConcertScraper($urlData: [String], $date: String, $proxy: Proxy) {
         austinTxConcertScraper(urlData: $urlData, date: $date, proxy: $proxy) {
             customId
             artists
@@ -82,6 +82,19 @@ export const AUSTIN_TX_CONCERT_SCRAPER = gql`
             ticketLink
         }
     }
+`;
+
+export const AUSTIN_TX_LIST_SCRAPER = gql`
+    query getAustinList {
+    getAustinList {
+        customId
+        date
+        artists
+        venue
+        address
+        website
+    }
+}
 `;
 
 export const QUERY_USER_CONCERTS = gql`

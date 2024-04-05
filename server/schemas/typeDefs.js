@@ -40,6 +40,12 @@ const typeDefs = gql`
         maybe: [User]
     }
 
+    input Proxy {
+        host: String!
+        port: String!
+        protocol: String!
+    }
+
     type Query {
         me: User
         users: [User]
@@ -52,8 +58,9 @@ const typeDefs = gql`
         ipProxyRotator: [[String]]
         austinConcertScraper(date: String): [[Concert]]
         getYesterdaysConcerts(date: String!): [Concert]
-        getUrlArray(date: String!, proxy: [String]): [String]
-        austinTxConcertScraper(urlData: [String], date: String, proxy: [String]): [[Concert]]
+        getUrlArray(date: String!, proxy: Proxy): [String]
+        austinTxConcertScraper(urlData: [String], date: String, proxy: Proxy): [[Concert]]
+        getAustinList: [Concert]
     }
 
     type Mutation {
