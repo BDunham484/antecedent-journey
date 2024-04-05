@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client';
 
 const AustinListScraper = ({ setControlSwitch }) => {
     const [austinScraper, setAustinScraper] = useState([[]]);
+    const [totals, setTotals] = useState([]);
     //get today's date with imported helper function
     var today = getTodaysDate();
 
@@ -26,13 +27,19 @@ const AustinListScraper = ({ setControlSwitch }) => {
         }
     }, [data]);
 
+    let totalConcerts;
+
+    if (totals.length > 0) {
+        totalConcerts = totals.reduce((total, amount) => total + amount)
+    }
+
     return (
         <>
             <div>
                 <h3>
                     SCRAPER: ✅
                 </h3>
-                <AustinDbUpdater austinScraper={austinScraper}/>
+                <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
             </div>
             {(error) &&
                 <div>

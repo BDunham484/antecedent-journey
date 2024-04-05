@@ -43,21 +43,21 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
 
         console.log('🤞🤞🤞🤞 updaterResults: ', updaterResults);
 
-        // const printUpdaterResults = async () => {
-        //     const a = await updaterResults;
+        const printUpdaterResults = async () => {
+            const a = await updaterResults;
 
-        //     if (a.length) {
-        //         let mapResult = a.map((b) => {
-        //             return b.length
-        //         })
-        //         const sum = mapResult.reduce((total, amount) => total + amount)
-        //         setTotals(current => [...current, sum])
-        //         setConcertsAdded(sum)
-        //         return sum;
-        //     }
-        // }
+            if (a.length) {
+                let mapResult = a.map((b) => {
+                    return b.length
+                })
+                const sum = mapResult.reduce((total, amount) => total + amount)
+                setTotals(current => [...current, sum])
+                setConcertsAdded(sum)
+                return sum;
+            }
+        }
 
-        // printUpdaterResults();
+        printUpdaterResults();
 
     }, [addConcert, austinScraper, setTotals, setConcertsAdded])
 
@@ -66,8 +66,8 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
     return (
         <div className='dbUpdater-wrapper'>
             <h3>UPDATER: ✅</h3>
-            {/* <div className='indent'>Updated: {concertsAdded}</div>
-            <div className='indent'>Total: {totalConcerts}</div> */}
+            <div className='indent'>Updated: {concertsAdded}</div>
+            <div className='indent'>Total: {totalConcerts}</div>
         </div>
     )
 }
