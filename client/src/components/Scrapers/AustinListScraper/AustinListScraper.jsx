@@ -1,5 +1,6 @@
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
 import { AUSTIN_TX_LIST_SCRAPER } from '../../../utils/queries';
+import { getTodaysDate } from "../../../utils/helpers";
 import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
@@ -43,9 +44,9 @@ const AustinListScraper = ({ setControlSwitch }) => {
             </div>
             {(error) &&
                 <div>
-                    <h2>{urlErr}</h2>
-                    {urlErr &&
-                        urlErr.graphQLErrors.map(({ message }, i) => (
+                    <h2>{error}</h2>
+                    {error &&
+                        error.graphQLErrors.map(({ message }, i) => (
                             <span key={i}>{message}</span>
                         ))}
                 </div>
