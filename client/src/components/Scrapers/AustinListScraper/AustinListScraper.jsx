@@ -40,7 +40,9 @@ const AustinListScraper = ({ setControlSwitch }) => {
                 <h3>
                     SCRAPER: ✅
                 </h3>
-                <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
+                {austinScraper.length > 0 &&
+                    <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
+                }
             </div>
             {(error) &&
                 <div>

@@ -38,8 +38,11 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
         // let filtered = testArr.filter((x) => x)
         // console.log('FILTERED')
         // console.log(filtered)
+        let updaterResults;
+        if (austinScraper) {
+            updaterResults = dbConcertUpdater(austinScraper);
+        };
 
-        const updaterResults = dbConcertUpdater(austinScraper);
 
         console.log('🤞🤞🤞🤞 updaterResults: ', updaterResults);
 
