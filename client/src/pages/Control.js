@@ -4,6 +4,7 @@ import Switch from 'react-switch'
 import AustinScraper from "../components/Scrapers/AustinScraper";
 import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 import IpProxyRotator from "../components/IpProxyRotator";
+import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
 
 
 
@@ -19,10 +20,10 @@ const Control = () => {
     //get today's date with imported helper function
     var today = getTodaysDate();
 
-    useEffect(() => {
-        console.log('🎃🎃🎃🎃 Control.js proxies: ', proxies);
-        console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
-    }, [proxies]);
+    // useEffect(() => {
+    //     console.log('🎃🎃🎃🎃 Control.js proxies: ', proxies);
+    //     console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
+    // }, [proxies]);
 
     return (
         <div>
@@ -44,13 +45,14 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
-                            <IpProxyRotator 
+                            {/* <IpProxyRotator 
                                 setProxies={setProxies}
                                 proxyObject={proxyObject}
                                 setProxyObject={setProxyObject}
-                            />
-                            {(Object.values(proxyObject).length > 0) &&
-                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />}
+                            /> */}
+                            {/* {(Object.values(proxyObject).length > 0) &&
+                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />} */}
+                            <AustinListScraper setControlSwitch={setControlSwitch} />
                             <AustinDbCleaner today={today}/>
                         </div>
                     }

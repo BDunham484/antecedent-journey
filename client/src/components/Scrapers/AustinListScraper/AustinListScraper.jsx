@@ -19,14 +19,12 @@ const AustinListScraper = ({ setControlSwitch }) => {
     };
 
     useEffect(() => {
-        if (data) {
+        if (!loading && data) {
             console.log('🥷🥷🥷🥷 data: ', data);
             const concertData = data.AustinListScraper;
             setAustinScraper(concertData);
         }
     }, [data]);
-
-
 
     return (
         <>
