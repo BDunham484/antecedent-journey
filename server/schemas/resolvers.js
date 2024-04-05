@@ -825,6 +825,7 @@ const resolvers = {
             const { data } = await axios.get(`https://austin.showlists.net/`);
             const $ = cheerio.load(data);
             const showData = [];
+            const event = [];
 
             $('div .show-date', data).each((index, value) => {
                 $(value).toArray().map($).map(x => {
@@ -864,11 +865,13 @@ const resolvers = {
                             // ticketLink: venueLink,
                             // mapLink: mapLink,
                         };
-
-                        showData.push(testObj);
+                        event.push(testObj);
+                        // showData.push(testObj);
                     })
                 })
             })
+
+            showData.push(event);
 
             // console.log('🎃🎃🎃🎃 showData: ', showData);
 
