@@ -53,7 +53,7 @@ const Control = () => {
                             {/* {(Object.values(proxyObject).length > 0) &&
                             <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />} */}
                             <AustinListScraper setControlSwitch={setControlSwitch} />
-                            <AustinDbCleaner today={today}/>
+                            {/* <AustinDbCleaner today={today}/> */}
                         </div>
                     }
                 </div>

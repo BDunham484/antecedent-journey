@@ -825,8 +825,6 @@ const resolvers = {
             const { data } = await axios.get(`https://austin.showlists.net/`);
             const $ = cheerio.load(data);
             const showData = [];
-            const event = [];
-
             $('div .show-date', data).each((index, value) => {
                 $(value).toArray().map($).map(x => {
                     const date = x.find('h5').text()
@@ -865,14 +863,10 @@ const resolvers = {
                             // ticketLink: venueLink,
                             // mapLink: mapLink,
                         };
-                        event.push(testObj);
-                        // showData.push(testObj);
+                        showData.push(testObj);
                     })
                 })
-            })
-
-            showData.push(event);
-
+            });
             // console.log('🎃🎃🎃🎃 showData: ', showData);
 
             return showData.length > 0 ? showData : [];
@@ -902,6 +896,7 @@ const resolvers = {
             return { token, user };
         },
         addConcert: async (parent, { ...data }) => {
+            console.log('🍣🍣🍣🍣 data: ', data);
             const result = await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
                 if (err) return handleError(err);
 

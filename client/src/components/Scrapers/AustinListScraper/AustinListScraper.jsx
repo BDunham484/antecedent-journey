@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 
 const AustinListScraper = ({ setControlSwitch }) => {
-    const [austinScraper, setAustinScraper] = useState([[]]);
+    const [austinScraper, setAustinScraper] = useState([]);
     const [totals, setTotals] = useState([]);
     //get today's date with imported helper function
     var today = getTodaysDate();
@@ -15,15 +15,15 @@ const AustinListScraper = ({ setControlSwitch }) => {
     if (error) {
         console.log('❌❌❌❌ error: ', error);
         setControlSwitch(false);
-        setTimeout(() => {
-            setControlSwitch(true);
-        }, 3000);
+        // setTimeout(() => {
+        //     setControlSwitch(true);
+        // }, 3000);
     };
 
     useEffect(() => {
         if (!loading && data) {
             console.log('🥷🥷🥷🥷 data: ', data);
-            const concertData = data.AustinListScraper;
+            const concertData = data.getAustinList;
             setAustinScraper(concertData);
         }
     }, [data]);

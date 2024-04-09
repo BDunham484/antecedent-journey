@@ -76,9 +76,9 @@ const AustinScraper = ({ setControlSwitch, proxies: proxiesArr, proxyObject }) =
         console.log('❌❌❌❌❌❌❌❌❌❌❌❌❌❌❌');
         urlErr ? console.log('❌❌❌❌ urlErr: ', urlErr) : console.log('❌❌❌❌ concertErr: ', concertErr);
         setControlSwitch(false);
-        setTimeout(() => {
-            setControlSwitch(true);
-        }, 3000);
+        // setTimeout(() => {
+        //     setControlSwitch(true);
+        // }, 3000);
     }
     // empty array for dates to populate.  Iterated over and passed to scraper one index at a time. Next index doesn't fire until results from the previous are returned
     let dateArr = useMemo(() => [], []);

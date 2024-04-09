@@ -7,42 +7,68 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
     const [concertsAdded, setConcertsAdded] = useState(0);
 
     useEffect(() => {
+        // const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        const dbConcertUpdater = async (arr) => {
-            // console.log('dbConcertUpdater is running');
-            // add conditional to check arr.length index 30 something causes error
+        // const dbConcertUpdater = async (arr) => {
+        //     const response = await Promise.all(arr.filter((x) => x).map(async (concert) => {
+        //         // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 concert:', concert);
+        //         // try {
+        //             // const outerResult = await Promise.all(dailyArr.map(async (concert) => {
+        //                 try {
+        //                     const innerResult = await addConcert({
+        //                         variables: { ...concert }
+        //                     })
+        //                     console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 innerResult: ', innerResult);
+        //                     await delay(5000);
+        //                     return innerResult
+        //                 } catch (e) {
+        //                     console.error(e)
+        //                     return e
+        //                 }
+        //             // }))
+        //             // return outerResult
+        //         // } catch (e) {
+        //         //     console.error(e)
+        //         //     return e
+        //         // }
+        //     }));
+        //     return response
+        // };
 
-            const response = await Promise.all(arr.filter((x) => x).map(async (dailyArr) => {
+        const addUpdate = async (arr) => {
+            const addedEvents = [];
+
+            for (let i = 0; i < arr.length - 1; i++) {
+            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 arr[i]: ', arr[i]);
                 try {
-                    const outerResult = await Promise.all(dailyArr.map(async (concert) => {
-                        try {
-                            const innerResult = await addConcert({
-                                variables: { ...concert }
-                            })
-                            return innerResult
-                        } catch (e) {
-                            console.error(e)
-                            return e
+                    const addEvent = async () => {
+                        const response = await addConcert({
+                            variables: { ...arr[i] }
+                        });
+                        console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 response: ', response);
+                        if (response) {
+                            console.log('🍜🍜🍜🍜 response: ', response);
+
+                            return response;
                         }
-                    }))
-                    return outerResult
-                } catch (e) {
-                    console.error(e)
-                    return e
-                }
-            }));
-            return response
+                    }
+                    const result = await addEvent();
+                    if (result) {
+                        addedEvents.push(result);
+                    }
+
+                } catch (err) {
+                    console.log('❌❌❌❌');
+                    console.error(err.response.data);
+                };
+            };
         };
 
-        // let testArr = [4,5,null, 6,5, undefined];
-        // let filtered = testArr.filter((x) => x)
-        // console.log('FILTERED')
-        // console.log(filtered)
         let updaterResults;
         if (austinScraper) {
-            updaterResults = dbConcertUpdater(austinScraper);
+            // updaterResults = dbConcertUpdater(austinScraper);
+            updaterResults = addUpdate(austinScraper);
         };
-
 
         console.log('🤞🤞🤞🤞 updaterResults: ', updaterResults);
 
@@ -60,7 +86,7 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
             }
         }
 
-        printUpdaterResults();
+        // printUpdaterResults();
 
     }, [addConcert, austinScraper, setTotals, setConcertsAdded])
 
@@ -69,8 +95,8 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
     return (
         <div className='dbUpdater-wrapper'>
             <h3>UPDATER: ✅</h3>
-            <div className='indent'>Updated: {concertsAdded}</div>
-            <div className='indent'>Total: {totalConcerts}</div>
+            {/* <div className='indent'>Updated: {concertsAdded}</div> */}
+            {/* <div className='indent'>Total: {totalConcerts}</div> */}
         </div>
     )
 }
