@@ -908,7 +908,7 @@ const resolvers = {
             return { token, user };
         },
         addConcert: async (parent, { ...data }) => {
-            // console.log('🍣🍣🍣🍣 data: ', data);
+            console.log('🍣🍣🍣🍣 data: ', data);
             const result = await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
                 if (err) return handleError(err);
 
@@ -933,14 +933,14 @@ const resolvers = {
                         update,
                         { new: true }
                     )
-                    // console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
-                    // console.log(updatedConcert.artists + ' has been updated');
+                    console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
+                    console.log(updatedConcert.artists + ' has been updated');
                     return updatedConcert;
                 } else {
                     const concert = await Concert.create({ ...data })
                     // .select(-__v);
-                    // console.log('💘💘💘💘 SAVEDCONCERT');
-                    // console.log(concert.artists + ' has been added');
+                    console.log('💘💘💘💘 SAVEDCONCERT');
+                    console.log(concert.artists + ' has been added');
                     return concert;
                 }
             })
