@@ -827,7 +827,16 @@ const resolvers = {
             const showData = [];
             $('div .show-date', data).each((index, value) => {
                 $(value).toArray().map($).map(x => {
-                    const date = x.find('h5').text()
+                    // changelog-start
+                    const date = x.attr('id');
+                    const year = (date).slice(0, 4);
+                    const month = (date).slice(4, 6);
+                    const day = (date).slice(6);
+                    const newDate = new Date(year, month, day).toDateString();
+                    console.log('🧁🧁🧁🧁 date: ', date);
+                    console.log('🧁🧁🧁🧁 newDate: ', newDate);
+                    // const date = x.find('h5').text()
+                    // changelog-end
                     x.find('ul .showlist-item').toArray().map($).map(y => {
                         const venueLink = y.find('a:eq(0)').attr('href');
                         const artists = y.find('a:eq(0)').text();
@@ -855,7 +864,7 @@ const resolvers = {
 
                         const testObj = {
                             customId: customId,
-                            date: date,
+                            date: newDate,
                             website: venueLink,
                             artists: artists,
                             venue: venue,
@@ -921,14 +930,14 @@ const resolvers = {
                         update,
                         { new: true }
                     )
-                    // console.log('UPDATEDCONCERT');
-                    // console.log(updatedConcert.artists + ' has been updated');
+                    console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
+                    console.log(updatedConcert.artists + ' has been updated');
                     return updatedConcert;
                 } else {
                     const concert = await Concert.create({ ...data })
                     // .select(-__v);
-                    // console.log('SAVEDCONCERT');
-                    // console.log(concert.artists + ' has been added');
+                    console.log('💘💘💘💘 SAVEDCONCERT');
+                    console.log(concert.artists + ' has been added');
                     return concert;
                 }
             })

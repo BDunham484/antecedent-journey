@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client';
 import { ADD_CONCERT } from '../../../utils/mutations';
 
-const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
+const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts, setControlSwitch }) => {
     const [addConcert] = useMutation(ADD_CONCERT)
     const [concertsAdded, setConcertsAdded] = useState(0);
 
@@ -38,16 +38,14 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
         const addUpdate = async (arr) => {
             const addedEvents = [];
 
-            for (let i = 0; i < arr.length - 1; i++) {
-            // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 arr[i]: ', arr[i]);
+            for (let i = 0; i <= (arr.length - 1); i++) {
                 try {
                     const addEvent = async () => {
                         const response = await addConcert({
                             variables: { ...arr[i] }
                         });
-                        console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 response: ', response);
                         if (response) {
-                            console.log('🍜🍜🍜🍜 response: ', response);
+                            console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 response: ', response.data.addConcert);
 
                             return response;
                         }
@@ -56,12 +54,18 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
                     if (result) {
                         addedEvents.push(result);
                     }
-
                 } catch (err) {
                     console.log('❌❌❌❌');
-                    console.error(err.response.data);
+                    console.log('arr[i]: ', arr[i]);
+                    console.error(err);
                 };
+
+                if (i === (arr.length - 1)) {
+                    setControlSwitch(false);
+                }
             };
+
+            console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 addedEvents: ', addedEvents);
         };
 
         let updaterResults;
@@ -75,7 +79,7 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
         const printUpdaterResults = async () => {
             const a = await updaterResults;
 
-            if (a.length) {
+            if (a && a.length) {
                 let mapResult = a.map((b) => {
                     return b.length
                 })
@@ -86,16 +90,16 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts }) => {
             }
         }
 
-        // printUpdaterResults();
+        printUpdaterResults();
 
-    }, [addConcert, austinScraper, setTotals, setConcertsAdded])
+    }, [addConcert, austinScraper, setTotals, setConcertsAdded, setControlSwitch])
 
 
 
     return (
         <div className='dbUpdater-wrapper'>
             <h3>UPDATER: ✅</h3>
-            {/* <div className='indent'>Updated: {concertsAdded}</div> */}
+            <div className='indent'>Updated: {concertsAdded}</div>
             {/* <div className='indent'>Total: {totalConcerts}</div> */}
         </div>
     )

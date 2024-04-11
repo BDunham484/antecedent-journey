@@ -1,7 +1,7 @@
 import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
 import { AUSTIN_TX_LIST_SCRAPER } from '../../../utils/queries';
 import { getTodaysDate } from "../../../utils/helpers";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useQuery } from '@apollo/client';
 
 const AustinListScraper = ({ setControlSwitch }) => {
@@ -24,6 +24,26 @@ const AustinListScraper = ({ setControlSwitch }) => {
         if (!loading && data) {
             console.log('🥷🥷🥷🥷 data: ', data);
             const concertData = data.getAustinList;
+
+            // const mutableData = [ ...concertData ];
+
+            // if (mutableData) {
+            //     for (let i = 0; i <= 5; i++) {
+            //         console.log('🍩🍩🍩🍩 mutableData[i].date: ', mutableData[i].date);
+            //         // const year = (mutableData[i].date).slice(0, 4);
+            //         // const month = (mutableData[i].date).slice(4, 6);
+            //         // const day = (mutableData[i].date).slice(6);
+            //         // const newDate = new Date(year, month, day).toDateString();
+            //         // // const newDate = Date.parse(year, month, day);
+            //         // console.log('🍩🍩🍩🍩 year: ', year);
+            //         // console.log('🍩🍩🍩🍩 month: ', month);
+            //         // console.log('🍩🍩🍩🍩 day: ', day);
+            //         // console.log('🍩🍩🍩🍩 newDate: ', newDate);
+            //         // const testDate = mutableData[i].date;
+            //         // console.log('🍩🍩🍩🍩 testDate.toISOString(): ', testDate.toString());
+            //     }
+            // };
+
             setAustinScraper(concertData);
         }
     }, [data]);
@@ -41,10 +61,15 @@ const AustinListScraper = ({ setControlSwitch }) => {
                     SCRAPER: ✅
                 </h3>
                 {austinScraper && austinScraper.length > 0 &&
-                    <AustinDbUpdater austinScraper={austinScraper} setTotals={setTotals} totalConcerts={totalConcerts} />
+                    <AustinDbUpdater
+                    austinScraper={austinScraper}
+                    setTotals={setTotals}
+                    totalConcerts={totalConcerts}
+                    setControlSwitch={setControlSwitch}
+                    />
                 }
             </div>
-            {(error) &&
+            {/* {(error) &&
                 <div>
                     <h2>{error}</h2>
                     {error &&
@@ -52,7 +77,7 @@ const AustinListScraper = ({ setControlSwitch }) => {
                             <span key={i}>{message}</span>
                         ))}
                 </div>
-            }
+            } */}
         </>
     );
 };
