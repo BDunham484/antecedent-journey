@@ -7,74 +7,37 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts, setControlSw
     const [concertsAdded, setConcertsAdded] = useState(0);
 
     useEffect(() => {
-        // const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        // const dbConcertUpdater = async (arr) => {
-        //     const response = await Promise.all(arr.filter((x) => x).map(async (concert) => {
-        //         // console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 concert:', concert);
-        //         // try {
-        //             // const outerResult = await Promise.all(dailyArr.map(async (concert) => {
-        //                 try {
-        //                     const innerResult = await addConcert({
-        //                         variables: { ...concert }
-        //                     })
-        //                     console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 innerResult: ', innerResult);
-        //                     await delay(5000);
-        //                     return innerResult
-        //                 } catch (e) {
-        //                     console.error(e)
-        //                     return e
-        //                 }
-        //             // }))
-        //             // return outerResult
-        //         // } catch (e) {
-        //         //     console.error(e)
-        //         //     return e
-        //         // }
-        //     }));
-        //     return response
-        // };
-
-        const addUpdate = async (arr) => {
-            const addedEvents = [];
-
-            for (let i = 0; i <= (arr.length - 1); i++) {
+        const dbConcertUpdater = async (arr) => {
+            const response = await Promise.all(arr.filter((x) => x).map(async (dailyArr) => {
                 try {
-                    const addEvent = async () => {
-                        const response = await addConcert({
-                            variables: { ...arr[i] }
-                        });
-                        if (response) {
-                            console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 response: ', response.data.addConcert);
-
-                            return response;
+                    const outerResult = await Promise.all(dailyArr.map(async (concert) => {
+                        try {
+                            const innerResult = await addConcert({
+                                variables: { ...concert }
+                            })
+                            console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 innerResult: ', innerResult);
+                            await delay(5000);
+                            return innerResult
+                        } catch (e) {
+                            console.error(e)
+                            return e
                         }
-                    }
-                    const result = await addEvent();
-                    if (result) {
-                        addedEvents.push(result);
-                    }
-                } catch (err) {
-                    console.log('❌❌❌❌');
-                    console.log('arr[i]: ', arr[i]);
-                    console.error(err);
-                };
-
-                if (i === (arr.length - 1)) {
-                    setControlSwitch(false);
+                    }))
+                    return outerResult
+                } catch (e) {
+                    console.error(e)
+                    return e
                 }
-            };
-
-            console.log('🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 addedEvents: ', addedEvents);
+            }));
+            return response
         };
 
         let updaterResults;
         if (austinScraper) {
-            // updaterResults = dbConcertUpdater(austinScraper);
-            updaterResults = addUpdate(austinScraper);
+            updaterResults = dbConcertUpdater(austinScraper);
         };
-
-        console.log('🤞🤞🤞🤞 updaterResults: ', updaterResults);
 
         const printUpdaterResults = async () => {
             const a = await updaterResults;
@@ -94,13 +57,11 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts, setControlSw
 
     }, [addConcert, austinScraper, setTotals, setConcertsAdded, setControlSwitch])
 
-
-
     return (
         <div className='dbUpdater-wrapper'>
             <h3>UPDATER: ✅</h3>
             <div className='indent'>Updated: {concertsAdded}</div>
-            {/* <div className='indent'>Total: {totalConcerts}</div> */}
+            <div className='indent'>Total: {totalConcerts}</div>
         </div>
     )
 }

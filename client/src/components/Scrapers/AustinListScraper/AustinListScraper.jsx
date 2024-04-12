@@ -1,57 +1,55 @@
-import AustinDbUpdater from '../../DB_Updaters/AustinDbUpdater';
-// import AustinListDbUpdater from '../../DB_Updaters/AustinListDbUpdater/AustinListDbUpdater';
-import { AUSTIN_TX_LIST_SCRAPER } from '../../../utils/queries';
+// import AustinDbUpdater from "../../DB_Updaters/AustinDbUpdater";
+import AustinListDbUpdater from "../../DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
+import { AUSTIN_TX_LIST_SCRAPER } from "../../../utils/queries";
 import { getTodaysDate } from "../../../utils/helpers";
-import { useEffect, useState, useRef } from 'react';
-import { useQuery } from '@apollo/client';
+import { useEffect, useState, useRef } from "react";
+import { useQuery } from "@apollo/client";
 
 const AustinListScraper = ({ setControlSwitch }) => {
-    const [austinScraper, setAustinScraper] = useState([]);
-    const [totals, setTotals] = useState([]);
-    //get today's date with imported helper function
-    var today = getTodaysDate();
+  const [austinScraper, setAustinScraper] = useState([]);
+  const [totals, setTotals] = useState([]);
+  //get today's date with imported helper function
+  var today = getTodaysDate();
 
-    const { loading, error, data, } = useQuery(AUSTIN_TX_LIST_SCRAPER);
+  const { loading, error, data } = useQuery(AUSTIN_TX_LIST_SCRAPER);
 
-    if (error) {
-        console.log('❌❌❌❌ error: ', error);
-        setControlSwitch(false);
-        // setTimeout(() => {
-        //     setControlSwitch(true);
-        // }, 3000);
-    };
+  if (error) {
+    console.log("❌❌❌❌ error: ", error);
+    setControlSwitch(false);
+    // setTimeout(() => {
+    //     setControlSwitch(true);
+    // }, 3000);
+  }
 
-    useEffect(() => {
-        if (!loading && data) {
-            console.log('🥷🥷🥷🥷 data: ', data);
-            const concertData = data.getAustinList;
+  useEffect(() => {
+    if (!loading && data) {
+      console.log("🥷🥷🥷🥷 data: ", data);
+      const concertData = data.getAustinList;
 
-            setAustinScraper(concertData);
-        }
-    }, [data]);
-
-    let totalConcerts;
-
-    if (totals.length > 0) {
-        totalConcerts = totals.reduce((total, amount) => total + amount)
+      setAustinScraper(concertData);
     }
+  }, [data, loading]);
 
-    return (
-        <>
-            <div>
-                <h3>
-                    SCRAPER: ✅
-                </h3>
-                {austinScraper && austinScraper.length > 0 &&
-                    <AustinDbUpdater
-                    austinScraper={austinScraper}
-                    setTotals={setTotals}
-                    totalConcerts={totalConcerts}
-                    setControlSwitch={setControlSwitch}
-                    />
-                }
-            </div>
-            {/* {(error) &&
+  let totalConcerts;
+
+  if (totals.length > 0) {
+    totalConcerts = totals.reduce((total, amount) => total + amount);
+  }
+
+  return (
+    <>
+      <div>
+        <h3>SCRAPER: ✅</h3>
+        {austinScraper && austinScraper.length > 0 && (
+          <AustinListDbUpdater
+            austinScraper={austinScraper}
+            setTotals={setTotals}
+            totalConcerts={totalConcerts}
+            setControlSwitch={setControlSwitch}
+          />
+        )}
+      </div>
+      {(error) &&
                 <div>
                     <h2>{error}</h2>
                     {error &&
@@ -59,9 +57,9 @@ const AustinListScraper = ({ setControlSwitch }) => {
                             <span key={i}>{message}</span>
                         ))}
                 </div>
-            } */}
-        </>
-    );
+            }
+    </>
+  );
 };
 
 export default AustinListScraper;
