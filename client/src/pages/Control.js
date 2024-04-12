@@ -10,6 +10,7 @@ import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinLi
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
+    const [concertCount, setConcertCount] = useState(0);
     const [proxies, setProxies] = useState([]);
     const [proxyObject, setProxyObject] = useState([]);
 
@@ -20,17 +21,15 @@ const Control = () => {
     //get today's date with imported helper function
     var today = getTodaysDate();
 
-    // useEffect(() => {
-    //     console.log('🎃🎃🎃🎃 Control.js proxies: ', proxies);
-    //     console.log('🎃🎃🎃🎃 Control.js proxyObject: ', proxyObject);
-    // }, [proxies]);
-
     return (
         <div>
             <main id={'control-main'}>
                 <div className={'control-container'}>
                     <h2>AUSTIN</h2>
                     <div className={'control-date'}>{today}</div>
+                    {(!controlSwitch && concertCount > 0) &&
+                        <h3>Last Run: {concertCount}</h3>
+                    }
                     <Switch
                         onChange={handleControlSwitch}
                         checked={controlSwitch}
@@ -52,7 +51,11 @@ const Control = () => {
                             /> */}
                             {/* {(Object.values(proxyObject).length > 0) &&
                             <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />} */}
-                            <AustinListScraper setControlSwitch={setControlSwitch} />
+                            <AustinListScraper
+                            setControlSwitch={setControlSwitch}
+                            concertCount={concertCount}
+                            setConcertCount={setConcertCount}
+                            />
                             {/* <AustinDbCleaner today={today}/> */}
                         </div>
                     }

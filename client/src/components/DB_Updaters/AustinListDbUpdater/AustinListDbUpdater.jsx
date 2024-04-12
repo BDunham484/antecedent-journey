@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_CONCERT } from "../../../utils/mutations";
 
 const AustinListDbUpdater = ({
   austinScraper,
-  setTotals,
-  totalConcerts,
+  concertCount,
+  setConcertCount,
   setControlSwitch,
 }) => {
   const [addConcert] = useMutation(ADD_CONCERT);
-  const [concertsAdded, setConcertsAdded] = useState(0);
+  const [results, setResults] = useState([]);
 
-  useEffect(() => {
-    const addUpdate = async (arr) => {
-      const addedEvents = [];
+  const addUpdate = useCallback(
+    async (arr) => {
+      const results = [];
 
       for (let i = 0; i <= arr.length - 1; i++) {
         try {
@@ -22,14 +22,14 @@ const AustinListDbUpdater = ({
               variables: { ...arr[i] },
             });
             if (response) {
-              console.log("🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 response: ", response.data.addConcert);
-
               return response;
             }
           };
           const result = await addEvent();
           if (result) {
-            addedEvents.push(result);
+            results.push(result);
+            setConcertCount(results.length);
+            console.log("👁️👁️👁️👁️ results: ", results);
           }
         } catch (err) {
           console.log("❌❌❌❌");
@@ -39,47 +39,38 @@ const AustinListDbUpdater = ({
 
         if (i === arr.length - 1) {
           setControlSwitch(false);
+          setResults(results);
+
+          return results;
         }
       }
+    },
+    [addConcert, setControlSwitch, setConcertCount]
+  );
 
-      console.log("🧑‍🚀🧑‍🚀🧑‍🚀🧑‍🚀 addedEvents: ", addedEvents);
-    };
+  useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);
 
-    let updaterResults;
-    if (austinScraper) {
-      updaterResults = addUpdate(austinScraper);
-    }
+  console.log("👁️👁️👁️👁️ concertCount: ", concertCount);
 
-    console.log("🤞🤞🤞🤞 updaterResults: ", updaterResults);
+  // const printUpdaterResults = async () => {
+  //   const a = await updaterResults;
 
-    const printUpdaterResults = async () => {
-      const a = await updaterResults;
+  //   if (a && a.length) {
+  //     let mapResult = a.map((b) => {
+  //       return b.length;
+  //     });
+  //     const sum = mapResult.reduce((total, amount) => total + amount);
+  //     setTotals((current) => [...current, sum]);
+  //     setConcertsAdded(sum);
+  //     return sum;
+  //   }
+  // };
 
-      if (a && a.length) {
-        let mapResult = a.map((b) => {
-          return b.length;
-        });
-        const sum = mapResult.reduce((total, amount) => total + amount);
-        setTotals((current) => [...current, sum]);
-        setConcertsAdded(sum);
-        return sum;
-      }
-    };
-
-    printUpdaterResults();
-  }, [
-    addConcert,
-    austinScraper,
-    setTotals,
-    setConcertsAdded,
-    setControlSwitch,
-  ]);
-
+  // printUpdaterResults();
   return (
     <div className="dbUpdater-wrapper">
       <h3>UPDATER: ✅</h3>
-      <div className="indent">Updated: {concertsAdded}</div>
-      {/* <div className='indent'>Total: {totalConcerts}</div> */}
+      <div className="indent">Total: {concertCount}</div>
     </div>
   );
 };
