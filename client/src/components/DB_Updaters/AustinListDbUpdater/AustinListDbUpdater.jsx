@@ -7,12 +7,14 @@ const AustinListDbUpdater = ({
   concertCount,
   setConcertCount,
   setControlSwitch,
+  setIsUpdaterRunning,
 }) => {
   const [addConcert] = useMutation(ADD_CONCERT);
   const [results, setResults] = useState([]);
 
   const addUpdate = useCallback(
     async (arr) => {
+      setIsUpdaterRunning(true);
       const results = [];
 
       for (let i = 0; i <= arr.length - 1; i++) {
@@ -40,12 +42,10 @@ const AustinListDbUpdater = ({
         if (i === arr.length - 1) {
           setControlSwitch(false);
           setResults(results);
-
-          return results;
         }
       }
     },
-    [addConcert, setControlSwitch, setConcertCount]
+    [addConcert, setControlSwitch, setConcertCount, setIsUpdaterRunning]
   );
 
   useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);
@@ -68,10 +68,11 @@ const AustinListDbUpdater = ({
 
   // printUpdaterResults();
   return (
-    <div className="dbUpdater-wrapper">
-      <h3>UPDATER: ✅</h3>
-      <div className="indent">Total: {concertCount}</div>
-    </div>
+    // <div className="dbUpdater-wrapper">
+    //   <h3>UPDATER: ✅</h3>
+    //   <div className="indent">Total: {concertCount}</div>
+    // </div>
+    <></>
   );
 };
 
