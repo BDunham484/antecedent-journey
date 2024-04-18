@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react"
+import AustinListDbUpdater from "../components/DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
+import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
+import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
+import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 import { getTodaysDate } from '../utils/helpers';
 import Switch from 'react-switch'
-// import AustinScraper from "../components/Scrapers/AustinScraper";
-import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
-// import IpProxyRotator from "../components/IpProxyRotator";
-import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
-
-
+import { useState } from "react"
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
@@ -14,14 +12,12 @@ const Control = () => {
     const [totalScraped, setTotalScraped] = useState(0);
     const [isQueryLoading, setIsQueryLoading] = useState(false);
     const [isUpdaterRunning, setIsUpdaterRunning] = useState(false);
-    // const [proxies, setProxies] = useState([]);
-    // const [proxyObject, setProxyObject] = useState([]);
+    const [austinScraper, setAustinScraper] = useState([]);
 
     const handleControlSwitch = () => {
         controlSwitch ? setControlSwitch(false) : setControlSwitch(true)
     }
 
-    //get today's date with imported helper function
     var today = getTodaysDate();
 
     return (
@@ -44,23 +40,21 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
-                            {/* <IpProxyRotator 
-                                setProxies={setProxies}
-                                proxyObject={proxyObject}
-                                setProxyObject={setProxyObject}
-                            /> */}
-                            {/* {(Object.values(proxyObject).length > 0) &&
-                            <AustinScraper setControlSwitch={setControlSwitch} proxies={proxies} proxyObject={proxyObject} />} */}
                             <AustinListScraper
-                                controlSwitch={controlSwitch}
                                 setControlSwitch={setControlSwitch}
-                                concertCount={concertCount}
-                                setConcertCount={setConcertCount}
                                 setIsQueryLoading={setIsQueryLoading}
                                 setTotalScraped={setTotalScraped}
-                                setIsUpdaterRunning={setIsUpdaterRunning}
+                                setAustinScraper={setAustinScraper}
                             />
-                            {/* <AustinDbCleaner today={today}/> */}
+                            {austinScraper && austinScraper.length > 0 && (
+                                <AustinListDbUpdater
+                                    austinScraper={austinScraper}
+                                    concertCount={concertCount}
+                                    setConcertCount={setConcertCount}
+                                    setControlSwitch={setControlSwitch}
+                                    setIsUpdaterRunning={setIsUpdaterRunning}
+                                />
+                            )}
                         </div>
                     }
                     <div>
@@ -71,6 +65,7 @@ const Control = () => {
                         <h3>UPDATER: {!controlSwitch ? '🪦' : isUpdaterRunning ? '⌛...' : '✅'}</h3>
                         <div className="indent">Total: {concertCount > 0 ? concertCount : '🪦'}</div>
                     </div>
+                    <CleanByDate today={today}/>
                 </div>
             </main>
         </div>

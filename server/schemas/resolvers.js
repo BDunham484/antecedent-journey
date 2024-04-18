@@ -1015,7 +1015,7 @@ const resolvers = {
             //save date to another variable for the for loop
             let arrayDate = date;
             //for loop that gets previous weeks worth of date and pushes the to array
-            for (let i = 0; i < 89; i++) {
+            for (let i = 0; i < 180; i++) {
                 let yesterday = dayBefore(arrayDate);
                 dateArr.push(yesterday);
                 arrayDate = yesterday;
@@ -1035,6 +1035,22 @@ const resolvers = {
             // returns array of deleted dates
             return dateArr;
             // return deletedConcerts;
+        },
+        deleteByIndex: async(parent, { index }) => {
+            const concerts = await Concert.find()
+            const oldies = [];
+
+            for (let i = 0; i < index; i++) {
+                oldies.push(concerts[i]._id);
+            };
+
+            const deletedConcerts = await Concert.deleteMany({
+                _id: { $in: oldies }
+            });
+
+            console.log('deletedConcerts: ', deletedConcerts);
+
+            return oldies;
         },
         rsvpYes: async (parent, { concertId, userId }, context) => {
             console.log('RSVPYES');

@@ -10,14 +10,15 @@ const AustinListDbUpdater = ({
   setIsUpdaterRunning,
 }) => {
   const [addConcert] = useMutation(ADD_CONCERT);
+  const [insertError, setInsertError] = useState(undefined);
   const [results, setResults] = useState([]);
 
   const addUpdate = useCallback(
     async (arr) => {
-      setIsUpdaterRunning(true);
+      setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
 
-      for (let i = 0; i <= arr.length - 1; i++) {
+      for (let i = 0; i <= !insertError ? arr.length -1 : i; i++) {
         try {
           const addEvent = async () => {
             const response = await addConcert({
@@ -31,48 +32,41 @@ const AustinListDbUpdater = ({
           if (result) {
             results.push(result);
             setConcertCount(results.length);
-            console.log("👁️👁️👁️👁️ results: ", results);
+            // console.log("👁️👁️👁️👁️ results: ", results);
           }
         } catch (err) {
+          setInsertError(err);
           console.log("❌❌❌❌");
           console.log("arr[i]: ", arr[i]);
           console.error(err);
+          setControlSwitch(false);
         }
 
-        if (i === arr.length - 1) {
+        if (i === !insertError ? arr.length -1 : i) {
           setControlSwitch(false);
           setResults(results);
         }
       }
     },
-    [addConcert, setControlSwitch, setConcertCount, setIsUpdaterRunning]
+    [setIsUpdaterRunning, insertError, addConcert, setConcertCount, setControlSwitch]
   );
 
   useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);
 
   console.log("👁️👁️👁️👁️ concertCount: ", concertCount);
 
-  // const printUpdaterResults = async () => {
-  //   const a = await updaterResults;
-
-  //   if (a && a.length) {
-  //     let mapResult = a.map((b) => {
-  //       return b.length;
-  //     });
-  //     const sum = mapResult.reduce((total, amount) => total + amount);
-  //     setTotals((current) => [...current, sum]);
-  //     setConcertsAdded(sum);
-  //     return sum;
-  //   }
-  // };
-
-  // printUpdaterResults();
   return (
-    // <div className="dbUpdater-wrapper">
-    //   <h3>UPDATER: ✅</h3>
-    //   <div className="indent">Total: {concertCount}</div>
-    // </div>
-    <></>
+    <>
+      {insertError &&
+        <div>
+          <h2>{insertError}</h2>
+          {insertError &&
+            insertError.graphQLErrors.map(({ message }, i) => (
+              <span key={i}>{message}</span>
+            ))}
+        </div>
+      }
+    </>
   );
 };
 

@@ -89,6 +89,7 @@ const typeDefs = gql`
         removeFriend(friendId: ID!): User
         blockUser(blockedId: ID!): User
         unblockUser(blockedId: ID!): User
+        deleteByIndex(index: Int): [String]
     }
 
     type Auth {
