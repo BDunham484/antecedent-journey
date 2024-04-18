@@ -18,7 +18,7 @@ const AustinListDbUpdater = ({
       setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
 
-      for (let i = 0; i <= !insertError ? arr.length -1 : i; i++) {
+      for (let i = 0; i <= arr.length - 1; i++) {
         try {
           const addEvent = async () => {
             const response = await addConcert({
@@ -42,13 +42,13 @@ const AustinListDbUpdater = ({
           setControlSwitch(false);
         }
 
-        if (i === !insertError ? arr.length -1 : i) {
+        if (i === arr.length - 1) {
           setControlSwitch(false);
           setResults(results);
         }
       }
     },
-    [setIsUpdaterRunning, insertError, addConcert, setConcertCount, setControlSwitch]
+    [setIsUpdaterRunning, addConcert, setConcertCount, setControlSwitch]
   );
 
   useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);

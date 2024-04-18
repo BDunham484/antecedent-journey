@@ -12,9 +12,10 @@ const CleanByDate = () => {
     console.log('👁️👁️👁️👁️ date: ', typeof date);
 
         try {
-            const results = await deleteOldConcerts({
-                variables: { date: date }
-            })
+            const results = await deleteOldConcerts(date)
+            // const results = await deleteOldConcerts({
+            //     variables: { date: date }
+            // })
             console.log('👁️👁️👁️👁️ results: ', results);
 
             return results;
