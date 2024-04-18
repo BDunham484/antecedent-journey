@@ -8,23 +8,29 @@ const CleanByDate = () => {
 
     const today = useMemo(() => getTodaysDate(), []);
 
-    const deleteThemShits = useCallback(async (today) => {
+    const deleteThemShits = useCallback(async (date) => {
+    console.log('👁️👁️👁️👁️ date: ', typeof date);
+
         try {
             const results = await deleteOldConcerts({
-                variables: { date: today }
+                variables: { date: date }
             })
-            
+            console.log('👁️👁️👁️👁️ results: ', results);
+
             return results;
         } catch (err) {
             console.error(err);
         }
     }, [deleteOldConcerts]);
 
-    const deletedConcerts = useMemo(() => deleteThemShits(today), [deleteThemShits, today]);
+    // const deletedConcerts = useMemo(async () => await deleteThemShits(today), [deleteThemShits, today]);
+
     
     useEffect(() => {
+        const deletedConcerts = deleteThemShits(today);
+
         console.log('👁️👁️👁️👁️ deletedConcerts: ', deletedConcerts);
-    }, [deletedConcerts]);
+    }, [deleteThemShits, today]);
     return (
         <div>
 

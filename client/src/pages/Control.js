@@ -65,7 +65,7 @@ const Control = () => {
                         <h3>UPDATER: {!controlSwitch ? '🪦' : isUpdaterRunning ? '⌛...' : '✅'}</h3>
                         <div className="indent">Total: {concertCount > 0 ? concertCount : '🪦'}</div>
                     </div>
-                    <CleanByDate today={today}/>
+                    {/* <CleanByDate today={today}/> */}
                 </div>
             </main>
         </div>
