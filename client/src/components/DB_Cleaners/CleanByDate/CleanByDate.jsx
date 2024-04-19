@@ -26,7 +26,7 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
 
     const deletedConcerts = useMemo(async () => await deleteThemShits(yesterday), [deleteThemShits, yesterday]);
 
-    useMemo(() => setCleanCount(deletedConcerts), [deletedConcerts, setCleanCount]);
+    useMemo(() => setCleanCount(deletedConcerts.length), [deletedConcerts, setCleanCount]);
 
     return (
         <></>
