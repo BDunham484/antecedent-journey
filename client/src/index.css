@@ -338,6 +338,7 @@ footer {
 @media screen and (max-width: 500px) {
   .control-container {
     width: 85%;
+    min-height: 50vh;
   }
 
   .control-status {
