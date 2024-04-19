@@ -18,7 +18,7 @@ const AustinListDbUpdater = ({
       setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
 
-      for (let i = 0; i <= arr.length - 1; i++) {
+      for (let i = 0; i <= 10; i++) {
         if (insertError) {
           break;
         }
@@ -35,7 +35,6 @@ const AustinListDbUpdater = ({
           if (result) {
             results.push(result);
             setConcertCount(results.length);
-            // console.log("👁️👁️👁️👁️ results: ", results);
           }
         } catch (err) {
           setInsertError(err);
@@ -45,7 +44,7 @@ const AustinListDbUpdater = ({
           setControlSwitch(false);
         }
 
-        if (i === arr.length - 1) {
+        if (i === 10) {
           setControlSwitch(false);
           setResults(results);
         }

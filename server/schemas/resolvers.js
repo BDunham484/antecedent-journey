@@ -1003,7 +1003,6 @@ const resolvers = {
             return concerts
         },
         deleteOldConcerts: async (parent, { date }) => {
-            console.log('🧁🧁🧁🧁 DELETEOLDCONCERTS date: ', date);
             //declare empty array for dates
             const dateArr = [];
             //function to get the previous date based on the date passed into it

@@ -1,6 +1,6 @@
 import { getTodaysDate, getYesterdaysDate } from "../../../utils/helpers";
 import { DELETE_OLD_CONCERTS } from "../../../utils/mutations"
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useEffect } from 'react';
 import { useMutation } from "@apollo/client"
 
 const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
@@ -26,7 +26,7 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
 
     const deletedConcerts = useMemo(async () => await deleteThemShits(yesterday), [deleteThemShits, yesterday]);
 
-    useMemo(() => setCleanCount(deletedConcerts.length), [deletedConcerts, setCleanCount]);
+    useEffect(() => setCleanCount(deletedConcerts.length), [deletedConcerts, setCleanCount]);
 
     return (
         <></>

@@ -246,7 +246,7 @@ header nav ul li a {
     border-radius: 8px;
     background-color: var(--darkest);
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
     padding: 3%;
@@ -264,6 +264,37 @@ header nav ul li a {
   border-radius: 8px;
 }
 
+.control-status {
+  /* background-color: #386472; */
+  min-height: 20vh;
+  width: 12vw;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.status-wrapper {
+  /* background-color: #525050; */
+  margin-top: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 12vw;
+}
+
+.emoji {
+  display: flex;
+  align-items: center;
+  padding-bottom: 4%;
+}
+
+/* .control-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */
+
 .control-scrapeButton:hover {
   cursor: pointer;
 }
@@ -272,9 +303,9 @@ h2, h3 {
   letter-spacing: 2px;
 }
 
-h3 {
+/* h3 {
   margin-top: 10%;
-}
+} */
 
 .indent {
   margin-left: 1vw;
