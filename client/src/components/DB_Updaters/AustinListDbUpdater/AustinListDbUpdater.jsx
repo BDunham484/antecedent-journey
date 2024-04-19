@@ -18,7 +18,7 @@ const AustinListDbUpdater = ({
       setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
 
-      for (let i = 0; i <= 10; i++) {
+      for (let i = 0; i <= arr.length - 1; i++) {
         if (insertError) {
           break;
         }
@@ -44,7 +44,7 @@ const AustinListDbUpdater = ({
           setControlSwitch(false);
         }
 
-        if (i === 10) {
+        if (i === arr.length - 1) {
           setControlSwitch(false);
           setResults(results);
         }
