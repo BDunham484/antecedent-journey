@@ -19,6 +19,9 @@ const AustinListDbUpdater = ({
       const results = [];
 
       for (let i = 0; i <= arr.length - 1; i++) {
+        if (insertError) {
+          break;
+        }
         try {
           const addEvent = async () => {
             const response = await addConcert({
@@ -48,7 +51,7 @@ const AustinListDbUpdater = ({
         }
       }
     },
-    [setIsUpdaterRunning, addConcert, setConcertCount, setControlSwitch]
+    [setIsUpdaterRunning, insertError, addConcert, setConcertCount, setControlSwitch]
   );
 
   useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);

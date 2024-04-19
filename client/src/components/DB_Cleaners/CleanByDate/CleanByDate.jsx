@@ -1,22 +1,22 @@
-import { useMutation } from "@apollo/client"
+import { getTodaysDate, getYesterdaysDate } from "../../../utils/helpers";
 import { DELETE_OLD_CONCERTS } from "../../../utils/mutations"
-import { getTodaysDate } from "../../../utils/helpers";
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
+import { useMutation } from "@apollo/client"
 
-const CleanByDate = () => {
-    const [deleteOldConcerts] = useMutation(DELETE_OLD_CONCERTS);
-
+const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
+    const [deleteOldConcerts, { loading }] = useMutation(DELETE_OLD_CONCERTS);
+    useMemo(() => loading ?
+    setTimeout(() => setIsCleanerLoading(true), 500) :
+    setTimeout(() => setIsCleanerLoading(false), 500)
+    , [loading, setIsCleanerLoading]);
     const today = useMemo(() => getTodaysDate(), []);
+    const yesterday = useMemo(() => getYesterdaysDate(today), [today]);
 
     const deleteThemShits = useCallback(async (date) => {
-    console.log('👁️👁️👁️👁️ date: ', typeof date);
-
         try {
-            const results = await deleteOldConcerts(date)
-            // const results = await deleteOldConcerts({
-            //     variables: { date: date }
-            // })
-            console.log('👁️👁️👁️👁️ results: ', results);
+            const results = await deleteOldConcerts({
+                variables: { date: date }
+            });
 
             return results;
         } catch (err) {
@@ -24,18 +24,12 @@ const CleanByDate = () => {
         }
     }, [deleteOldConcerts]);
 
-    // const deletedConcerts = useMemo(async () => await deleteThemShits(today), [deleteThemShits, today]);
+    const deletedConcerts = useMemo(async () => await deleteThemShits(yesterday), [deleteThemShits, yesterday]);
 
-    
-    useEffect(() => {
-        const deletedConcerts = deleteThemShits(today);
+    useMemo(() => setCleanCount(deletedConcerts), [deletedConcerts, setCleanCount]);
 
-        console.log('👁️👁️👁️👁️ deletedConcerts: ', deletedConcerts);
-    }, [deleteThemShits, today]);
     return (
-        <div>
-
-        </div>
+        <></>
     )
 }
 

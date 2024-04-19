@@ -12,6 +12,13 @@ export const getTodaysDate = () => {
     return date;
 }
 
+export const getYesterdaysDate = (date) => {
+    const before = new Date(date);
+    before.setDate(before.getDate() - 2);
+    const yesterday = before.toDateString();
+    return yesterday;
+};
+
 export const createProxyObject = (data) => {
     let randomNumber = Math.floor(Math.random() * 100);
 

@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client";
 
 const AustinListScraper = ({
   setControlSwitch,
-  setIsQueryLoading,
+  setIsScraperLoading,
   setTotalScraped,
   setAustinScraper
 }) => {
@@ -17,17 +17,17 @@ const AustinListScraper = ({
 
   useEffect(() => {
     if (loading) {
-      setIsQueryLoading(true)
+      setIsScraperLoading(true)
     }
 
     if (!loading && data) {
       console.log("🥷🥷🥷🥷 data: ", data);
-      setIsQueryLoading(false);
+      setIsScraperLoading(false);
       const concertData = data.getAustinList;
       setTotalScraped(concertData.length);
       setAustinScraper(concertData);
     }
-  }, [data, loading, setAustinScraper, setIsQueryLoading, setTotalScraped]);
+  }, [data, loading, setAustinScraper, setIsScraperLoading, setTotalScraped]);
 
   return (
     <>

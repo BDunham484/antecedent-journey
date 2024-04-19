@@ -1,17 +1,18 @@
 import AustinListDbUpdater from "../components/DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
 import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
 import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
-import AustinDbCleaner from '../components/DB_Cleaners/AustinDbCleaner'
 import { getTodaysDate } from '../utils/helpers';
 import Switch from 'react-switch'
 import { useState } from "react"
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
-    const [concertCount, setConcertCount] = useState(0);
     const [totalScraped, setTotalScraped] = useState(0);
-    const [isQueryLoading, setIsQueryLoading] = useState(false);
+    const [concertCount, setConcertCount] = useState(0);
+    const [cleanCount, setCleanCount] = useState(0);
+    const [isScraperLoading, setIsScraperLoading] = useState(false);
     const [isUpdaterRunning, setIsUpdaterRunning] = useState(false);
+    const [isCleanerLoading, setIsCleanerLoading] = useState(false); 
     const [austinScraper, setAustinScraper] = useState([]);
 
     const handleControlSwitch = () => {
@@ -40,9 +41,13 @@ const Control = () => {
                     />
                     {controlSwitch &&
                         <div>
+                            <CleanByDate 
+                                setCleanCount={setCleanCount} 
+                                setIsCleanerLoading={setIsCleanerLoading}    
+                            />
                             <AustinListScraper
                                 setControlSwitch={setControlSwitch}
-                                setIsQueryLoading={setIsQueryLoading}
+                                setIsScraperLoading={setIsScraperLoading}
                                 setTotalScraped={setTotalScraped}
                                 setAustinScraper={setAustinScraper}
                             />
@@ -58,18 +63,20 @@ const Control = () => {
                         </div>
                     }
                     <div>
-                        <h3>SCRAPER: {!controlSwitch ? '🪦' : isQueryLoading ? '⌛...' : '✅'}</h3>
+                        <h3>CLEAN: {!controlSwitch ? '🪦' : isCleanerLoading ? '⌛...' : '✅'}</h3>
+                        <div className="indent">Total: {cleanCount > 0 ? cleanCount : '🪦'}</div>
+                    </div>
+                    <div>
+                        <h3>SCRAPE: {!controlSwitch ? '🪦' : isScraperLoading ? '⌛...' : '✅'}</h3>
                         <div className="indent">Total: {totalScraped > 0 ? totalScraped : '🪦'}</div>
                     </div>
                     <div className="dbUpdater-wrapper">
-                        <h3>UPDATER: {!controlSwitch ? '🪦' : isUpdaterRunning ? '⌛...' : '✅'}</h3>
+                        <h3>INSERT: {!controlSwitch ? '🪦' : isUpdaterRunning ? '⌛...' : '✅'}</h3>
                         <div className="indent">Total: {concertCount > 0 ? concertCount : '🪦'}</div>
                     </div>
-                    {/* <CleanByDate today={today}/> */}
                 </div>
             </main>
         </div>
-
     )
 }
 
