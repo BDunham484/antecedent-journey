@@ -19,7 +19,9 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
                 variables: { date: date }
             });
             console.log('🍕🍕🍕🍕 results.data: ', results.data);
-            setDeletions(results);
+            if (results) {
+                setDeletions(results);
+            }
 
             return results;
         } catch (err) {
