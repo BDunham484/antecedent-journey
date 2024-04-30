@@ -18,7 +18,7 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
             const results = await deleteOldConcerts({
                 variables: { date: date }
             });
-            console.log('🍕🍕🍕🍕 results: ', results);
+            console.log('🍕🍕🍕🍕 results.data: ', results.data);
             setDeletions(results);
 
             return results;
@@ -31,8 +31,9 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
 
     console.log('🍕🍕🍕🍕 deletedConcerts: ', deletedConcerts);
     console.log('🍕🍕🍕🍕 deletions: ', deletions);
+    console.log('🍕🍕🍕🍕 deletions.data: ', deletions.data);
 
-    useEffect(() => setCleanCount(deletions.data.deleteOldConcerts.length), [deletions, setCleanCount]);
+    useEffect(() => setCleanCount(deletions.data?.deleteOldConcerts.length), [deletions, setCleanCount]);
 
     return (
         <></>
