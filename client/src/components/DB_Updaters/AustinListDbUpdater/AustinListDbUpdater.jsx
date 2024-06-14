@@ -17,13 +17,21 @@ const AustinListDbUpdater = ({
     async (arr) => {
       setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
+      console.log('✅✅✅✅ arr: ', arr);
 
-      for (let i = 0; i <= arr.length - 1; i++) {
+
+      // changelog-start
+      for (let i = 0; i <= 10; i++) {
+      // for (let i = 0; i <= arr.length - 1; i++) {
+        // changelog-end
         if (insertError) {
           break;
         }
         try {
           const addEvent = async () => {
+            // changelog-start
+            console.log('🍕🍕🍕🍕 arr[i]: ', arr[i]);
+            // changelog-end
             const response = await addConcert({
               variables: { ...arr[i] },
             });

@@ -907,15 +907,17 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
+        // changelog-start
         addConcert: async (parent, { ...data }) => {
-            console.log('🍣🍣🍣🍣 data: ', data);
-            const result = await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
-                if (err) return handleError(err);
+            // console.log('🍣🍣🍣🍣 data: ', data);
+            const existingConcert = await Concert.findOne({ 'customId': data.customId });
 
-                if (custom) {
-                    const savedConcertId = {
-                        _id: custom._id
-                    }
+            const updateOrCreate = async (existingConcert) => {
+                console.log('🧁🧁🧁🧁 existingConcert: ', existingConcert);
+
+                if (existingConcert) {
+                    const savedConcertId = { _id: existingConcert._id };
+    
                     const update = {
                         artists: data.artists,
                         venue: data.venue,
@@ -927,25 +929,87 @@ const resolvers = {
                         website: data.website,
                         email: data.email,
                         ticketLink: data.ticketLink,
-                    }
+                    };
+    
                     const updatedConcert = await Concert.findByIdAndUpdate(
                         savedConcertId,
                         update,
-                        { new: true }
-                    )
+                        { new: true },
+                    );
+    
+                    // if (updatedConcert) 
                     console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
+                    console.log('🗓️🗓️🗓️🗓️ savedConcertId: ', savedConcertId);
+                    console.log('🗓️🗓️🗓️🗓️ update: ', update);
+                    console.log('🗓️🗓️🗓️🗓️ updatedConcert: ', updatedConcert);
                     console.log(updatedConcert.artists + ' has been updated');
+
                     return updatedConcert;
+                    // }
                 } else {
-                    const concert = await Concert.create({ ...data })
+                    const newConcert = await Concert.create({ ...data });
                     // .select(-__v);
                     console.log('💘💘💘💘 SAVEDCONCERT');
-                    console.log(concert.artists + ' has been added');
-                    return concert;
+                    console.log(newConcert.artists + ' has been added');
+                    return newConcert;
                 }
-            })
+            };
+
+            const result = await updateOrCreate(existingConcert);
+
+            console.log('🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁');
+            console.log('🧁🧁🧁🧁 result: ', result);
+
             return result;
         },
+        // addConcert: async (parent, { ...data }) => {
+        //     // console.log('🍣🍣🍣🍣 data: ', data);
+        //     const result = await Concert.findOne({ 'customId': data.customId }, async (err, custom) => {
+        //         if (err) return handleError(err);
+
+        //         // changelog-start
+        //         console.log('🥷🥷🥷🥷 ADDCONCERT data: ', data);
+        //         console.log('🥷🥷🥷🥷 ADDCONCERT custom: ', custom);
+        //         // changelog-end
+
+        //         if (custom) {
+        //             const savedConcertId = {
+        //                 _id: custom._id
+        //             }
+        //             const update = {
+        //                 artists: data.artists,
+        //                 venue: data.venue,
+        //                 date: data.date,
+        //                 times: data.times,
+        //                 address: data.address,
+        //                 address2: data.address2,
+        //                 phone: data.phone,
+        //                 website: data.website,
+        //                 email: data.email,
+        //                 ticketLink: data.ticketLink,
+        //             }
+        //             const updatedConcert = await Concert.findByIdAndUpdate(
+        //                 savedConcertId,
+        //                 update,
+        //                 { new: true }
+        //             )
+        //             console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
+        //             console.log('🗓️🗓️🗓️🗓️ savedConcertId: ', savedConcertId);
+        //             console.log('🗓️🗓️🗓️🗓️ update: ', update);
+        //             console.log('🗓️🗓️🗓️🗓️ updatedConcert: ', updatedConcert);
+        //             console.log(updatedConcert.artists + ' has been updated');
+        //             return updatedConcert;
+        //         } else {
+        //             const concert = await Concert.create({ ...data })
+        //             // .select(-__v);
+        //             console.log('💘💘💘💘 SAVEDCONCERT');
+        //             console.log(concert.artists + ' has been added');
+        //             return concert;
+        //         }
+        //     })
+        //     return result;
+        // },
+        // changelog-end
         addFriend: async (parent, { friendId }, context) => {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
@@ -1036,7 +1100,7 @@ const resolvers = {
             return dateArr;
             // return deletedConcerts;
         },
-        deleteByIndex: async(parent, { index }) => {
+        deleteByIndex: async (parent, { index }) => {
             const concerts = await Concert.find()
             const oldies = [];
 
