@@ -21,8 +21,8 @@ const AustinListDbUpdater = ({
 
 
       // changelog-start
-      for (let i = 0; i <= 10; i++) {
-      // for (let i = 0; i <= arr.length - 1; i++) {
+      // for (let i = 0; i <= 10; i++) {
+      for (let i = 0; i <= arr.length - 1; i++) {
         // changelog-end
         if (insertError) {
           break;
