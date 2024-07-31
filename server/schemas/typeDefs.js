@@ -61,6 +61,7 @@ const typeDefs = gql`
         getUrlArray(date: String!, proxy: Proxy): [String]
         austinTxConcertScraper(urlData: [String], date: String, proxy: Proxy): [[Concert]]
         getAustinList: [Concert]
+        getAustinTXShowData: [Concert]
     }
 
     type Mutation {

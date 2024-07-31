@@ -1,11 +1,10 @@
-// const { User, Concert } = require('../models');
-const User = require('../models/User');
-const Concert = require('../models/Concert');
 const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
-// const { getArtists } = require('../utils/scraper');
-const axios = require('axios');
+const Concert = require('../models/Concert');
+const User = require('../models/User');
 const cheerio = require('cheerio');
+const axios = require('axios');
+const { getThirteenthFloorData } = require('./texasResolvers/austinResolvers/austinResolvers')
 
 const resolvers = {
     Query: {
@@ -820,6 +819,17 @@ const resolvers = {
                 .exec();
 
             return yesterdaysConcerts;
+        },
+        getAustinTXShowData: async (parent, args) => {
+            let data = [];
+
+            const thirteenthFloorData = await getThirteenthFloorData();
+
+            if (thirteenthFloorData.length) {
+                data.push(thirteenthFloorData);
+            }
+
+            console.log('👁️👁️👁️👁️ data: ', data);
         },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);
