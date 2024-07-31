@@ -825,11 +825,14 @@ const resolvers = {
 
             const thirteenthFloorData = await getThirteenthFloorData();
 
-            if (thirteenthFloorData.length) {
+            if (thirteenthFloorData) {
                 data.push(thirteenthFloorData);
             }
 
+            console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
             console.log('👁️👁️👁️👁️ data: ', data);
+            
+            return data;
         },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);
