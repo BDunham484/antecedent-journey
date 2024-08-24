@@ -6,6 +6,7 @@ const { isConstValueNode } = require('graphql');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const playwright = require('playwright');
 require('dotenv').config();
+const { getYears } = require('../../helpers');
 
 const austinResolvers = {
     // 13th Floor
@@ -32,6 +33,7 @@ const austinResolvers = {
 
         const concerts = await page.$$eval('article', concert => {
             const data = [];
+            const months = []; 
             concert.forEach(article => {
                 const dateTimeEl = article.querySelector('time');
                 const dateTime = dateTimeEl ? dateTimeEl.innerText : 'noDice';
@@ -39,14 +41,32 @@ const austinResolvers = {
                 const artists = artistsEl ? artistsEl.innerText : 'noArtists'
                 const priceEl = article.querySelector('.dice_price');
                 const price = priceEl ? priceEl.innerText : 'noPrice';
-                // const secondDivEl = firstDivEl.querySelector(':scope > div');
+                // changelog-start
+                const testEl = article.querySelector('script');
+                const test = testEl ? testEl.innerText : 'blah';
+                // changelog-end
+
+                // Format data
+                const dateTimeData = dateTime.split();
+                // const dayOfWeek = dateTimeData[0];
+                // const day = dateTimeData[1];
+                const month = dateTimeData[2];
+                months.push(month);
+                const time = dateTimeData[dateTimeData.length - 1];
                 
                 data.push({
-                    dateTime: dateTime,
                     artists: artists,
+                    dateTime: dateTime,
+                    times: time,
                     price: price,
+                    // changelog-start
+                    test: test,
+                    // changelog-end
                 });
-            })
+            });
+
+            const years = getYears(months);
+            console.log('✅✅✅✅ years: ', years);
 
             return data;
         });
