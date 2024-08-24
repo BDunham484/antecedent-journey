@@ -6,7 +6,7 @@ const { isConstValueNode } = require('graphql');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const playwright = require('playwright');
 require('dotenv').config();
-const { getYears } = require('../../helpers');
+const { getYears } = require('../../../utils/helpers');
 
 const austinResolvers = {
     // 13th Floor
