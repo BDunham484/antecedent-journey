@@ -44,6 +44,9 @@ const concertSchema = new Schema(
         ticketLink: {
             type: String
         },
+        ticketPrice: {
+            type: String
+        },
         yes: [
             {
                 type: Schema.Types.ObjectId,

@@ -21,27 +21,36 @@ const austinResolvers = {
                 password: process.env.PROXY_PASSWORD,
             }
         };
-        const browser = await playwright.chromium.launch(launchOptions);
-        const page = await browser.newPage();
+        console.log('🎃 launch options: ', launchOptions);
+        const browser = await playwright.webkit.launch(launchOptions);
+        // incognito
+        const context = await browser.newContext();
+        const page = await context.newPage();
         await page.goto('https://the13thflooraustin.com/');
-        await page.waitForTimeout(10000);
+        await page.pause();
+        await page.waitForTimeout(5000);
 
-        const test = await page.$$eval('.dice_events > article', test => {
+        const concerts = await page.$$eval('article', concert => {
             const data = [];
-            test.forEach(article => {
-                const firstDivEl = article.querySelector(':scope > div');
-                const secondDivEl = firstDivEl.querySelector(':scope > div');
-                const thirdDivEl = secondDivEl.querySelector(':scope > div');
-                const fourthDivEl = thirdDivEl.querySelector(':scope > time');
-                const dateTime = fourthDivEl ? fourthDivEl.innerText : 'nada';
+            concert.forEach(article => {
+                const dateTimeEl = article.querySelector('time');
+                const dateTime = dateTimeEl ? dateTimeEl.innerText : 'noDice';
+                const artistsEl = dateTimeEl.nextSibling;
+                const artists = artistsEl ? artistsEl.innerText : 'noArtists'
+                const priceEl = article.querySelector('.dice_price');
+                const price = priceEl ? priceEl.innerText : 'noPrice';
+                // const secondDivEl = firstDivEl.querySelector(':scope > div');
                 
-                // data.push(dateTime);
-                data.push(fourthDivEl);
+                data.push({
+                    dateTime: dateTime,
+                    artists: artists,
+                    price: price,
+                });
             })
 
             return data;
         });
-        console.log('✅✅✅✅ test: ', test);
+        console.log('✅✅✅✅ concerts: ', concerts);
 
         // const concerts = await page.$$eval('#dice-event-list-widget > .dice-widget > dice_event-listing-container > .dice_events > article', all_concerts => {
         //     const data = [];
@@ -59,6 +68,7 @@ const austinResolvers = {
         //     return data;
         // });
         // console.log('✅✅✅✅: ', concerts);
+        await context.close();
         await browser.close();
 
         // changelog-start
