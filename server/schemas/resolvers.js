@@ -4,7 +4,10 @@ const Concert = require('../models/Concert');
 const User = require('../models/User');
 const cheerio = require('cheerio');
 const axios = require('axios');
-const { getThirteenthFloorData } = require('./texasResolvers/austinResolvers/austinResolvers')
+const {
+    getThirteenthFloorData,
+    getThreeTenAustinCityLimitsLiveData,
+} = require('./texasResolvers/austinResolvers/austinResolvers')
 
 const resolvers = {
     Query: {
@@ -822,17 +825,30 @@ const resolvers = {
         },
         getAustinTXShowData: async (parent, args) => {
             let data = [];
+            let doneZo = false;
 
-            const thirteenthFloorData = await getThirteenthFloorData();
+            // const thirteenthFloorData = await getThirteenthFloorData();
+            const threeTenAustinCityLimitsLiveData = await getThreeTenAustinCityLimitsLiveData();
 
-            if (thirteenthFloorData) {
-                data.push(thirteenthFloorData);
+            // if (thirteenthFloorData) {
+            //     data.push(thirteenthFloorData);
+            // }
+
+            if (threeTenAustinCityLimitsLiveData) {
+                data.push(threeTenAustinCityLimitsLiveData);
+                doneZo = true;
             }
 
-            console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
+            // console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
+            console.log('👁️👁️👁️👁️ threeTenAustinCityLimitsLiveData: ', threeTenAustinCityLimitsLiveData);
             console.log('👁️👁️👁️👁️ data: ', data);
-            
-            return data;
+
+            if (doneZo) {
+                console.log('🩻🩻🩻🩻 doneZo: ', doneZo);
+                console.log('🩻🩻🩻🩻 data: ', data);
+
+                return data;
+            }
         },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);
