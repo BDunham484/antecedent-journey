@@ -1,4 +1,6 @@
 const helpers = {
+    // Sleep/setTimeout
+    sleep: (ms) => new Promise(resolve => setTimeout(resolve, ms)),
     // Takes an array of months and returns an array of the appropriate years
     getYears: (months) => {
         const currentYear = new Date().getFullYear();

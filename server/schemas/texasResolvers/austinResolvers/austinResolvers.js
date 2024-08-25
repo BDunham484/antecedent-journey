@@ -7,6 +7,7 @@
 // const playwright = require('playwright');
 const { chromium, firefox, webkit } = require('playwright');
 require('dotenv').config();
+const { sleep } = require('../../../utils/helpers');
 // const helpers = require('../../../utils/helpers');
 
 const proxy = {
@@ -111,45 +112,90 @@ const austinResolvers = {
     // ACL Live
     getThreeTenAustinCityLimitsLiveData: async () => {
         console.log('👁️ 3TEN Austin City Limits Live');
-        console.log('👁️ launchOptions: ', launchOptions);
+        console.log('👁️ launchOptions: ', launchOptions.proxy.server);
         const browser = await randoBrowser.launch(launchOptions);
         // incognito
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto('https://www.acllive.com/events/venue/acl-live-at-3ten');
-        await page.pause();
-        await page.waitForTimeout(5000);
+        // await sleep(5000);
+        // await page.pause();
+        await page.waitForTimeout(6000);
+
+        // changelog-start
+        for (let i = 0; i <= 5; i++) {
+            page.keyboard.press('End');
+            sleep(1000);
+        };
+        // changelog-end
         // TODO: will change to loop through all .evenTime and just push artistsLink to array
         // then will loop through link array, open a page for each one, get show data for each link
         // then push/return concerts
-        const concerts = await page.$$eval('.eventItem', concert => {
+        const urls = await page.$$eval('.eventItem', concert => {
             const data = [];
             concert.forEach(async eventItem => {
-                const dateTimeEl = eventItem.querySelector('.m-date__singleDate');
-                const dateTime = dateTimeEl ? dateTimeEl.innerText : 'no_dice';
+                // const dateTimeEl = eventItem.querySelector('.m-date__singleDate');
+                // const dateTime = dateTimeEl ? dateTimeEl.innerText : 'no_dice';
 
                 const artistsEl = eventItem.querySelector('.title a');
-                const artists = artistsEl ? artistsEl.innerText.trim() : 'no_artist';
+                // const artists = artistsEl ? artistsEl.innerText.trim() : 'no_artist';
                 const artistsLink = artistsEl ? artistsEl.getAttribute('href') : 'no_link';
                 
-                const formattedDate = new Date(Date.parse(dateTime)).toDateString();
+                // const formattedDate = new Date(Date.parse(dateTime)).toDateString();
 
-                data.push({
-                    artists: artists,
-                    artistsLink: artistsLink,
-                    date: formattedDate,
-                });
+                data.push(artistsLink);
             })
 
             return data;
         });
+        // const concerts = await Promise.all(urls.map(async url => {
+        //     // const data = [];
+        //     // const fetchText = url.split('/')[url.length - 1];
+        //     // console.log('✅✅✅✅ fetchText: ', fetchText);
+        //     // const pagePromise = context.waitForEvent('page');
+        //     const page = await context.newPage();
+        //     await page.goto(url);
+        //     // const showPage = await pagePromise;
+        //     await page.pause();
+        //     await page.waitForTimeout(5000);
+
+        //     const artistsEl = page.locator('.title');
+        //     const artists = artistsEl ? artistsEl.innerText : 'no_artists';
+
+        //     const concert = {
+        //         artists: artists,
+        //     }
+
+        //     return concert;
+        // }));
+
+        const concerts = [];
+        for await (const url of urls) {
+            const page = await context.newPage();
+            await page.goto(url);
+            await page.waitForTimeout(5000);
+
+            const artistsEl = page.locator('h1 .title');
+            const artists = artistsEl ? artistsEl.innerText(5000) : undefined;
+
+            const concert = {
+                artists: artists,
+            };
+
+            if (Object.values(concert)) {
+                concerts.push(concert);
+                continue;
+            };
+        };
+        // if (concerts.length === urls.length) {
         console.log('✅✅✅✅ concerts: ', concerts);
+        // };
 
         await context.close();
         await browser.close();
 
-        return concerts;
-        // return { artists: 'yourFace_myButt' };
+        // return concerts;
+        return { artists: 'yourFace_myButt' };
     },
 }
 
