@@ -840,11 +840,10 @@ const resolvers = {
             }
 
             // console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
-            console.log('👁️👁️👁️👁️ threeTenAustinCityLimitsLiveData: ', threeTenAustinCityLimitsLiveData);
-            console.log('👁️👁️👁️👁️ data: ', data);
+            // console.log('👁️👁️👁️👁️ threeTenAustinCityLimitsLiveData: ', threeTenAustinCityLimitsLiveData);
+            // console.log('👁️👁️👁️👁️ data: ', data);
 
             if (doneZo) {
-                console.log('🩻🩻🩻🩻 doneZo: ', doneZo);
                 console.log('🩻🩻🩻🩻 data: ', data);
 
                 return data;

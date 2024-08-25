@@ -4,28 +4,33 @@
 // const cheerio = require('cheerio');
 // const { isConstValueNode } = require('graphql');
 // const { HttpsProxyAgent } = require('https-proxy-agent');
-const playwright = require('playwright');
+// const playwright = require('playwright');
+const { chromium, firefox, webkit } = require('playwright');
 require('dotenv').config();
 // const helpers = require('../../../utils/helpers');
 
+const proxy = {
+    // eslint-disable-next-line no-undef
+    server: process.env.PROXY,
+    // eslint-disable-next-line no-undef
+    username: process.env.PROXY_USERNAME,
+    // eslint-disable-next-line no-undef
+    password: process.env.PROXY_PASSWORD,
+}
 
+const launchOptions = {
+    headless: false,
+    proxy: proxy,
+};
+
+const browsers = [chromium, firefox, webkit];
+const randoBrowser = browsers[Math.floor(Math.random() * browsers.length)];
 
 const austinResolvers = {
     // 13th Floor
     getThirteenthFloorData: async () => {
         console.log('👁️ 13th Floor');
-        const launchOptions = {
-            headless: false,
-            proxy: {
-                // eslint-disable-next-line no-undef
-                server: process.env.PROXY,
-                // eslint-disable-next-line no-undef
-                username: process.env.PROXY_USERNAME,
-                // eslint-disable-next-line no-undef
-                password: process.env.PROXY_PASSWORD,
-            }
-        };
-        const browser = await playwright.firefox.launch(launchOptions);
+        const browser = await randoBrowser.launch(launchOptions);
         // incognito
         const context = await browser.newContext();
         const page = await context.newPage();
@@ -106,48 +111,28 @@ const austinResolvers = {
     // ACL Live
     getThreeTenAustinCityLimitsLiveData: async () => {
         console.log('👁️ 3TEN Austin City Limits Live');
-        const launchOptions = {
-            headless: false,
-            proxy: {
-                // eslint-disable-next-line no-undef
-                server: process.env.PROXY,
-                // eslint-disable-next-line no-undef
-                username: process.env.PROXY_USERNAME,
-                // eslint-disable-next-line no-undef
-                password: process.env.PROXY_PASSWORD,
-            }
-        };
-        const browser = await playwright.firefox.launch(launchOptions);
+        console.log('👁️ launchOptions: ', launchOptions);
+        const browser = await randoBrowser.launch(launchOptions);
         // incognito
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto('https://www.acllive.com/events/venue/acl-live-at-3ten');
         await page.pause();
         await page.waitForTimeout(5000);
+        // TODO: will change to loop through all .evenTime and just push artistsLink to array
+        // then will loop through link array, open a page for each one, get show data for each link
+        // then push/return concerts
         const concerts = await page.$$eval('.eventItem', concert => {
             const data = [];
             concert.forEach(async eventItem => {
-                // const dateTimeEl = eventItem.querySelector('.m-date__singleDate');
-                // const dateTime = dateTimeEl ? dateTimeEl.innerText : 'no_dice';
-
-                const monthEl = eventItem.querySelector('.m-date__month');
-                const month = monthEl ? monthEl.innerText.trim() : 'no_month';
-
-                const dayEl = eventItem.querySelector('.m-date__day');
-                const day = dayEl ? dayEl.innerText.trim() : 'no_day';
-
-                const yearEl = eventItem.querySelector('.m-date__year');
-                const year = yearEl ? yearEl.innerText.trim().split(' ')[1] : 'no_year';
+                const dateTimeEl = eventItem.querySelector('.m-date__singleDate');
+                const dateTime = dateTimeEl ? dateTimeEl.innerText : 'no_dice';
 
                 const artistsEl = eventItem.querySelector('.title a');
                 const artists = artistsEl ? artistsEl.innerText.trim() : 'no_artist';
                 const artistsLink = artistsEl ? artistsEl.getAttribute('href') : 'no_link';
-
-                // await page.goto(artistsLink);
-                // await page.pause();
-                // await page.waitForTimeout(5000);
-
-                const formattedDate = new Date(Date.parse(year +'-'+ month +'-'+ day)).toDateString();
+                
+                const formattedDate = new Date(Date.parse(dateTime)).toDateString();
 
                 data.push({
                     artists: artists,
