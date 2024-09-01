@@ -823,25 +823,25 @@ const resolvers = {
 
             return yesterdaysConcerts;
         },
-        getAustinTXShowData: async (parent, args) => {
+        getAustinTXShowData: async () => {
             let data = [];
             let doneZo = false;
 
-            // const thirteenthFloorData = await getThirteenthFloorData();
+            const thirteenthFloorData = await getThirteenthFloorData();
             const threeTenAustinCityLimitsLiveData = await getThreeTenAustinCityLimitsLiveData();
 
-            // if (thirteenthFloorData) {
-            //     data.push(thirteenthFloorData);
-            // }
+            if (thirteenthFloorData) {
+                data.push(thirteenthFloorData);
+            }
 
-            if (threeTenAustinCityLimitsLiveData) {
+            if (
+                thirteenthFloorData
+                && threeTenAustinCityLimitsLiveData
+            ) {
+                data.push(thirteenthFloorData);
                 data.push(threeTenAustinCityLimitsLiveData);
                 doneZo = true;
             }
-
-            // console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
-            // console.log('👁️👁️👁️👁️ threeTenAustinCityLimitsLiveData: ', threeTenAustinCityLimitsLiveData);
-            // console.log('👁️👁️👁️👁️ data: ', data);
 
             if (doneZo) {
                 console.log('🩻🩻🩻🩻 data: ', data);

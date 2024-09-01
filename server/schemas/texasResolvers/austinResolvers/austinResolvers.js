@@ -13,7 +13,8 @@ const { sleep } = require('../../../utils/helpers');
 const browsers = [chromium, firefox, webkit];
 const randoBrowser = browsers[Math.floor(Math.random() * browsers.length)];
 
-const ports = ['10001', '10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10010'];
+const ports = ['10001', '10002', '10003', '10004', '10006', '10007', '10008', '10009', '10010'];
+// const ports = ['10001', '10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10010'];
 const randoPort = ports[Math.floor(Math.random() * ports.length)];
 
 const proxy = {
@@ -122,84 +123,64 @@ const austinResolvers = {
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto('https://www.acllive.com/events/venue/acl-live-at-3ten');
-        // await sleep(5000);
-        // await page.pause();
         await page.waitForTimeout(6000);
 
-        // changelog-start
-        for (let i = 0; i <= 10; i++) {
+        // Scroll to bottom of page
+        for (let i = 0; i <= 5; i++) {
             page.keyboard.press('End');
             sleep(1000);
         };
-        // changelog-end
-        // TODO: will change to loop through all .evenTime and just push artistsLink to array
-        // then will loop through link array, open a page for each one, get show data for each link
-        // then push/return concerts
+        
+        // Get all event urls
         const urls = await page.$$eval('.eventItem', concert => {
             const data = [];
             concert.forEach(async eventItem => {
-                const artistsEl = eventItem.querySelector('.title a');
-                const artistsLink = artistsEl ? artistsEl.getAttribute('href') : 'no_link';                
-                // const formattedDate = new Date(Date.parse(dateTime)).toDateString();
+                const artistsEl = eventItem.querySelector('.thumb a');
+                const artistsLink = artistsEl ? artistsEl.getAttribute('href') : undefined;                
                 data.push(artistsLink);
-            })
+            });
 
             return data;
         });
 
+        // Loop through event urls and get show-specific data
         const concerts = [];
         for await (const url of urls) {
             const page = await context.newPage();
             await page.goto(url);
             await page.waitForTimeout(5000);
 
-            // const headlinerEl = page.locator('h1');
-            // const headliner = headlinerEl ? await headlinerEl.innerText() : undefined;
-            // // throws error.  need to conditionally look for element/class
-            // const supportEl = page.locator('h2').and(page.locator('.tagline'));
-            // const support = supportEl ? await supportEl.innerText() : undefined;
+            const artistsEl = page.locator('.event_heading');
+            const artists = artistsEl ? await artistsEl.allInnerTexts() : undefined;
 
-            const testEl = page.locator('.event_heading');
-            const test = testEl ? await testEl.allInnerTexts() : undefined;
-
-            // changelog-start
-            const isVisibleTest = page.locator('.tickets').isVisible();
-            // const isVisibleTest = expect(page.locator('.tickets')).toBeVisible();
+            const isTicketLink = await page.locator('.tickets').last().isVisible({ timeout: 5000 }) ?? false;
             let ticketLinkEl = undefined;
             let ticketLink = undefined;
-            if (isVisibleTest) {
+            if (isTicketLink) {
                 ticketLinkEl = page.locator('.tickets').last();
                 ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
             }
-            // changelog-end
-            // const ticketLinkEl = page.locator('.tickets').last();
-            // const ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
 
             const dateEl = page.locator('.m-date__singleDate').first();
-            const date = dateEl ? await dateEl.innerText() : undefined;
+            const date = dateEl ? await dateEl.allInnerTexts() : undefined;
 
-            const priceEl = page.locator('.sidebar_ticket_prices').locator('span').last();
-            const price = priceEl ? await priceEl.innerText() : undefined;
-
-            // const timesEl = page.locator('m-date__hour').first();
-            // const times = timesEl ? timesEl.innerText(5000) : undefined;
-            // const artists = (headliner ? headliner : '') + (support ? support : '');
+            let priceEl = undefined;
+            let price = undefined;
+            if (isTicketLink) {
+                priceEl = page.locator('.sidebar_ticket_prices').locator('span').last();
+                price = priceEl ? await priceEl.innerText() : undefined;
+            }
 
             const concert = {
-                artists: test[0],
+                artists: artists[0],
+                artistsLink: url,
                 ticketLink: ticketLink,
-                date: date,
+                date: new Date(Date.parse(date[0])).toDateString(),
                 ticketPrice: price,
-                times: date.split(' ')[date.length -1],
+                times: date[0].split('\n')[1],
             };
-            console.log('🎃🎃🎃🎃 testEl: ', testEl);
-            console.log('🎃🎃🎃🎃 isVisibleTest: ', isVisibleTest);
-            // console.log('🎃🎃🎃🎃 support: ', support);
-            console.log('🎃🎃🎃🎃 concert: ', concert);
-            // changelog-start
+
             if (concert) {
-                // if (Object.values(concert).length === 5) {
-                // changelog-end
                 concerts.push(concert);
                 if (concerts.length < urls.length) {
                     continue;
@@ -209,18 +190,14 @@ const austinResolvers = {
                 };
             };
         };
-        console.log('✅✅✅✅ urls: ', urls);
-        console.log('✅✅✅✅ concerts: ', concerts);
-        console.log('✅✅✅✅ urls.length: ', urls.length);
-        console.log('✅✅✅✅ concerts.length: ', concerts.length);
+
+        // Close browsers
         if (concerts.length === urls.length) {
             await context.close();
             await browser.close();
         };
         
-
         return concerts;
-        // return { artists: 'yourFace_myButt' };
     },
 }
 
