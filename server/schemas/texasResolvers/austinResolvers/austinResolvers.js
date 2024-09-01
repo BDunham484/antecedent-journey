@@ -123,7 +123,7 @@ const austinResolvers = {
         await page.waitForTimeout(6000);
 
         // changelog-start
-        for (let i = 0; i <= 5; i++) {
+        for (let i = 0; i <= 10; i++) {
             page.keyboard.press('End');
             sleep(1000);
         };
@@ -170,32 +170,118 @@ const austinResolvers = {
         // }));
 
         const concerts = [];
+        // changelog-start
+        // const testConcerts = async ()  => {
+        //     for await (const url of urls) {
+        //         const page = await context.newPage();
+        //         await page.goto(url);
+        //         await page.waitForTimeout(5000);
+    
+        //         const headlinerEl = page.locator('h1');
+        //         const headliner = headlinerEl ? headlinerEl.innerText() : undefined;
+    
+        //         const supportEl = page.locator('h2').and(page.locator('.tagline'));
+        //         const support = supportEl ? supportEl.innerText() : undefined;
+    
+        //         const ticketLinkEl = page.locator('.tickets').last();
+        //         const ticketLink = ticketLinkEl ? ticketLinkEl.getAttribute('href') : undefined;
+    
+        //         const dateEl = page.locator('.m-date__singleDate').first();
+        //         const date = dateEl ? dateEl.innerText() : undefined;
+    
+        //         const priceEl = page.locator('.sidebar_ticket_prices').locator('span').last();
+        //         const price = priceEl ? priceEl.innerText() : undefined;
+    
+        //         // const timesEl = page.locator('m-date__hour').first();
+        //         // const times = timesEl ? timesEl.innerText(5000) : undefined;
+        //         const artists = (headliner ? headliner : '') + (support ? support : '');
+    
+        //         const concert = {
+        //             artists: artists,
+        //             ticketLink: ticketLink,
+        //             date: date,
+        //             ticketPrice: price,
+        //             // times: times,
+        //         };
+        //         console.log('🎃🎃🎃🎃 concert: ', concert);
+        //         // console.log('🎃🎃🎃🎃 concert.length: ', Object.values(concert.length));
+        //         // changelog-start
+        //         if (concert) {
+        //             // if (Object.values(concert).length === 5) {
+        //             // changelog-end
+        //             concerts.push(concert);
+        //             if (concerts.length < urls.length) {
+        //                 continue;
+        //             } else if (concerts.length === urls.length) {
+        //                 sleep(5000);
+        //                 break;
+        //             };
+        //         };
+        //     };
+        // };
+        // changelog-end
         for await (const url of urls) {
             const page = await context.newPage();
             await page.goto(url);
             await page.waitForTimeout(5000);
 
-            const artistsEl = page.locator('h1 .title');
-            const artists = artistsEl ? artistsEl.innerText(5000) : undefined;
+            // const headlinerEl = page.locator('h1');
+            // const headliner = headlinerEl ? await headlinerEl.innerText() : undefined;
+            // // throws error.  need to conditionally look for element/class
+            // const supportEl = page.locator('h2').and(page.locator('.tagline'));
+            // const support = supportEl ? await supportEl.innerText() : undefined;
+
+            const testEl = page.locator('.event_heading');
+            const test = testEl ? await testEl.allInnerTexts() : undefined;
+
+            const ticketLinkEl = page.locator('.tickets').last();
+            const ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
+
+            const dateEl = page.locator('.m-date__singleDate').first();
+            const date = dateEl ? await dateEl.innerText() : undefined;
+
+            const priceEl = page.locator('.sidebar_ticket_prices').locator('span').last();
+            const price = priceEl ? await priceEl.innerText() : undefined;
+
+            // const timesEl = page.locator('m-date__hour').first();
+            // const times = timesEl ? timesEl.innerText(5000) : undefined;
+            // const artists = (headliner ? headliner : '') + (support ? support : '');
 
             const concert = {
-                artists: artists,
+                artists: test[0],
+                ticketLink: ticketLink,
+                date: date,
+                ticketPrice: price,
+                times: date.split(' ')[date.length -1],
             };
-
-            if (Object.values(concert)) {
+            console.log('🎃🎃🎃🎃 testEl: ', testEl);
+            // console.log('🎃🎃🎃🎃 support: ', support);
+            console.log('🎃🎃🎃🎃 concert: ', concert);
+            // changelog-start
+            if (concert) {
+                // if (Object.values(concert).length === 5) {
+                // changelog-end
                 concerts.push(concert);
-                continue;
+                if (concerts.length < urls.length) {
+                    continue;
+                } else if (concerts.length === urls.length) {
+                    sleep(5000);
+                    break;
+                };
             };
         };
-        // if (concerts.length === urls.length) {
+        console.log('✅✅✅✅ urls: ', urls);
         console.log('✅✅✅✅ concerts: ', concerts);
-        // };
+        console.log('✅✅✅✅ urls.length: ', urls.length);
+        console.log('✅✅✅✅ concerts.length: ', concerts.length);
+        if (concerts.length === urls.length) {
+            await context.close();
+            await browser.close();
+        };
+        
 
-        await context.close();
-        await browser.close();
-
-        // return concerts;
-        return { artists: 'yourFace_myButt' };
+        return concerts;
+        // return { artists: 'yourFace_myButt' };
     },
 }
 
