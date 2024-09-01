@@ -7,6 +7,7 @@ const axios = require('axios');
 const {
     getThirteenthFloorData,
     getThreeTenAustinCityLimitsLiveData,
+    getABGBData
 } = require('./texasResolvers/austinResolvers/austinResolvers')
 
 const resolvers = {
@@ -827,25 +828,25 @@ const resolvers = {
             let data = [];
             let doneZo = false;
 
-            const thirteenthFloorData = await getThirteenthFloorData();
-            const threeTenAustinCityLimitsLiveData = await getThreeTenAustinCityLimitsLiveData();
+            // const thirteenthFloorData = await getThirteenthFloorData();
+            // const threeTenAustinCityLimitsLiveData = await getThreeTenAustinCityLimitsLiveData();
+            const aBGBData = await getABGBData();
 
-            if (thirteenthFloorData) {
-                data.push(thirteenthFloorData);
-            }
-
-            if (
-                thirteenthFloorData
-                && threeTenAustinCityLimitsLiveData
-            ) {
-                data.push(thirteenthFloorData);
-                data.push(threeTenAustinCityLimitsLiveData);
+            if (aBGBData) {
+                data.push(aBGBData);
                 doneZo = true;
             }
 
-            if (doneZo) {
-                console.log('🩻🩻🩻🩻 data: ', data);
+            // if (
+            //     thirteenthFloorData
+            //     && threeTenAustinCityLimitsLiveData
+            // ) {
+            //     data.push(thirteenthFloorData);
+            //     data.push(threeTenAustinCityLimitsLiveData);
+                // doneZo = true;
+            // }
 
+            if (doneZo) {
                 return data;
             }
         },
