@@ -138,92 +138,16 @@ const austinResolvers = {
         const urls = await page.$$eval('.eventItem', concert => {
             const data = [];
             concert.forEach(async eventItem => {
-                // const dateTimeEl = eventItem.querySelector('.m-date__singleDate');
-                // const dateTime = dateTimeEl ? dateTimeEl.innerText : 'no_dice';
-
                 const artistsEl = eventItem.querySelector('.title a');
-                // const artists = artistsEl ? artistsEl.innerText.trim() : 'no_artist';
-                const artistsLink = artistsEl ? artistsEl.getAttribute('href') : 'no_link';
-                
+                const artistsLink = artistsEl ? artistsEl.getAttribute('href') : 'no_link';                
                 // const formattedDate = new Date(Date.parse(dateTime)).toDateString();
-
                 data.push(artistsLink);
             })
 
             return data;
         });
-        // const concerts = await Promise.all(urls.map(async url => {
-        //     // const data = [];
-        //     // const fetchText = url.split('/')[url.length - 1];
-        //     // console.log('✅✅✅✅ fetchText: ', fetchText);
-        //     // const pagePromise = context.waitForEvent('page');
-        //     const page = await context.newPage();
-        //     await page.goto(url);
-        //     // const showPage = await pagePromise;
-        //     await page.pause();
-        //     await page.waitForTimeout(5000);
-
-        //     const artistsEl = page.locator('.title');
-        //     const artists = artistsEl ? artistsEl.innerText : 'no_artists';
-
-        //     const concert = {
-        //         artists: artists,
-        //     }
-
-        //     return concert;
-        // }));
 
         const concerts = [];
-        // changelog-start
-        // const testConcerts = async ()  => {
-        //     for await (const url of urls) {
-        //         const page = await context.newPage();
-        //         await page.goto(url);
-        //         await page.waitForTimeout(5000);
-    
-        //         const headlinerEl = page.locator('h1');
-        //         const headliner = headlinerEl ? headlinerEl.innerText() : undefined;
-    
-        //         const supportEl = page.locator('h2').and(page.locator('.tagline'));
-        //         const support = supportEl ? supportEl.innerText() : undefined;
-    
-        //         const ticketLinkEl = page.locator('.tickets').last();
-        //         const ticketLink = ticketLinkEl ? ticketLinkEl.getAttribute('href') : undefined;
-    
-        //         const dateEl = page.locator('.m-date__singleDate').first();
-        //         const date = dateEl ? dateEl.innerText() : undefined;
-    
-        //         const priceEl = page.locator('.sidebar_ticket_prices').locator('span').last();
-        //         const price = priceEl ? priceEl.innerText() : undefined;
-    
-        //         // const timesEl = page.locator('m-date__hour').first();
-        //         // const times = timesEl ? timesEl.innerText(5000) : undefined;
-        //         const artists = (headliner ? headliner : '') + (support ? support : '');
-    
-        //         const concert = {
-        //             artists: artists,
-        //             ticketLink: ticketLink,
-        //             date: date,
-        //             ticketPrice: price,
-        //             // times: times,
-        //         };
-        //         console.log('🎃🎃🎃🎃 concert: ', concert);
-        //         // console.log('🎃🎃🎃🎃 concert.length: ', Object.values(concert.length));
-        //         // changelog-start
-        //         if (concert) {
-        //             // if (Object.values(concert).length === 5) {
-        //             // changelog-end
-        //             concerts.push(concert);
-        //             if (concerts.length < urls.length) {
-        //                 continue;
-        //             } else if (concerts.length === urls.length) {
-        //                 sleep(5000);
-        //                 break;
-        //             };
-        //         };
-        //     };
-        // };
-        // changelog-end
         for await (const url of urls) {
             const page = await context.newPage();
             await page.goto(url);
@@ -238,8 +162,18 @@ const austinResolvers = {
             const testEl = page.locator('.event_heading');
             const test = testEl ? await testEl.allInnerTexts() : undefined;
 
-            const ticketLinkEl = page.locator('.tickets').last();
-            const ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
+            // changelog-start
+            const isVisibleTest = page.locator('.tickets').isVisible();
+            // const isVisibleTest = expect(page.locator('.tickets')).toBeVisible();
+            let ticketLinkEl = undefined;
+            let ticketLink = undefined;
+            if (isVisibleTest) {
+                ticketLinkEl = page.locator('.tickets').last();
+                ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
+            }
+            // changelog-end
+            // const ticketLinkEl = page.locator('.tickets').last();
+            // const ticketLink = ticketLinkEl ? await ticketLinkEl.getAttribute('href') : undefined;
 
             const dateEl = page.locator('.m-date__singleDate').first();
             const date = dateEl ? await dateEl.innerText() : undefined;
@@ -259,6 +193,7 @@ const austinResolvers = {
                 times: date.split(' ')[date.length -1],
             };
             console.log('🎃🎃🎃🎃 testEl: ', testEl);
+            console.log('🎃🎃🎃🎃 isVisibleTest: ', isVisibleTest);
             // console.log('🎃🎃🎃🎃 support: ', support);
             console.log('🎃🎃🎃🎃 concert: ', concert);
             // changelog-start
