@@ -10,9 +10,14 @@ require('dotenv').config();
 const { sleep } = require('../../../utils/helpers');
 // const helpers = require('../../../utils/helpers');
 
+const browsers = [chromium, firefox, webkit];
+const randoBrowser = browsers[Math.floor(Math.random() * browsers.length)];
+
+const ports = ['10001', '10002', '10003', '10004', '10005', '10006', '10007', '10008', '10009', '10010'];
+const randoPort = ports[Math.floor(Math.random() * ports.length)];
+
 const proxy = {
-    // eslint-disable-next-line no-undef
-    server: process.env.PROXY,
+    server: `gate.smartproxy.com:${randoPort}`,
     // eslint-disable-next-line no-undef
     username: process.env.PROXY_USERNAME,
     // eslint-disable-next-line no-undef
@@ -24,8 +29,7 @@ const launchOptions = {
     proxy: proxy,
 };
 
-const browsers = [chromium, firefox, webkit];
-const randoBrowser = browsers[Math.floor(Math.random() * browsers.length)];
+
 
 const austinResolvers = {
     // 13th Floor
