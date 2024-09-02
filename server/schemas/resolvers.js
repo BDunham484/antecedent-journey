@@ -4,11 +4,14 @@ const Concert = require('../models/Concert');
 const User = require('../models/User');
 const cheerio = require('cheerio');
 const axios = require('axios');
-const {
-    getThirteenthFloorData,
-    getThreeTenAustinCityLimitsLiveData,
-    getABGBData
-} = require('./texasResolvers/austinResolvers/austinResolvers')
+// changelog-start
+const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
+// const {
+//     getThirteenthFloorData,
+//     getThreeTenAustinCityLimitsLiveData,
+//     getABGBData
+// } = require('./texasResolvers/austinResolvers/austinResolvers')
+// changelog-end
 
 const resolvers = {
     Query: {
@@ -825,30 +828,27 @@ const resolvers = {
             return yesterdaysConcerts;
         },
         getAustinTXShowData: async () => {
-            let data = [];
-            let doneZo = false;
+            const austinVenueResolvers = Object.values(austinResolvers);
 
-            // const thirteenthFloorData = await getThirteenthFloorData();
-            // const threeTenAustinCityLimitsLiveData = await getThreeTenAustinCityLimitsLiveData();
-            const aBGBData = await getABGBData();
+            const getResults = async () => {
+                const results = [];
+                for await (const getShowData of austinVenueResolvers) {
+                    const data = await getShowData();
+                    if (data) {
+                        results.push(data);
+                    };
+                };
 
-            if (aBGBData) {
-                data.push(aBGBData);
-                doneZo = true;
-            }
+                return results;
+            };
 
-            // if (
-            //     thirteenthFloorData
-            //     && threeTenAustinCityLimitsLiveData
-            // ) {
-            //     data.push(thirteenthFloorData);
-            //     data.push(threeTenAustinCityLimitsLiveData);
-                // doneZo = true;
-            // }
+            const concerts = await getResults();
 
-            if (doneZo) {
-                return data;
-            }
+            if (concerts) {
+                console.log('👁️👁️👁️👁️ concerts: ', concerts);
+
+                return concerts;
+            };
         },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);
