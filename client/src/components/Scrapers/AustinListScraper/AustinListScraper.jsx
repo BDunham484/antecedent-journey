@@ -10,6 +10,8 @@ const AustinListScraper = ({
 }) => {
   const { loading, error, data } = useQuery(AUSTIN_TX_LIST_SCRAPER);
 
+  console.log('🥷🥷🥷🥷 AustinListScraper');
+
   if (error) {
     console.log("❌❌❌❌ error: ", error);
     setControlSwitch(false);

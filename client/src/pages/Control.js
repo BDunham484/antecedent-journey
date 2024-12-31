@@ -21,6 +21,10 @@ const Control = () => {
 
     var today = getTodaysDate();
 
+    console.log('🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃🎃');
+    console.log('🎃🎃🎃🎃 controlSwitch:', controlSwitch);
+    console.log('🎃🎃🎃🎃 austinScraper:', austinScraper);
+
     return (
         <div>
             <main id={'control-main'}>
@@ -28,6 +32,7 @@ const Control = () => {
                     <h2>AUSTIN</h2>
                     <div className={'control-date'}>{today}</div>
                     <Switch
+                        id='control-switch'
                         onChange={handleControlSwitch}
                         checked={controlSwitch}
                         offColor={'#525050'}

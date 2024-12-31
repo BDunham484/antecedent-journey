@@ -13,27 +13,20 @@ const AustinListDbUpdater = ({
   const [insertError, setInsertError] = useState(undefined);
   const [results, setResults] = useState([]);
 
-  const addUpdate = useCallback(
-    async (arr) => {
+  console.log('✅✅✅✅ austinScraper: ', austinScraper);
+
+  const addUpdate = useCallback(async (showData) => {
       setTimeout(() => setIsUpdaterRunning(true), 500);
       const results = [];
-      console.log('✅✅✅✅ arr: ', arr);
-
-
-      // changelog-start
-      // for (let i = 0; i <= 10; i++) {
-      for (let i = 0; i <= arr.length - 1; i++) {
-        // changelog-end
+      console.log('✅✅✅✅ showData: ', showData);
+      for (let i = 0; i <= showData.length - 1; i++) {
         if (insertError) {
           break;
         }
         try {
           const addEvent = async () => {
-            // changelog-start
-            console.log('🍕🍕🍕🍕 arr[i]: ', arr[i]);
-            // changelog-end
             const response = await addConcert({
-              variables: { ...arr[i] },
+              variables: { ...showData[i] },
             });
             if (response) {
               return response;
@@ -47,23 +40,37 @@ const AustinListDbUpdater = ({
         } catch (err) {
           setInsertError(err);
           console.log("❌❌❌❌");
-          console.log("arr[i]: ", arr[i]);
+          console.log("showData[i]: ", showData[i]);
           console.error(err);
           setControlSwitch(false);
         }
 
-        if (i === arr.length - 1) {
+        if (i === showData.length - 1) {
           setControlSwitch(false);
           setResults(results);
         }
       }
     },
-    [setIsUpdaterRunning, insertError, addConcert, setConcertCount, setControlSwitch]
+    [insertError, addConcert, setConcertCount, setControlSwitch, setIsUpdaterRunning]
   );
 
+  // changelog-start
+  // const testData = useMemo(() => austinScraper[0], [austinScraper]);
+  // const updates = useMemo(() => addUpdate([testData]), [addUpdate, testData]);
+  // const updates = useMemo(async () => await addUpdate([testData]), [addUpdate, testData]);
+  
+  // useMemo(() => addUpdate([testData]), [testData, addUpdate]);
   useMemo(() => addUpdate(austinScraper), [austinScraper, addUpdate]);
+  // changelog-end
+
+  // if (updates) {
+  //   console.log("👁️👁️👁️👁️ updates: ", updates);
+  //   setControlSwitch(false);
+  //   setResults(updates);
+  // }
 
   console.log("👁️👁️👁️👁️ concertCount: ", concertCount);
+  console.log("👁️👁️👁️👁️ results: ", results);
 
   return (
     <>

@@ -6,6 +6,8 @@ const AustinDbUpdater = ({ austinScraper, setTotals, totalConcerts, setControlSw
     const [addConcert] = useMutation(ADD_CONCERT)
     const [concertsAdded, setConcertsAdded] = useState(0);
 
+    console.log('🥷🥷🥷🥷 austinScraper: ', austinScraper);
+
     useEffect(() => {
         const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

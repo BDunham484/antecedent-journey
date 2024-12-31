@@ -290,6 +290,97 @@ const austinResolvers = {
 
         return concerts;
     },
-}
+    // Antone's
+    getAntonesData: async () => {
+        console.log('👁️ Antones');
+        console.log('👁️ launchOptions: ', launchOptions.proxy.server);
+        const browser = await randoBrowser.launch(launchOptions);
+        // // incognito
+        const context = await browser.newContext();
+        context.setDefaultTimeout(240000);
+        const page = await context.newPage();
+
+        await keepTryingPageGoTo(page, 'https://antonesnightclub.com/calendar/');
+        await page.waitForTimeout(6000);
+
+        // Get all event urls
+        const urls = await page.$$eval('.tw-name', concert => {
+            const data = [];
+            concert.forEach(async eventItem => {
+                const artistsEl = eventItem.querySelector('a');
+                const artistsLink = artistsEl ? artistsEl.getAttribute('href') : undefined;
+                data.push(artistsLink);
+            });
+
+            return data;
+        });
+
+        // Loop through event urls and get show-specific data
+        const concerts = [];
+        for await (const url of urls) {
+            const page = await context.newPage();
+            // changelog-start
+            try {
+                await page.goto(url);
+            } catch (e) {
+                if (e) {
+                    const concert = {
+                        artistsLink: url,
+                    };
+                    console.log('🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫🚫');
+                    console.log('🚫🚫🚫🚫 e: ', e);
+                    console.log('🚫🚫🚫🚫 url: ', url);
+                    console.log('🚫🚫🚫🚫 concert: ', concert);
+                    concerts.push(concert);
+                    page.close();
+                    continue;
+                }
+            };
+            // await page.goto(url);
+            // changelog-end
+            await page.waitForTimeout(5000);
+
+            const artistsEl = page.locator('.event-title');
+            const artists = artistsEl ? await artistsEl.innerText() : undefined;
+
+            const dateEl = page.locator('.tw-event-date-complete');
+            const date = dateEl ? await dateEl.innerText() : undefined;
+
+            const timeEl = page.locator('.tw-date-time');
+            const time = timeEl ? await timeEl.allInnerTexts() : undefined;
+
+            let descriptionEl = page.locator('.tw-description');
+            let description = descriptionEl ? await descriptionEl.innerText() : undefined;
+
+            const concert = {
+                artists: artists,
+                artistsLink: url,
+                // changelog-start
+                date: new Date(Date.parse(date)).toDateString(),
+                // date: new Date(Date.parse(date + ', 2024')).toDateString(),
+                // changelog-end
+                times: time[3],
+                venue: 'Antone\'s',
+                description: description,
+            };
+
+            if (concert) {
+                concerts.push(concert);
+                if (concerts.length < urls.length) {
+                    continue;
+                } else if (concerts.length === urls.length) {
+                    sleep(5000);
+                    break;
+                };
+            };
+        };
+        console.log('✅✅✅✅ concerts: ', concerts);
+
+        await context.close();
+        await browser.close();
+
+        return { artists: 'blah_blah_blah'};
+    },
+};
 
 module.exports = austinResolvers;

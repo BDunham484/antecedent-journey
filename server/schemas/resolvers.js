@@ -5,12 +5,10 @@ const User = require('../models/User');
 const cheerio = require('cheerio');
 const axios = require('axios');
 // changelog-start
-const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
-// const {
-//     getThirteenthFloorData,
-//     getThreeTenAustinCityLimitsLiveData,
-//     getABGBData
-// } = require('./texasResolvers/austinResolvers/austinResolvers')
+// const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
+const {
+    getAntonesData
+} = require('./texasResolvers/austinResolvers/austinResolvers')
 // changelog-end
 
 const resolvers = {
@@ -828,29 +826,38 @@ const resolvers = {
             return yesterdaysConcerts;
         },
         getAustinTXShowData: async () => {
-            const austinVenueResolvers = Object.values(austinResolvers);
+            // changelog-start
+            const result = await getAntonesData();
+            if (result) {
+                console.log('✅✅✅✅ result: ', result);
 
-            const getResults = async () => {
-                const results = [];
-                for await (const getShowData of austinVenueResolvers) {
-                    const data = await getShowData();
-                    if (data) {
-                        results.push(data);
-                    };
-                };
+                return result;
+            }
+            // const austinVenueResolvers = Object.values(austinResolvers);
 
-                return results;
-            };
+            // const getResults = async () => {
+            //     const results = [];
+            //     for await (const getShowData of austinVenueResolvers) {
+            //         const data = await getShowData();
+            //         if (data) {
+            //             results.push(data);
+            //         };
+            //     };
 
-            const concerts = await getResults();
+            //     return results;
+            // };
 
-            if (concerts) {
-                console.log('👁️👁️👁️👁️ concerts: ', concerts);
+            // const concerts = await getResults();
 
-                return concerts;
-            };
+            // if (concerts) {
+            //     console.log('👁️👁️👁️👁️ concerts: ', concerts);
+
+            //     return concerts;
+            // };
+            // changelog-end
         },
         getAustinList: async (parent, args) => {
+            console.log('👻👻👻👻👻👻👻👻👻👻👻👻👻👻');
             const { data } = await axios.get(`https://austin.showlists.net/`);
             const $ = cheerio.load(data);
             const showData = [];
@@ -908,7 +915,7 @@ const resolvers = {
                     })
                 })
             });
-            // console.log('🎃🎃🎃🎃 showData: ', showData);
+            console.log('🎃🎃🎃🎃 showData: ', showData[0]);
 
             return showData.length > 0 ? showData : [];
         }
