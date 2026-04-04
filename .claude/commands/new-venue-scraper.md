@@ -6,7 +6,8 @@ Before writing any code, you need three things from the user. If any are missing
 
 1. **Venue name** — display name exactly as it should appear in the `venue` field (e.g. `The 13th Floor`)
 2. **City and state** — determines which city aggregator to wire into (e.g. Austin, TX → `austinResolvers/austinResolvers.js`)
-3. **Venue page source** — the full copy/pasted HTML source from the venue's shows/events page (obtained via DevTools → Elements, or right-click → View Page Source)
+3. **Venue URL** — the shows/events page URL to scrape (used in `page.goto()` / `axios.get()`)
+4. **Venue page source** — the full copy/pasted HTML source from the venue's shows/events page (obtained via DevTools → Elements, or right-click → View Page Source)
 
 Do not ask for rendering type, ticket platform, or selectors — derive these from the source in Step 2.
 
