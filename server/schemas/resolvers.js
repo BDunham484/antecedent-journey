@@ -841,19 +841,11 @@ const resolvers = {
             const showData = [];
             $('div .show-date', data).each((index, value) => {
                 $(value).toArray().map($).map(x => {
-                    // changelog-start
                     const date = x.attr('id');
                     const year = (date).slice(0, 4);
                     const month = (((date).slice(4, 6)) - 1);
                     const day = (date).slice(6);
                     const newDate = new Date(year, month, day).toDateString();
-                    // console.log('🧁🧁🧁🧁 date: ', date);
-                    // console.log('🧁🧁🧁🧁 year: ', year);
-                    // console.log('🧁🧁🧁🧁 month: ', month);
-                    // console.log('🧁🧁🧁🧁 day: ', day);
-                    // console.log('🧁🧁🧁🧁 newDate: ', newDate);
-                    // const date = x.find('h5').text()
-                    // changelog-end
                     x.find('ul .showlist-item').toArray().map($).map(y => {
                         const venueLink = y.find('a:eq(0)').attr('href');
                         const artists = y.find('a:eq(0)').text();
@@ -893,7 +885,11 @@ const resolvers = {
                     })
                 })
             });
-            // console.log('🎃🎃🎃🎃 showData: ', showData);
+
+            console.log('🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇');
+            console.log('🦇🦇🦇🦇 showData: ', showData);
+            console.log('🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇🦇');
+            console.log(' ');
 
             return showData.length > 0 ? showData : [];
         }
@@ -923,65 +919,15 @@ const resolvers = {
         },
         // changelog-start
         addConcert: async (parent, { ...data }) => {
-            const existingConcert = await Concert.findOne({
-                'customId.headliner': data.customId.headliner,
-                'customId.date': data.customId.date,
-                'customId.venue': data.customId.venue
-            });
-
-            const updateOrCreate = async (existingConcert) => {
-                if (existingConcert) {
-                    const savedConcertId = { _id: existingConcert._id };
-
-                    const update = {
-                        artists: data.artists,
-                        venue: data.venue,
-                        date: data.date,
-                        times: data.times,
-                        address: data.address,
-                        address2: data.address2,
-                        phone: data.phone,
-                        website: data.website,
-                        email: data.email,
-                        ticketLink: data.ticketLink,
-                        status: data.status,
-                    };
-
-                    const updatedConcert = await Concert.findByIdAndUpdate(
-                        savedConcertId,
-                        update,
-                        { new: true },
-                    );
-
-                    if (existingConcert.artists.includes('Jesse')) {
-                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾 UPDATE CONCERT: ');
-                        console.log('👾👾👾👾 existingConcert: ', existingConcert);
-                        console.log('👾👾👾👾 savedConcertId: ', savedConcertId);
-                        console.log('👾👾👾👾 update: ', update);
-                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
-                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
-                        console.log('👾👾👾👾 updatedConcert: ', updatedConcert);
-                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
-                        console.log(' ');
-                    }
-
-                    return updatedConcert;
-                    // }
-                } else {
-                    const newConcert = await Concert.create({ ...data });
-                    // .select(-__v);
-                    if (newConcert.artists.includes('Jesse')) {
-                        console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀 SAVED CONCERT: ');
-                        console.log('💀💀💀💀 newConcert: ', newConcert);
-                        console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀');
-                        console.log(' ');
-                    }
-
-                    return newConcert;
-                }
-            };
-
-            const result = await updateOrCreate(existingConcert);
+            const result = await Concert.findOneAndUpdate(
+                {
+                    'customId.headliner': data.customId.headliner,
+                    'customId.date': data.customId.date,
+                    'customId.venue': data.customId.venue
+                },
+                { $set: { ...data } },
+                { upsert: true, new: true }
+            );
 
             return result;
         },

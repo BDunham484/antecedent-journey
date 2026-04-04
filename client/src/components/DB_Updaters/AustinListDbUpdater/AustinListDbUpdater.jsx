@@ -32,8 +32,10 @@ const AustinListDbUpdater = ({
             // changelog-start
             console.log('🍕🍕🍕🍕 arr[i]: ', arr[i]);
             // changelog-end
+            const { __typename, customId, ...rest } = arr[i];
+            const { __typename: _ct, ...cleanCustomId } = customId || {};
             const response = await addConcert({
-              variables: { ...arr[i] },
+              variables: { ...rest, customId: cleanCustomId },
             });
             if (response) {
               return response;

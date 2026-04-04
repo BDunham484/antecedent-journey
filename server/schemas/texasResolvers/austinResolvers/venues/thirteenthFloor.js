@@ -24,7 +24,11 @@ const buildConcertObj = (artists, dateTime, price, ticketLink) => {
 };
 
 const getThirteenthFloorData = async () => {
-    console.log('👁️ 13th Floor');
+    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+    console.log('👁️👁️👁️👁️ 13th Floor');
+    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+    console.log(' ');
+
     const launchOptions = {
         headless: false,
         proxy: {
