@@ -251,7 +251,7 @@ header nav ul li a {
 
 .control-container {
     width: 30vw;
-    min-height: 40vh;
+    height: 52vh;
     border: solid 2px antiquewhite;
     border-radius: 8px;
     background-color: var(--darkest);
@@ -260,6 +260,11 @@ header nav ul li a {
     align-items: center;
     flex-direction: column;
     padding: 3%;
+}
+
+.venue-container {
+  height: auto;
+  min-height: 52vh;
 }
 
 .control-date {
@@ -325,7 +330,7 @@ header nav ul li a {
 
 .venue-status-col .control-status {
   width: auto;
-  min-height: unset;
+  gap: 2vh;
 }
 
 .venue-status-col .status-wrapper {

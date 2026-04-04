@@ -8,7 +8,9 @@ const AustinTXScraper = ({
   setTotalScraped,
   setAustinScraper
 }) => {
-  const { loading, error, data } = useQuery(GET_AUSTIN_TX_SHOW_DATA);
+  const { loading, error, data } = useQuery(GET_AUSTIN_TX_SHOW_DATA, {
+    fetchPolicy: 'network-only',
+  });
 
   if (error) {
     console.log("❌❌❌❌ error: ", error);

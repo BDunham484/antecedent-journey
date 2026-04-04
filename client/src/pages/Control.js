@@ -28,14 +28,24 @@ const Control = () => {
     }
 
     const handleVenueSwitch = () => {
-        venueSwitch ? setVenueSwitch(false) : setVenueSwitch(true)
+        if (venueSwitch) {
+            setVenueSwitch(false);
+            setVenueTotalScraped(0);
+            setVenueConcertCount(0);
+            setIsVenueScraperLoading(false);
+            setIsVenueUpdaterRunning(false);
+            setAustinVenueScraper([]);
+        } else {
+            setVenueSwitch(true);
+        }
     }
 
     const austinVenues = ['The 13th Floor', '29th Street Ballroom'];
 
     const getVenueLightClass = () => {
-        if (venueTotalScraped > 0) return 'light-green';
+        if (!venueSwitch) return 'light-red';
         if (isVenueScraperLoading) return 'light-yellow';
+        if (venueTotalScraped > 0) return 'light-green';
         return 'light-red';
     };
 
@@ -111,7 +121,7 @@ const Control = () => {
                     </div>
 
                     {/* --- AUSTIN: VENUES --- */}
-                    <div className={'control-container'}>
+                    <div className={'control-container venue-container'}>
                         <h2>AUSTIN: VENUES</h2>
                         <div className={'control-date'}>{today}</div>
                         <Switch
