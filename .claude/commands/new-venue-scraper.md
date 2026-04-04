@@ -47,6 +47,38 @@ Identify the best selector to wait on — the container that confirms the dynami
 
 ---
 
+## Patterns and gotchas (learned from live testing)
+
+### Playwright — proxy config must be conditional
+Never pass `proxy` unconditionally. If `PROXY` env var is undefined, Playwright throws `proxy.server: expected string, got undefined`. Always use:
+```js
+const launchOptions = {
+    headless: false,
+    ...(process.env.PROXY && {
+        proxy: {
+            server: process.env.PROXY,
+            username: process.env.PROXY_USERNAME,
+            password: process.env.PROXY_PASSWORD,
+        }
+    }),
+};
+```
+
+### Cheerio/Axios — always wrap the fetch in try/catch
+An uncaught axios error contains circular HTTP request objects (`ClientRequest`, `IncomingMessage`). When it propagates through `Promise.all` to Apollo, it causes `Converting circular structure to JSON` and kills the entire `getAustinTXShowData` response. Always do:
+```js
+let html;
+try {
+    const response = await axios.get(url);
+    html = response.data;
+} catch (e) {
+    console.error('❌❌❌❌ [VENUE] fetch failed:', e.message);
+    return [];
+}
+```
+
+---
+
 ## Step 3 — Confirm query name
 
 Suggest a query name following the pattern `get[VenueName]Data` in camelCase (e.g. `getThirteenthFloorData`, `getMohawkData`, `getStubsData`). Present the suggestion and wait for the user to confirm or provide an override before writing any code.
