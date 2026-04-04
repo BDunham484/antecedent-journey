@@ -285,7 +285,8 @@ const resolvers = {
                             const description = $(this).find('.description').text()
                             const dateTime = $(this).find('.date-time').text()
                             const venue = $(this).find('.venue').text()
-                            //the following 'headliner' block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
+                            // The following 'headliner' block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.
+                            // The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
                             const splitHeadliner = unfilteredHeadliner.split(' ');
@@ -296,13 +297,8 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
-                            const secondSplitHeadliner = headliner.split('');
-                            if (secondSplitHeadliner.includes('/')) {
-                                const slashIndex = secondSplitHeadliner.indexOf('/')
-                                secondSplitHeadliner[slashIndex] = ':'
-                                headliner = secondSplitHeadliner.join('')
-                            }
-                            const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                            headliner = headliner.replace(/\//g, ':')
+                            const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                             let times
@@ -340,14 +336,9 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
-                            const secondSplitHeadliner = headliner.split('');
-                            if (secondSplitHeadliner.includes('/')) {
-                                const slashIndex = secondSplitHeadliner.indexOf('/')
-                                secondSplitHeadliner[slashIndex] = ':'
-                                headliner = secondSplitHeadliner.join('')
-                            }
+                            headliner = headliner.replace(/\//g, ':')
 
-                            const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                            const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                             let times
@@ -495,13 +486,8 @@ const resolvers = {
                                 } else {
                                     headliner = unfilteredHeadliner;
                                 };
-                                const secondSplitHeadliner = headliner.split('');
-                                if (secondSplitHeadliner.includes('/')) {
-                                    const slashIndex = secondSplitHeadliner.indexOf('/')
-                                    secondSplitHeadliner[slashIndex] = ':'
-                                    headliner = secondSplitHeadliner.join('')
-                                }
-                                const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                                headliner = headliner.replace(/\//g, ':')
+                                const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                                 const timeArr = dateTime.split(",")
                                 const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                                 let times
@@ -539,14 +525,9 @@ const resolvers = {
                                 } else {
                                     headliner = unfilteredHeadliner;
                                 };
-                                const secondSplitHeadliner = headliner.split('');
-                                if (secondSplitHeadliner.includes('/')) {
-                                    const slashIndex = secondSplitHeadliner.indexOf('/')
-                                    secondSplitHeadliner[slashIndex] = ':'
-                                    headliner = secondSplitHeadliner.join('')
-                                }
+                                headliner = headliner.replace(/\//g, ':')
 
-                                const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                                const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                                 const timeArr = dateTime.split(",")
                                 const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                                 let times
@@ -696,7 +677,7 @@ const resolvers = {
         //                         secondSplitHeadliner[slashIndex] = ':'
         //                         headliner = secondSplitHeadliner.join('')
         //                     }
-        //                     const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+        //                     const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
         //                     const timeArr = dateTime.split(",")
         //                     const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
         //                     let times
@@ -741,7 +722,7 @@ const resolvers = {
         //                         headliner = secondSplitHeadliner.join('')
         //                     }
 
-        //                     const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+        //                     const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
         //                     const timeArr = dateTime.split(",")
         //                     const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
         //                     let times
@@ -831,7 +812,7 @@ const resolvers = {
 
             console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
             console.log('👁️👁️👁️👁️ data: ', data);
-            
+
             return data;
         },
         getAustinList: async (parent, args) => {
@@ -870,13 +851,8 @@ const resolvers = {
                         } else {
                             headliner = unfilteredHeadliner;
                         };
-                        const secondSplitHeadliner = headliner.split('');
-                        if (secondSplitHeadliner.includes('/')) {
-                            const slashIndex = secondSplitHeadliner.indexOf('/')
-                            secondSplitHeadliner[slashIndex] = ':'
-                            headliner = secondSplitHeadliner.join('')
-                        }
-                        const customId = headliner.split(/[,.'\s]+/).join("") + date.split(/[,.'\s]+/).join("") + venue.split(/[,.'\s]+/).join("")
+                        headliner = headliner.replace(/\//g, ':')
+                        const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
 
                         const testObj = {
                             customId: customId,
@@ -922,15 +898,12 @@ const resolvers = {
         },
         // changelog-start
         addConcert: async (parent, { ...data }) => {
-            // console.log('🍣🍣🍣🍣 data: ', data);
             const existingConcert = await Concert.findOne({ 'customId': data.customId });
 
             const updateOrCreate = async (existingConcert) => {
-                console.log('🧁🧁🧁🧁 existingConcert: ', existingConcert);
-
                 if (existingConcert) {
                     const savedConcertId = { _id: existingConcert._id };
-    
+
                     const update = {
                         artists: data.artists,
                         venue: data.venue,
@@ -943,35 +916,42 @@ const resolvers = {
                         email: data.email,
                         ticketLink: data.ticketLink,
                     };
-    
+
                     const updatedConcert = await Concert.findByIdAndUpdate(
                         savedConcertId,
                         update,
                         { new: true },
                     );
-    
-                    // if (updatedConcert) 
-                    console.log('🗓️🗓️🗓️🗓️ UPDATEDCONCERT');
-                    console.log('🗓️🗓️🗓️🗓️ savedConcertId: ', savedConcertId);
-                    console.log('🗓️🗓️🗓️🗓️ update: ', update);
-                    console.log('🗓️🗓️🗓️🗓️ updatedConcert: ', updatedConcert);
-                    console.log(updatedConcert.artists + ' has been updated');
+
+                    if (existingConcert.artists.includes('George')) {
+                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾 UPDATE CONCERT: ');
+                        console.log('👾👾👾👾 existingConcert: ', existingConcert);
+                        console.log('👾👾👾👾 savedConcertId: ', savedConcertId);
+                        console.log('👾👾👾👾 update: ', update);
+                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+                        console.log('👾👾👾👾 updatedConcert: ', updatedConcert);
+                        console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+                        console.log(' ');
+                    }
 
                     return updatedConcert;
                     // }
                 } else {
                     const newConcert = await Concert.create({ ...data });
                     // .select(-__v);
-                    console.log('💘💘💘💘 SAVEDCONCERT');
-                    console.log(newConcert.artists + ' has been added');
+                    if (newConcert.artists.includes('George')) {
+                        console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀 SAVED CONCERT: ');
+                        console.log('💀💀💀💀 newConcert: ', newConcert);
+                        console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀');
+                        console.log(' ');
+                    }
+
                     return newConcert;
                 }
             };
 
             const result = await updateOrCreate(existingConcert);
-
-            console.log('🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁🧁');
-            console.log('🧁🧁🧁🧁 result: ', result);
 
             return result;
         },
