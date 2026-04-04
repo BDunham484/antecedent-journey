@@ -236,7 +236,17 @@ header nav ul li a {
     align-items: center;
     background-color: var(--background);
     width: 100vw;
-    height: 90vh;
+    min-height: 90vh;
+    padding: 4vh 0;
+    box-sizing: border-box;
+}
+
+.control-panels {
+  display: flex;
+  flex-direction: row;
+  gap: 2vw;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .control-container {
@@ -299,6 +309,74 @@ header nav ul li a {
   cursor: pointer;
 }
 
+.venue-body {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 2vh;
+  gap: 1vw;
+}
+
+.venue-status-col {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.venue-status-col .control-status {
+  width: auto;
+  min-height: unset;
+}
+
+.venue-status-col .status-wrapper {
+  width: auto;
+}
+
+.venue-list-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.4vh;
+}
+
+.venue-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  color: antiquewhite;
+}
+
+.indicator-light {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.light-red {
+  background-color: #c0392b;
+  box-shadow: 0 0 5px 2px rgba(192, 57, 43, 0.65);
+}
+
+.light-yellow {
+  background-color: #f1c40f;
+  box-shadow: 0 0 5px 2px rgba(241, 196, 15, 0.65);
+  animation: pulse-light 1s ease-in-out infinite;
+}
+
+.light-green {
+  background-color: #2ecc71;
+  box-shadow: 0 0 5px 2px rgba(46, 204, 113, 0.65);
+}
+
+@keyframes pulse-light {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
 h2, h3 {
   letter-spacing: 2px;
 }
@@ -336,6 +414,13 @@ footer {
 
 /* MEDIA QUERIES */
 @media screen and (max-width: 500px) {
+  .control-panels {
+    flex-direction: column;
+    align-items: center;
+    gap: 4vh;
+    width: 100%;
+  }
+
   .control-container {
     width: 85%;
     min-height: 50vh;
@@ -351,6 +436,13 @@ footer {
 }
 
 @media screen and (max-width: 800px) and (min-width: 501px) {
+  .control-panels {
+    flex-direction: column;
+    align-items: center;
+    gap: 4vh;
+    width: 100%;
+  }
+
   .control-container {
     width: 85%;
   }
@@ -365,6 +457,13 @@ footer {
 }
 
 @media screen and (max-width: 1024px) and (min-width: 801px) {
+  .control-panels {
+    flex-direction: column;
+    align-items: center;
+    gap: 4vh;
+    width: 100%;
+  }
+
   .control-container {
     width: 65%;
   }

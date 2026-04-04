@@ -303,3 +303,23 @@ query allConcerts {
     }
 }
 `;
+
+export const GET_AUSTIN_TX_SHOW_DATA = gql`
+    query getAustinTXShowData {
+        getAustinTXShowData {
+            customId {
+                headliner
+                date
+                venue
+            }
+            artists
+            date
+            times
+            venue
+            address
+            website
+            ticketLink
+            ticketPrice
+        }
+    }
+`;
