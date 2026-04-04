@@ -7,6 +7,29 @@ const { HttpsProxyAgent } = require('https-proxy-agent');
 const playwright = require('playwright');
 require('dotenv').config();
 
+const venue = 'The 13th Floor';
+
+const buildConcertObj = (artists, dateTime, price, ticketLink) => {
+    const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
+    const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+    const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
+    const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
+    const customId = headliner && dateTime && venue
+        ? headliner.split(/[,.\u2019'\s]+/).join('') + dateTime.split(/[,.\u2019'\s]+/).join('') + venue.split(/[,.\u2019'\s]+/).join('')
+        : null;
+
+    return {
+        customId,
+        artists: cleanArtists,
+        date: dateTime,
+        times: dateTime,
+        venue,
+        ticketPrice: price,
+        ticketLink: ticketLink || null,
+        status,
+    };
+};
+
 const austinResolvers = {
     // 13th Floor
     getThirteenthFloorData: async () => {
@@ -23,58 +46,77 @@ const austinResolvers = {
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto('https://the13thflooraustin.com/');
-        await page.waitForSelector('article');
+        await page.waitForSelector('.dice_events');
 
-        const concerts = await page.$$eval('article', articles => {
-            const data = [];
-            articles.forEach(article => {
-                const dateTimeEl = article.querySelector('time');
-                const dateTime = dateTimeEl ? dateTimeEl.innerText : null;
-                const artistsEl = dateTimeEl ? dateTimeEl.nextSibling : null;
-                const artists = artistsEl ? artistsEl.innerText : null;
-                const priceEl = article.querySelector('.dice_price');
-                const price = priceEl ? priceEl.innerText : null;
+        // --- DICE widget events ---
+        const diceEvents = await page.$$eval('article', articles => {
+            return articles.map(article => {
+                const jsonLd = article.querySelector('script[type="application/ld+json"]');
+                if (jsonLd) {
+                    try {
+                        const data = JSON.parse(jsonLd.innerText)[0];
+                        return {
+                            artists: data.name || null,
+                            dateTime: data.startDate || null,
+                            price: data.offers?.[0]?.price?.toString() || null,
+                            ticketLink: data.offers?.[0]?.url || null,
+                            eventStatus: data.eventStatus || null,
+                        };
+                    } catch (e) {
+                        return null;
+                    }
+                }
+                // fallback to DOM if no JSON-LD
+                const title = article.querySelector('a.dice_event-title');
+                const time = article.querySelector('time');
+                const price = article.querySelector('span.dice_price');
+                const link = article.querySelector('a.dice_book-now');
+                return {
+                    artists: title ? title.innerText : null,
+                    dateTime: time ? time.innerText : null,
+                    price: price ? price.innerText : null,
+                    ticketLink: link ? link.href : null,
+                    eventStatus: null,
+                };
+            }).filter(Boolean);
+        });
 
-                data.push({
-                    dateTime,
-                    artists,
-                    price,
-                });
-            });
-            return data;
+        // --- WordPress show-wrapper events ---
+        const wpEvents = await page.$$eval('div.show-wrapper', wrappers => {
+            return wrappers.map(wrapper => {
+                const divs = wrapper.querySelectorAll(':scope > div');
+                const contentDiv = divs[1];
+                const ps = contentDiv ? contentDiv.querySelectorAll('p') : [];
+                const dateTime = ps[0] ? ps[0].innerText : null;
+                const title = contentDiv ? contentDiv.querySelector('h2') : null;
+                const price = wrapper.querySelector('.show-price');
+                const link = wrapper.querySelector('a.show-button');
+                return {
+                    artists: title ? title.innerText : null,
+                    dateTime: dateTime ? dateTime.trim() : null,
+                    price: price ? price.innerText.trim() : null,
+                    ticketLink: link ? link.href : null,
+                    eventStatus: null,
+                };
+            }).filter(Boolean);
         });
 
         console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 13th Floor: ');
-        console.log('✅✅✅✅ concerts: ', concerts);
+        console.log('✅✅✅✅ diceEvents: ', diceEvents);
+        console.log('✅✅✅✅ wpEvents: ', wpEvents);
         console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
         console.log(' ');
 
         await context.close();
         await browser.close();
 
-        const venue = 'The 13th Floor';
+        const allEvents = [...diceEvents, ...wpEvents];
 
-        return concerts.map(concert => {
-            const { dateTime, artists, price } = concert;
-
-            const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
-            const status = statusMatch ? statusMatch[0].toLowerCase() : null;
-            const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
-
-            const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
-            const customId = headliner && dateTime && venue
-                ? headliner.split(/[,.\u2019'\s]+/).join('') + dateTime.split(/[,.\u2019'\s]+/).join('') + venue.split(/[,.\u2019'\s]+/).join('')
-                : null;
-
-            return {
-                customId,
-                artists: cleanArtists,
-                date: dateTime,
-                times: dateTime,
-                venue,
-                ticketPrice: price,
-                status,
-            };
+        return allEvents.map(event => {
+            const { artists, dateTime, price, ticketLink, eventStatus } = event;
+            const isCancelled = eventStatus === 'EventCancelled';
+            const effectiveArtists = isCancelled ? `CANCELLED: ${artists}` : artists;
+            return buildConcertObj(effectiveArtists, dateTime, price, ticketLink);
         });
     },
 }
