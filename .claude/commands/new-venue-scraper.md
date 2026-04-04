@@ -1,38 +1,67 @@
 Create a new venue scraper file for the noisebx/antecedent-journey project.
 
-## What to do
+## Step 1 — Collect required inputs
 
-Before writing any code, collect the following information. If any item is missing from the user's message, ask for it explicitly before proceeding:
+Before writing any code, you need three things from the user. If any are missing, ask for them all at once:
 
-1. **Venue name** — the display name exactly as it should appear in the `venue` field (e.g. `The 13th Floor`)
+1. **Venue name** — display name exactly as it should appear in the `venue` field (e.g. `The 13th Floor`)
 2. **City and state** — determines which city aggregator to wire into (e.g. Austin, TX → `austinResolvers/austinResolvers.js`)
-3. **Venue URL** — the shows/events page to scrape
-4. **Rendering type** — is the page server-side rendered (use Cheerio + Axios) or JS-rendered (use Playwright)?
-   - If unsure: JS-rendered pages have ticket widgets (DICE, Eventbrite, Ticketmaster), infinite scroll, or show blank content when you `curl` the URL
-5. **Ticket platform** — e.g. DICE, Eventbrite, Ticketmaster, own site. Determines whether JSON-LD structured data is available.
-6. **Selectors** — CSS selectors or DOM structure for: event title/artists, date/time, ticket price, ticket link. If the user hasn't inspected the page yet, note that these will need to be verified via DevTools before finalizing.
-7. **GraphQL query name** — what the resolver query should be called (e.g. `getThirteenthFloorData`). Follow the pattern `get[VenueName]Data` in camelCase.
+3. **Venue page source** — the full copy/pasted HTML source from the venue's shows/events page (obtained via DevTools → Elements, or right-click → View Page Source)
+
+Do not ask for rendering type, ticket platform, or selectors — derive these from the source in Step 2.
 
 ---
 
-## File to create
+## Step 2 — Analyze the source
 
-Create the scraper at:
+Once source is provided, analyze it to determine:
+
+### Rendering type
+- **Cheerio (server-side):** Static HTML — event data is present in the raw source with no widget placeholders
+- **Playwright (JS-rendered):** Source contains ticket widget embed tags, empty container divs that get populated client-side, or script tags loading external ticket platforms (DICE, Eventbrite, Ticketmaster, etc.)
+- **Hybrid:** Some events are static WordPress/CMS blocks, others are widget-rendered — use Playwright and scrape both sections separately (see 13th Floor as the reference implementation in `server/schemas/texasResolvers/austinResolvers/venues/thirteenthFloor.js`)
+- If the source suggests a pattern not covered above, describe what you observe and recommend an approach before proceeding
+
+### Ticket platform
+Identify from script src URLs, embed tags, class names, or JSON-LD `@type` values. Common platforms:
+- **DICE** — `dice.fm`, `dice_events`, `EventListWidget`, JSON-LD `MusicEvent` in `<script type="application/ld+json">` inside `<article>` tags
+- **Eventbrite** — `eventbrite.com`, `.eventbrite-widget`
+- **Ticketmaster** — `ticketmaster.com`, `tm-button`
+- **Tixr** — `tixr.com`
+- **Own site** — no external platform; events are native HTML
+
+### Selectors
+Extract the specific CSS selectors and DOM paths for:
+- Event container (the repeating element per show)
+- Artists / event title
+- Date and time
+- Ticket price
+- Ticket link (href)
+- Event status (cancelled / sold out) — check for JSON-LD `eventStatus`, class names, or text patterns
+
+For DICE specifically: prefer JSON-LD structured data from `article script[type="application/ld+json"]` over DOM scraping. Fall back to DOM only if JSON-LD is absent.
+
+### waitForSelector (Playwright only)
+Identify the best selector to wait on — the container that confirms the dynamic content has loaded.
+
+---
+
+## Step 3 — Confirm query name
+
+Suggest a query name following the pattern `get[VenueName]Data` in camelCase (e.g. `getThirteenthFloorData`, `getMohawkData`, `getStubsData`). Present the suggestion and wait for the user to confirm or provide an override before writing any code.
+
+---
+
+## Step 4 — Create the scraper file
+
+File path:
 ```
 server/schemas/[state]Resolvers/[city]Resolvers/venues/[camelCaseVenueName].js
 ```
 
-Example: 13th Floor Austin TX → `server/schemas/texasResolvers/austinResolvers/venues/thirteenthFloor.js`
-
-### Template — Playwright (JS-rendered)
+The `buildConcertObj` helper is the same across all scrapers — always include it verbatim:
 
 ```js
-const playwright = require('playwright');
-const { buildCustomId } = require('../../../../utils/scraper');
-require('dotenv').config();
-
-const venue = '[VENUE_DISPLAY_NAME]';
-
 const buildConcertObj = (artists, dateTime, price, ticketLink) => {
     const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
     const status = statusMatch ? statusMatch[0].toLowerCase() : null;
@@ -51,137 +80,48 @@ const buildConcertObj = (artists, dateTime, price, ticketLink) => {
         status,
     };
 };
-
-const [QUERY_NAME] = async () => {
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log('👁️👁️👁️👁️ [VENUE_DISPLAY_NAME]');
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log(' ');
-
-    const launchOptions = {
-        headless: false,
-        proxy: {
-            server: process.env.PROXY,
-            username: process.env.PROXY_USERNAME,
-            password: process.env.PROXY_PASSWORD,
-        }
-    };
-    const browser = await playwright.webkit.launch(launchOptions);
-    const context = await browser.newContext();
-    const page = await context.newPage();
-    await page.goto('[VENUE_URL]');
-    await page.waitForSelector('[SELECTOR_TO_WAIT_FOR]');
-
-    const events = await page.$$eval('[EVENT_CONTAINER_SELECTOR]', els => {
-        return els.map(el => {
-            // TODO: fill in selectors after DevTools inspection
-            return {
-                artists: null,
-                dateTime: null,
-                price: null,
-                ticketLink: null,
-                eventStatus: null,
-            };
-        }).filter(Boolean);
-    });
-
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ [VENUE_DISPLAY_NAME]: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
-
-    await context.close();
-    await browser.close();
-
-    return events.map(event => {
-        const { artists, dateTime, price, ticketLink, eventStatus } = event;
-        const isCancelled = eventStatus === 'EventCancelled';
-        const effectiveArtists = isCancelled ? `CANCELLED: ${artists}` : artists;
-        return buildConcertObj(effectiveArtists, dateTime, price, ticketLink);
-    });
-};
-
-module.exports = { [QUERY_NAME] };
 ```
 
-### Template — Cheerio (server-side rendered)
+Use the `require` path depth that matches the actual file location. For files at `austinResolvers/venues/[file].js` the scraper utility path is `../../../../utils/scraper`.
 
+Use the console.log pattern from the reference implementation:
 ```js
-const axios = require('axios');
-const cheerio = require('cheerio');
-const { buildCustomId } = require('../../../../utils/scraper');
-
-const venue = '[VENUE_DISPLAY_NAME]';
-
-const buildConcertObj = (artists, dateTime, price, ticketLink) => {
-    const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
-    const status = statusMatch ? statusMatch[0].toLowerCase() : null;
-    const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
-    const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
-    const customId = headliner && dateTime && venue ? buildCustomId(headliner, dateTime, venue) : null;
-
-    return {
-        customId,
-        artists: cleanArtists,
-        date: dateTime,
-        times: dateTime,
-        venue,
-        ticketPrice: price,
-        ticketLink: ticketLink || null,
-        status,
-    };
-};
-
-const [QUERY_NAME] = async () => {
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log('👁️👁️👁️👁️ [VENUE_DISPLAY_NAME]');
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log(' ');
-
-    const { data } = await axios.get('[VENUE_URL]');
-    const $ = cheerio.load(data);
-    const events = [];
-
-    $('[EVENT_CONTAINER_SELECTOR]').each((i, el) => {
-        // TODO: fill in selectors after DevTools inspection
-        const artists = null;
-        const dateTime = null;
-        const price = null;
-        const ticketLink = null;
-        events.push(buildConcertObj(artists, dateTime, price, ticketLink));
-    });
-
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ [VENUE_DISPLAY_NAME]: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
-
-    return events;
-};
-
-module.exports = { [QUERY_NAME] };
+console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+console.log('👁️👁️👁️👁️ [VENUE_DISPLAY_NAME]');
+console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+console.log(' ');
 ```
+
+And on completion:
+```js
+console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ [VENUE_DISPLAY_NAME]: ');
+console.log('✅✅✅✅ events: ', events);
+console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+console.log(' ');
+```
+
+Fill in all selectors derived from the source. Do not leave TODO placeholders unless the source was genuinely ambiguous — and if so, call out exactly what needs verification.
 
 ---
 
-## Wire into city aggregator
+## Step 5 — Wire into city aggregator
 
-Add the import and export to the city aggregator file (e.g. `austinResolvers/austinResolvers.js`):
+Add to the city aggregator (e.g. `austinResolvers/austinResolvers.js`):
 
 ```js
 const { [QUERY_NAME] } = require('./venues/[camelCaseVenueName]');
 
-const austinResolvers = {
-    // existing venues...
+const [city]Resolvers = {
+    // existing entries...
     [QUERY_NAME],
 };
 ```
 
 ---
 
-## Update typeDefs.js
+## Step 6 — Update typeDefs.js
 
-Add the query to the `Query` type in `server/schemas/typeDefs.js`:
+Add to the `Query` type in `server/schemas/typeDefs.js`:
 
 ```graphql
 [QUERY_NAME]: [Concert]
@@ -189,9 +129,9 @@ Add the query to the `Query` type in `server/schemas/typeDefs.js`:
 
 ---
 
-## Update resolvers.js
+## Step 7 — Update resolvers.js
 
-Add the import from the city aggregator (if not already imported) and add the query handler in the `Query` block:
+Add the import (if the city aggregator isn't already imported) and add the query handler in the `Query` block:
 
 ```js
 [QUERY_NAME]: async (parent, args) => {
@@ -202,9 +142,12 @@ Add the import from the city aggregator (if not already imported) and add the qu
 
 ---
 
-## After creating the files
+## Step 8 — Summarize and prompt to commit
 
-Remind the user:
-- If selectors were left as `TODO`, they need to inspect the venue's events page in DevTools before the scraper will return real data
-- Run the query in Apollo Studio / GraphQL Playground to verify output shape matches the `Concert` type
-- Once verified, commit with: `git add` the new venue file + any modified aggregator/typeDefs/resolvers files
+After all files are written, output a short summary:
+- File created
+- Rendering type and ticket platform identified
+- Selectors used (or flagged as needing verification)
+- Any unusual patterns observed
+
+Then ask: "Ready to commit and push?"
