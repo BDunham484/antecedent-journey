@@ -129,16 +129,9 @@ Add to the `Query` type in `server/schemas/typeDefs.js`:
 
 ---
 
-## Step 7 — Update resolvers.js
+## Step 7 — resolvers.js
 
-Add the import (if the city aggregator isn't already imported) and add the query handler in the `Query` block:
-
-```js
-[QUERY_NAME]: async (parent, args) => {
-    const venueData = await [QUERY_NAME]();
-    return venueData;
-},
-```
+No changes needed. `getAustinTXShowData` (and equivalent city-level resolvers) automatically call all scrapers via `Object.values(austinResolvers).map(scraper => scraper())`. Adding a venue to the city aggregator is sufficient.
 
 ---
 

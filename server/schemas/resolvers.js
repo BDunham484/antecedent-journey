@@ -4,7 +4,7 @@ const Concert = require('../models/Concert');
 const User = require('../models/User');
 const cheerio = require('cheerio');
 const axios = require('axios');
-const { getThirteenthFloorData } = require('./texasResolvers/austinResolvers/austinResolvers');
+const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
 const { normalizeDate, buildCustomId } = require('../utils/scraper');
 
 const resolvers = {
@@ -817,16 +817,21 @@ const resolvers = {
             return yesterdaysConcerts;
         },
         getAustinTXShowData: async (parent, args) => {
-            let data = [];
+            console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+            console.log('👁️👁️👁️👁️ getAustinTXShowData');
+            console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+            console.log(' ');
 
-            const thirteenthFloorData = await getThirteenthFloorData();
+            const results = await Promise.all(
+                Object.values(austinResolvers).map(scraper => scraper())
+            );
 
-            if (thirteenthFloorData) {
-                data.push(thirteenthFloorData);
-            }
+            const data = results.filter(Boolean).flat();
 
-            console.log('👁️👁️👁️👁️ thirteenthFloorData: ', thirteenthFloorData);
-            console.log('👁️👁️👁️👁️ data: ', data);
+            console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ getAustinTXShowData: ');
+            console.log('✅✅✅✅ data: ', data);
+            console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+            console.log(' ');
 
             return data;
         },
