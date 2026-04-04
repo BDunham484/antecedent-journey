@@ -30,11 +30,21 @@ const get29thStreetBallroomData = async () => {
     console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
     console.log(' ');
 
-    const { data: html } = await axios.get('https://www.29thstreetballroom.com/shows');
+    let html;
+    try {
+        const response = await axios.get('https://www.29thstreetballroom.com');
+        html = response.data;
+    } catch (e) {
+        console.error('❌❌❌❌ 29th Street Ballroom fetch failed:', e.message);
+        return [];
+    }
+
     const $ = cheerio.load(html);
 
     const listEl = $('ul.user-items-list-simple[data-current-context]').first();
     const rawContext = listEl.attr('data-current-context');
+
+    console.log('👁️👁️👁️👁️ rawContext found:', !!rawContext);
 
     let userItems = [];
     if (rawContext) {
@@ -42,9 +52,11 @@ const get29thStreetBallroomData = async () => {
             const parsed = JSON.parse(rawContext);
             userItems = parsed.userItems || [];
         } catch (e) {
-            console.error('❌ Failed to parse data-current-context JSON', e);
+            console.error('❌ Failed to parse data-current-context JSON', e.message);
         }
     }
+
+    console.log('👁️👁️👁️👁️ userItems count:', userItems.length);
 
     // Date pattern: matches strings like "April 4, 2026" or "April 4 2026"
     const datePat = /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4}/i;

@@ -31,11 +31,13 @@ const getThirteenthFloorData = async () => {
 
     const launchOptions = {
         headless: false,
-        proxy: {
-            server: process.env.PROXY,
-            username: process.env.PROXY_USERNAME,
-            password: process.env.PROXY_PASSWORD,
-        }
+        ...(process.env.PROXY && {
+            proxy: {
+                server: process.env.PROXY,
+                username: process.env.PROXY_USERNAME,
+                password: process.env.PROXY_PASSWORD,
+            }
+        }),
     };
     const browser = await playwright.webkit.launch(launchOptions);
     const context = await browser.newContext();
