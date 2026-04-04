@@ -76,6 +76,7 @@ const typeDefs = gql`
         austinTxConcertScraper(urlData: [String], date: String, proxy: Proxy): [[Concert]]
         getAustinList: [Concert]
         getAustinTXShowData: [Concert]
+        get29thStreetBallroomData: [Concert]
     }
 
     type Mutation {
