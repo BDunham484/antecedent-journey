@@ -5,7 +5,7 @@ const User = require('../models/User');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const { getThirteenthFloorData } = require('./texasResolvers/austinResolvers/austinResolvers');
-const { normalizeDate } = require('../utils/scraper');
+const { normalizeDate, buildCustomId } = require('../utils/scraper');
 
 const resolvers = {
     Query: {
@@ -303,7 +303,7 @@ const resolvers = {
                             };
                             headliner = headliner.split(/\s+with\s+/i)[0].trim()
                             headliner = headliner.replace(/\//g, ':')
-                            const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+                            const customId = buildCustomId(headliner, date, venue)
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                             let times
@@ -348,7 +348,7 @@ const resolvers = {
                             headliner = headliner.split(/\s+with\s+/i)[0].trim()
                             headliner = headliner.replace(/\//g, ':')
 
-                            const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+                            const customId = buildCustomId(headliner, date, venue)
                             const timeArr = dateTime.split(",")
                             const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                             let times
@@ -499,7 +499,7 @@ const resolvers = {
                                 };
                                 headliner = headliner.split(/\s+with\s+/i)[0].trim()
                                 headliner = headliner.replace(/\//g, ':')
-                                const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+                                const customId = buildCustomId(headliner, date, venue)
                                 const timeArr = dateTime.split(",")
                                 const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                                 let times
@@ -541,7 +541,7 @@ const resolvers = {
                                 headliner = headliner.split(/\s+with\s+/i)[0].trim()
                                 headliner = headliner.replace(/\//g, ':')
 
-                                const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+                                const customId = buildCustomId(headliner, date, venue)
                                 const timeArr = dateTime.split(",")
                                 const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
                                 let times
@@ -692,7 +692,7 @@ const resolvers = {
         //                         secondSplitHeadliner[slashIndex] = ':'
         //                         headliner = secondSplitHeadliner.join('')
         //                     }
-        //                     const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+        //                     const customId = buildCustomId(headliner, date, venue)
         //                     const timeArr = dateTime.split(",")
         //                     const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
         //                     let times
@@ -737,7 +737,7 @@ const resolvers = {
         //                         headliner = secondSplitHeadliner.join('')
         //                     }
 
-        //                     const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+        //                     const customId = buildCustomId(headliner, date, venue)
         //                     const timeArr = dateTime.split(",")
         //                     const timex = /([0-9]|0[0-9]|1[0-9]|2[0-3]):?([0-5]?[0-9]?)\s*([AaPp][Mm])/
         //                     let times
@@ -871,7 +871,7 @@ const resolvers = {
                         };
                         headliner = headliner.split(/\s+with\s+/i)[0].trim()
                         headliner = headliner.replace(/\//g, ':')
-                        const customId = headliner.split(/[,.\u2019'\s]+/).join("") + normalizeDate(date) + venue.split(/[,.\u2019'\s]+/).join("")
+                        const customId = buildCustomId(headliner, date, venue)
 
                         const testObj = {
                             customId: customId,
@@ -918,7 +918,11 @@ const resolvers = {
         },
         // changelog-start
         addConcert: async (parent, { ...data }) => {
-            const existingConcert = await Concert.findOne({ 'customId': data.customId });
+            const existingConcert = await Concert.findOne({
+                'customId.headliner': data.customId.headliner,
+                'customId.date': data.customId.date,
+                'customId.venue': data.customId.venue
+            });
 
             const updateOrCreate = async (existingConcert) => {
                 if (existingConcert) {

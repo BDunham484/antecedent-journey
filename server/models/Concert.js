@@ -5,8 +5,9 @@ const { Schema, model } = require('mongoose');
 const concertSchema = new Schema(
     {
         customId: {
-            type: String,
-            unique: true
+            headliner: { type: String },
+            date: { type: String },
+            venue: { type: String }
         },
         artists: {
             type: String
@@ -75,6 +76,12 @@ const concertSchema = new Schema(
             virtuals: true
         }
     }
+);
+
+// compound unique index replacing the old single-field unique: true on customId string
+concertSchema.index(
+    { 'customId.headliner': 1, 'customId.date': 1, 'customId.venue': 1 },
+    { unique: true }
 );
 
 //get total count of yes rsvp's on retrieval

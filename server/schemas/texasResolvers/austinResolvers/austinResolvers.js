@@ -6,7 +6,7 @@ const { isConstValueNode } = require('graphql');
 const { HttpsProxyAgent } = require('https-proxy-agent');
 const playwright = require('playwright');
 require('dotenv').config();
-const { normalizeDate } = require('../../utils/scraper');
+const { normalizeDate, buildCustomId } = require('../../utils/scraper');
 
 const venue = 'The 13th Floor';
 
@@ -15,10 +15,7 @@ const buildConcertObj = (artists, dateTime, price, ticketLink) => {
     const status = statusMatch ? statusMatch[0].toLowerCase() : null;
     const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
     const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
-    const normalizedDate = normalizeDate(dateTime);
-    const customId = headliner && normalizedDate && venue
-        ? headliner.split(/[,.\u2019'\s]+/).join('') + normalizedDate + venue.split(/[,.\u2019'\s]+/).join('')
-        : null;
+    const customId = headliner && dateTime && venue ? buildCustomId(headliner, dateTime, venue) : null;
 
     return {
         customId,

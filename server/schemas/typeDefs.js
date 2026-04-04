@@ -20,9 +20,21 @@ const typeDefs = gql`
         blockedUsers: [User]
     }
 
+    type CustomId {
+        headliner: String
+        date: String
+        venue: String
+    }
+
+    input CustomIdInput {
+        headliner: String
+        date: String
+        venue: String
+    }
+
     type Concert {
         _id: ID
-        customId: String
+        customId: CustomId
         artists: String
         artistsLink: String
         description: String
@@ -69,8 +81,8 @@ const typeDefs = gql`
     type Mutation {
         login(email: String!, password: String!): Auth
         addUser(username: String!, email: String!, password: String!): Auth
-        addConcert(customId: String, artists: String, venue: String, date: String, times: String, address: String, address2: String, phone: String, website: String, email: String, ticketLink: String, artistsLink: String, status: String): Concert
-        addConcertsToDatabase(customId: String, artists: String, venue: String, date: String, times: String, address: String, address2: String, phone: String, website: String, email: String, ticketLink: String, artistsLink: String, status: String): [Concert]
+        addConcert(customId: CustomIdInput, artists: String, venue: String, date: String, times: String, address: String, address2: String, phone: String, website: String, email: String, ticketLink: String, artistsLink: String, status: String): Concert
+        addConcertsToDatabase(customId: CustomIdInput, artists: String, venue: String, date: String, times: String, address: String, address2: String, phone: String, website: String, email: String, ticketLink: String, artistsLink: String, status: String): [Concert]
         addFriend(friendId: ID!): User
         addFriendByUsername(username: String!): User
         addConcertToUser(concertId: ID!): User

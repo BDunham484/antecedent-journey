@@ -27,4 +27,14 @@ const normalizeDate = (dateStr) => {
     return dateStr.replace(/[^a-zA-Z0-9]/g, '');
 };
 
-module.exports = { normalizeDate };
+/**
+ * Builds a customId object from headliner, date, and venue.
+ * Returns { headliner, date, venue } with normalized values.
+ */
+const buildCustomId = (headliner, date, venue) => ({
+    headliner: headliner ? headliner.split(/[,.\u2019'\s]+/).join('') : '',
+    date: normalizeDate(date),
+    venue: venue ? venue.split(/[,.\u2019'\s]+/).join('') : ''
+});
+
+module.exports = { normalizeDate, buildCustomId };
