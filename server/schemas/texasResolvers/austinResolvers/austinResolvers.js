@@ -10,9 +10,7 @@ require('dotenv').config();
 const austinResolvers = {
     // 13th Floor
     getThirteenthFloorData: async () => {
-        // const proxyAgent = new HttpsProxyAgent(process.env.PROXY_URL);
         console.log('👁️ 13th Floor');
-        // console.log('👁️ proxyAgent: ', proxyAgent);
         const launchOptions = {
             headless: false,
             proxy: {
@@ -21,60 +19,63 @@ const austinResolvers = {
                 password: process.env.PROXY_PASSWORD,
             }
         };
-        console.log('🎃 launch options: ', launchOptions);
         const browser = await playwright.webkit.launch(launchOptions);
-        // incognito
         const context = await browser.newContext();
         const page = await context.newPage();
         await page.goto('https://the13thflooraustin.com/');
-        await page.pause();
-        await page.waitForTimeout(5000);
+        await page.waitForSelector('article');
 
-        const concerts = await page.$$eval('article', concert => {
+        const concerts = await page.$$eval('article', articles => {
             const data = [];
-            concert.forEach(article => {
+            articles.forEach(article => {
                 const dateTimeEl = article.querySelector('time');
-                const dateTime = dateTimeEl ? dateTimeEl.innerText : 'noDice';
-                const artistsEl = dateTimeEl.nextSibling;
-                const artists = artistsEl ? artistsEl.innerText : 'noArtists'
+                const dateTime = dateTimeEl ? dateTimeEl.innerText : null;
+                const artistsEl = dateTimeEl ? dateTimeEl.nextSibling : null;
+                const artists = artistsEl ? artistsEl.innerText : null;
                 const priceEl = article.querySelector('.dice_price');
-                const price = priceEl ? priceEl.innerText : 'noPrice';
-                // const secondDivEl = firstDivEl.querySelector(':scope > div');
-                
-                data.push({
-                    dateTime: dateTime,
-                    artists: artists,
-                    price: price,
-                });
-            })
+                const price = priceEl ? priceEl.innerText : null;
 
+                data.push({
+                    dateTime,
+                    artists,
+                    price,
+                });
+            });
             return data;
         });
-        console.log('✅✅✅✅ concerts: ', concerts);
 
-        // const concerts = await page.$$eval('#dice-event-list-widget > .dice-widget > dice_event-listing-container > .dice_events > article', all_concerts => {
-        //     const data = [];
-        //     all_concerts.forEach(concert => {
-        //         console.log('✅✅✅✅ concert: ', concert);
-        //         data.push(concert);
-        //         // const titleEl = product.querySelector('.a-size-base-plus');
-        //         // const title = titleEl ? titleEl.innerText : null;
-        //         // const priceEl = product.querySelector('.a-price');
-        //         // const price = priceEl ? priceEl.innerText : null;
-        //         // const ratingEl = product.querySelector('.a-icon-alt');
-        //         // const rating = ratingEl ? ratingEl.innerText : null;
-        //         // data.push({ title, price, rating});
-        //     });
-        //     return data;
-        // });
-        // console.log('✅✅✅✅: ', concerts);
+        console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 13th Floor: ');
+        console.log('✅✅✅✅ concerts: ', concerts);
+        console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+        console.log(' ');
+
         await context.close();
         await browser.close();
 
-        // changelog-start
-        const artists = 'testyMctesterson';
-        return { artists: artists };
-        // changelog-end
+        const venue = 'The 13th Floor';
+
+        return concerts.map(concert => {
+            const { dateTime, artists, price } = concert;
+
+            const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
+            const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+            const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
+
+            const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
+            const customId = headliner && dateTime && venue
+                ? headliner.split(/[,.\u2019'\s]+/).join('') + dateTime.split(/[,.\u2019'\s]+/).join('') + venue.split(/[,.\u2019'\s]+/).join('')
+                : null;
+
+            return {
+                customId,
+                artists: cleanArtists,
+                date: dateTime,
+                times: dateTime,
+                venue,
+                ticketPrice: price,
+                status,
+            };
+        });
     },
 }
 
