@@ -22,7 +22,11 @@ export const GET_CONCERTS_BY_DATE = gql`
         concertsFromDb(date: $date) {
             _id
             artists
-            customId
+            customId {
+                headliner
+                date
+                venue
+            }
             date
             times
             venue
@@ -51,7 +55,11 @@ export const GET_URL_ARRAY = gql`
 export const AUSTIN_CONCERT_SCRAPER = gql`
     query austinConcertScraper($date: String) {
         austinConcertScraper(date: $date) {
-            customId
+            customId {
+                headliner
+                date
+                venue
+            }
             artists
             date
             times
@@ -69,7 +77,11 @@ export const AUSTIN_CONCERT_SCRAPER = gql`
 export const AUSTIN_TX_CONCERT_SCRAPER = gql`
     query austinTxConcertScraper($urlData: [String], $date: String, $proxy: Proxy) {
         austinTxConcertScraper(urlData: $urlData, date: $date, proxy: $proxy) {
-            customId
+            customId {
+                headliner
+                date
+                venue
+            }
             artists
             date
             times
@@ -87,7 +99,11 @@ export const AUSTIN_TX_CONCERT_SCRAPER = gql`
 export const AUSTIN_TX_LIST_SCRAPER = gql`
     query getAustinList {
     getAustinList {
-        customId
+        customId {
+            headliner
+            date
+            venue
+        }
         date
         artists
         venue
@@ -228,7 +244,11 @@ export const GET_YESTERDAYS_CONCERTS = gql`
     query getYesterdaysConcerts($date: String!) {
         getYesterdaysConcerts(date: $date) {
             _id
-            customId
+            customId {
+                headliner
+                date
+                venue
+            }
             artists
             address
             phone
@@ -247,7 +267,11 @@ export const GET_CONCERT_BY_ID = gql`
     query concert($concertId: ID!) {
         concert(concertId: $concertId) {
             _id
-            customId
+            customId {
+                headliner
+                date
+                venue
+            }
             artists
             artistsLink
             date
