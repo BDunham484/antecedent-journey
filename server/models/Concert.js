@@ -47,6 +47,10 @@ const concertSchema = new Schema(
         ticketPrice: {
             type: String
         },
+        status: {
+            type: String,
+            default: null
+        },
         yes: [
             {
                 type: Schema.Types.ObjectId,

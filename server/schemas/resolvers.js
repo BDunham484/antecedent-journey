@@ -289,6 +289,9 @@ const resolvers = {
                             // The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
+                            const statusMatch = unfilteredHeadliner.match(/cancelled|sold\s?out/i);
+                            const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+                            unfilteredHeadliner = unfilteredHeadliner.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim();
                             const splitHeadliner = unfilteredHeadliner.split(' ');
                             if (splitHeadliner.includes('w/')) {
                                 const wIndex = splitHeadliner.indexOf('w/')
@@ -297,6 +300,7 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
+                            headliner = headliner.split(/\s+with\s+/i)[0].trim()
                             headliner = headliner.replace(/\//g, ':')
                             const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                             const timeArr = dateTime.split(",")
@@ -315,7 +319,8 @@ const resolvers = {
                                 description,
                                 date,
                                 times,
-                                venue
+                                venue,
+                                status
                             })
                         })
                     } else {
@@ -328,6 +333,9 @@ const resolvers = {
                             //the following headliner block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                             let headliner;
                             let unfilteredHeadliner = artists.split(',')[0];
+                            const statusMatch = unfilteredHeadliner.match(/cancelled|sold\s?out/i);
+                            const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+                            unfilteredHeadliner = unfilteredHeadliner.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim();
                             const splitHeadliner = unfilteredHeadliner.split(' ');
                             if (splitHeadliner.includes('w/')) {
                                 const wIndex = splitHeadliner.indexOf('w/')
@@ -336,6 +344,7 @@ const resolvers = {
                             } else {
                                 headliner = unfilteredHeadliner;
                             };
+                            headliner = headliner.split(/\s+with\s+/i)[0].trim()
                             headliner = headliner.replace(/\//g, ':')
 
                             const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
@@ -355,7 +364,8 @@ const resolvers = {
                                 description,
                                 date,
                                 times,
-                                venue
+                                venue,
+                                status
                             })
                         })
                     }
@@ -486,6 +496,7 @@ const resolvers = {
                                 } else {
                                     headliner = unfilteredHeadliner;
                                 };
+                                headliner = headliner.split(/\s+with\s+/i)[0].trim()
                                 headliner = headliner.replace(/\//g, ':')
                                 const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
                                 const timeArr = dateTime.split(",")
@@ -504,7 +515,8 @@ const resolvers = {
                                     description,
                                     date,
                                     times,
-                                    venue
+                                    venue,
+                                    status
                                 })
                             })
                         } else {
@@ -525,6 +537,7 @@ const resolvers = {
                                 } else {
                                     headliner = unfilteredHeadliner;
                                 };
+                                headliner = headliner.split(/\s+with\s+/i)[0].trim()
                                 headliner = headliner.replace(/\//g, ':')
 
                                 const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
@@ -544,7 +557,8 @@ const resolvers = {
                                     description,
                                     date,
                                     times,
-                                    venue
+                                    venue,
+                                    status
                                 })
                             })
                         }
@@ -843,6 +857,9 @@ const resolvers = {
                         //the following 'headliner' block focuses on finding any instance of 'w/' within `unfiltered headliner` and replaces it with 'with'.  The `headliner` variable is used in the customId which becomes a url for the event.  An `/` within the url causes an error. 
                         let headliner;
                         let unfilteredHeadliner = artists.split(',')[0];
+                        const statusMatch = unfilteredHeadliner.match(/cancelled|sold\s?out/i);
+                        const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+                        unfilteredHeadliner = unfilteredHeadliner.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim();
                         const splitHeadliner = unfilteredHeadliner.split(' ');
                         if (splitHeadliner.includes('w/')) {
                             const wIndex = splitHeadliner.indexOf('w/')
@@ -851,6 +868,7 @@ const resolvers = {
                         } else {
                             headliner = unfilteredHeadliner;
                         };
+                        headliner = headliner.split(/\s+with\s+/i)[0].trim()
                         headliner = headliner.replace(/\//g, ':')
                         const customId = headliner.split(/[,.\u2019'\s]+/).join("") + date.split(/[,.\u2019'\s]+/).join("") + venue.split(/[,.\u2019'\s]+/).join("")
 
@@ -861,6 +879,7 @@ const resolvers = {
                             artists: artists,
                             venue: venue,
                             address: venueAddress,
+                            status: status,
                             // ticketLink: venueLink,
                             // mapLink: mapLink,
                         };
@@ -915,6 +934,7 @@ const resolvers = {
                         website: data.website,
                         email: data.email,
                         ticketLink: data.ticketLink,
+                        status: data.status,
                     };
 
                     const updatedConcert = await Concert.findByIdAndUpdate(
@@ -923,7 +943,7 @@ const resolvers = {
                         { new: true },
                     );
 
-                    if (existingConcert.artists.includes('George')) {
+                    if (existingConcert.artists.includes('Jesse')) {
                         console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾 UPDATE CONCERT: ');
                         console.log('👾👾👾👾 existingConcert: ', existingConcert);
                         console.log('👾👾👾👾 savedConcertId: ', savedConcertId);
@@ -940,7 +960,7 @@ const resolvers = {
                 } else {
                     const newConcert = await Concert.create({ ...data });
                     // .select(-__v);
-                    if (newConcert.artists.includes('George')) {
+                    if (newConcert.artists.includes('Jesse')) {
                         console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀 SAVED CONCERT: ');
                         console.log('💀💀💀💀 newConcert: ', newConcert);
                         console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀');
