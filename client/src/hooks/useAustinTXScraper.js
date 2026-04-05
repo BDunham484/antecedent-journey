@@ -17,6 +17,9 @@ const useAustinTXScraper = () => {
 
     // changelog-start
     console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+    console.log('👾👾👾👾 data: ', data);
+    console.log('👾👾👾👾 scrapeError: ', scrapeError);
+    console.log('👾👾👾👾 scrapeLoading: ', scrapeLoading);
     console.log('👾👾👾👾 scraperData: ', scraperData);
     console.log('👾👾👾👾 scrapeCount: ', scrapeCount);
     console.log('👾👾👾👾 insertLoading: ', insertLoading);
