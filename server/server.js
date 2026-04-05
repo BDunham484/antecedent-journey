@@ -10,6 +10,11 @@ const path = require('path');
 //import Auth middleware
 const { authMiddleware } = require('./utils/auth');
 
+console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀');
+console.log('💀💀💀💀 MONGODB_URI: ' + process.env.MONGODB_URI);
+console.log('💀💀💀💀💀💀💀💀💀💀💀💀💀💀');
+console.log(' ');
+
 // require('./utils/cron')
 
 //set environment variable
