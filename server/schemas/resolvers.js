@@ -2,6 +2,7 @@ const { AuthenticationError } = require('apollo-server-express');
 const { signToken } = require('../utils/auth');
 const Concert = require('../models/Concert');
 const User = require('../models/User');
+const ScrapeMeta = require('../models/ScrapeMeta');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
@@ -892,6 +893,9 @@ const resolvers = {
             console.log(' ');
 
             return showData.length > 0 ? showData : [];
+        },
+        getScrapeMeta: async () => {
+            return ScrapeMeta.findOne() || {};
         }
     },
     Mutation: {
@@ -1348,6 +1352,26 @@ const resolvers = {
                 return user;
             };
             throw new AuthenticationError('You need to be logged in!');
+        },
+        updateScrapeMeta: async (parent, { key, timestamp }) => {
+            const field = key === 'showlist' ? 'lastShowlistScrape' : 'lastVenueScrape';
+            const result = ScrapeMeta.findOneAndUpdate(
+                {},
+                { [field]: timestamp },
+                { upsert: true, new: true }
+            );
+
+            // changelog-start
+            console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
+            console.log('🩻🩻🩻🩻 key: ', key);
+            console.log('🩻🩻🩻🩻 timestamp: ', timestamp);
+            console.log('🩻🩻🩻🩻 field: ', field);
+            console.log('🩻🩻🩻🩻 result: ', result);
+            console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
+            console.log(' ');
+            // changelog-end
+
+            return result;
         }
     }
 };

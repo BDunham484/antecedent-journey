@@ -1,5 +1,14 @@
 import { gql } from '@apollo/client';
 
+export const GET_SCRAPE_META = gql`
+    query getScrapeMeta {
+        getScrapeMeta {
+            lastShowlistScrape
+            lastVenueScrape
+        }
+    }
+`;
+
 export const GET_TODAYS_CONCERTS = gql`
     query concerts($date: String) {
         concerts(date: $date) {

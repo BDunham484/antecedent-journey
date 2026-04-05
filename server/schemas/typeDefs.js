@@ -60,6 +60,11 @@ const typeDefs = gql`
         protocol: String!
     }
 
+    type ScrapeMeta {
+        lastShowlistScrape: String
+        lastVenueScrape: String
+    }
+
     type Query {
         me: User
         users: [User]
@@ -77,6 +82,7 @@ const typeDefs = gql`
         getAustinList: [Concert]
         getAustinTXShowData: [Concert]
         get29thStreetBallroomData: [Concert]
+        getScrapeMeta: ScrapeMeta
     }
 
     type Mutation {
@@ -106,6 +112,7 @@ const typeDefs = gql`
         blockUser(blockedId: ID!): User
         unblockUser(blockedId: ID!): User
         deleteByIndex(index: Int): [String]
+        updateScrapeMeta(key: String!, timestamp: String!): ScrapeMeta
     }
 
     type Auth {

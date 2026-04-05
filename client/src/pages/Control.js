@@ -1,12 +1,29 @@
 // import AustinListDbUpdater from "../components/DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
 // import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
 // import AustinTXScraper from "../components/Scrapers/AustinTXScraper/AustinTXScraper";
-import { useState } from "react";
+import { useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
 import Switch from 'react-switch';
 import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
 import useAustinListScraper from "../hooks/useAustinListScraper";
 import useAustinTXScraper from "../hooks/useAustinTXScraper";
-import { getTodaysDate } from '../utils/helpers';
+// import { UPDATE_SCRAPE_META } from "../utils/mutations";
+import { GET_SCRAPE_META } from "../utils/queries";
+
+const formatScrapeTime = (isoString) => {
+    const date = new Date(isoString);
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const day = days[date.getDay()];
+    const month = months[date.getMonth()];
+    const dateNum = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+    return `${day} ${month} ${dateNum} ${year} ${hours}:${minutes}${ampm}`;
+};
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
@@ -14,6 +31,12 @@ const Control = () => {
     const [isCleanerLoading, setIsCleanerLoading] = useState(false);
 
     const [venueSwitch, setVenueSwitch] = useState(false);
+
+    const { data: scrapeMetaData } = useQuery(GET_SCRAPE_META);
+    // const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META);
+
+    const lastShowlistScrape = scrapeMetaData?.getScrapeMeta?.lastShowlistScrape ?? null;
+    const lastVenueScrape = scrapeMetaData?.getScrapeMeta?.lastVenueScrape ?? null;
 
     // --- hook approach ---
     const {
@@ -31,6 +54,20 @@ const Control = () => {
         scrapeCount: venueTotalScraped,
         insertCount: venueConcertCount,
     } = useAustinTXScraper();
+
+    // changelog-start
+    console.log('⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️');
+    console.log('⚰️⚰️⚰️⚰️ lastShowlistScrape: ', lastShowlistScrape);
+    console.log('⚰️⚰️⚰️⚰️ lastVenueScrape: ', lastVenueScrape);
+    console.log('⚰️⚰️⚰️⚰️ scrapeMetaData: ', scrapeMetaData);
+    console.log('⚰️⚰️⚰️⚰️ totalScraped: ', totalScraped);
+    console.log('⚰️⚰️⚰️⚰️ isScraperLoading: ', isScraperLoading);
+    console.log('⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️');
+    console.log('⚰️⚰️⚰️⚰️ controlSwitch: ', controlSwitch);
+    console.log('⚰️⚰️⚰️⚰️ venueSwitch: ', venueSwitch);
+    console.log('⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️');
+    console.log(' ');
+    // changelog-end
 
     // --- old component approach (kept for reference) ---
     // const [totalScraped, setTotalScraped] = useState(0);
@@ -62,6 +99,30 @@ const Control = () => {
         }
     }
 
+    useEffect(() => {
+        if (venueTotalScraped > 0 && !isVenueUpdaterRunning) {
+            setVenueSwitch(false);
+        }
+    }, [isVenueUpdaterRunning, venueTotalScraped]);
+
+    useEffect(() => {
+        if (totalScraped > 0 && !isUpdaterRunning) {
+            setControlSwitch(false);
+        }
+    }, [isUpdaterRunning, totalScraped]);
+
+    // useEffect(() => {
+    //     if (venueTotalScraped > 0 && !isVenueScraperLoading) {
+    //         updateScrapeMeta({ variables: { key: 'venues', timestamp: new Date().toISOString() } });
+    //     }
+    // }, [isVenueScraperLoading, venueTotalScraped, updateScrapeMeta]);
+
+    // useEffect(() => {
+    //     if (totalScraped > 0 && !isScraperLoading) {
+    //         updateScrapeMeta({ variables: { key: 'showlist', timestamp: new Date().toISOString() } });
+    //     }
+    // }, [isScraperLoading, totalScraped, updateScrapeMeta]);
+
     const austinVenues = ['The 13th Floor', '29th Street Ballroom'];
 
     const getVenueLightClass = () => {
@@ -71,8 +132,6 @@ const Control = () => {
         return 'light-red';
     };
 
-    var today = getTodaysDate();
-
     return (
         <div>
             <main id={'control-main'}>
@@ -81,7 +140,7 @@ const Control = () => {
                     {/* --- AUSTIN: SHOWLIST --- */}
                     <div className={'control-container'}>
                         <h2>AUSTIN: SHOWLIST</h2>
-                        <div className={'control-date'}>{today}</div>
+                        <div className={'control-date'}>{lastShowlistScrape ? `Last scrape: ${formatScrapeTime(lastShowlistScrape)}` : 'Last scrape: --'}</div>
                         <Switch
                             onChange={handleControlSwitch}
                             checked={controlSwitch}
@@ -152,7 +211,7 @@ const Control = () => {
                     {/* --- AUSTIN: VENUES --- */}
                     <div className={'control-container venue-container'}>
                         <h2>AUSTIN: VENUES</h2>
-                        <div className={'control-date'}>{today}</div>
+                        <div className={'control-date'}>{lastVenueScrape ? `Last scrape: ${formatScrapeTime(lastVenueScrape)}` : 'Last scrape: --'}</div>
                         <Switch
                             onChange={handleVenueSwitch}
                             checked={venueSwitch}

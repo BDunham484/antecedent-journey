@@ -1,7 +1,7 @@
+import { useMutation } from "@apollo/client";
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getTodaysDate, getYesterdaysDate } from "../../../utils/helpers";
-import { DELETE_OLD_CONCERTS } from "../../../utils/mutations"
-import { useMemo, useCallback, useEffect, useState } from 'react';
-import { useMutation } from "@apollo/client"
+import { DELETE_OLD_CONCERTS } from "../../../utils/mutations";
 
 const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
     const [deletions, setDeletions] = useState([]);
@@ -31,9 +31,9 @@ const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
 
     const deletedConcerts = useMemo(async () => await deleteThemShits(yesterday), [deleteThemShits, yesterday]);
 
-    console.log('🍕🍕🍕🍕 deletedConcerts: ', deletedConcerts);
-    console.log('🍕🍕🍕🍕 deletions: ', deletions);
-    console.log('🍕🍕🍕🍕 deletions.data: ', deletions.data);
+    // console.log('🍕🍕🍕🍕 deletedConcerts: ', deletedConcerts);
+    // console.log('🍕🍕🍕🍕 deletions: ', deletions);
+    // console.log('🍕🍕🍕🍕 deletions.data: ', deletions.data);
 
     useEffect(() => setCleanCount(deletions.data?.deleteOldConcerts.length), [deletions, setCleanCount]);
 

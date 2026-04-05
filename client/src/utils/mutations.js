@@ -237,3 +237,12 @@ export const UNBLOCK_USER = gql`
         }
     }
 `;
+
+export const UPDATE_SCRAPE_META = gql`
+    mutation updateScrapeMeta($key: String!, $timestamp: String!) {
+        updateScrapeMeta(key: $key, timestamp: $timestamp) {
+            lastShowlistScrape
+            lastVenueScrape
+        }
+    }
+`;
