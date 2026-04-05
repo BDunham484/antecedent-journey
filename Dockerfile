@@ -3,19 +3,16 @@ FROM mcr.microsoft.com/playwright:v1.45.3-jammy
 
 WORKDIR /app
 
-# Copy root package files and install root dev dependencies (concurrently etc.)
+# Copy package files for all three directories before installing
+# This ensures the root install script (cd server && npm i && cd ../client && npm i) can cd into them
 COPY package*.json ./
+COPY server/package*.json ./server/
+COPY client/package*.json ./client/
+
+# Run root install — triggers the install script which installs server and client deps
 RUN npm install
 
-# Install server dependencies
-COPY server/package*.json ./server/
-RUN cd server && npm install
-
-# Install client dependencies
-COPY client/package*.json ./client/
-RUN cd client && npm install --production=false
-
-# Copy all source files
+# Copy all remaining source files
 COPY . .
 
 # Build the React client
