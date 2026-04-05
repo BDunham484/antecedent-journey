@@ -30,7 +30,7 @@ const getThirteenthFloorData = async () => {
     console.log(' ');
 
     const launchOptions = {
-        headless: false,
+        headless: true,
         ...(process.env.PROXY && {
             proxy: {
                 server: process.env.PROXY,
