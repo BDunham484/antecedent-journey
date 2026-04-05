@@ -1,13 +1,15 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { UPDATE_SCRAPE_META } from "../utils/mutations";
-import { GET_AUSTIN_TX_SHOW_DATA } from '../utils/queries';
+import { GET_AUSTIN_TX_SHOW_DATA, GET_SCRAPE_META } from '../utils/queries';
 import useAustinListDbUpdater from './useAustinListDbUpdater';
 
 const useAustinTXScraper = () => {
     const [executeQuery] = useLazyQuery(GET_AUSTIN_TX_SHOW_DATA, { fetchPolicy: 'network-only' });
     const { runInserts, isRunning: insertLoading, insertCount, error: insertError } = useAustinListDbUpdater();
-    const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META);
+    const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META, {
+        refetchQueries: [GET_SCRAPE_META]
+    });
 
     const [scrapeLoading, setScrapeLoading] = useState(false);
     const [scrapeCount, setScrapeCount] = useState(0);
@@ -34,10 +36,11 @@ const useAustinTXScraper = () => {
             setScrapeCount(scraperData?.length);
             setScrapeLoading(false);
             await runInserts(scraperData);
-            await updateScrapeMeta({ variables: { key: 'venues', timestamp: new Date().toISOString() } });
         } catch (err) {
             setScrapeError(err);
             setScrapeLoading(false);
+        } finally {
+            await updateScrapeMeta({ variables: { key: 'venues', timestamp: new Date().toISOString() } });
         }
     };
 

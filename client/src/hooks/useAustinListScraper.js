@@ -1,13 +1,15 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { UPDATE_SCRAPE_META } from "../utils/mutations";
-import { AUSTIN_TX_LIST_SCRAPER } from '../utils/queries';
+import { AUSTIN_TX_LIST_SCRAPER, GET_SCRAPE_META } from '../utils/queries';
 import useAustinListDbUpdater from './useAustinListDbUpdater';
 
 const useAustinListScraper = () => {
     const [executeQuery] = useLazyQuery(AUSTIN_TX_LIST_SCRAPER, { fetchPolicy: 'network-only' });
     const { runInserts, isRunning: insertLoading, insertCount, error: insertError } = useAustinListDbUpdater();
-    const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META);
+    const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META, {
+        refetchQueries: [GET_SCRAPE_META]
+    });
 
     const [scrapeLoading, setScrapeLoading] = useState(false);
     const [scrapeCount, setScrapeCount] = useState(0);
@@ -23,10 +25,11 @@ const useAustinListScraper = () => {
             setScrapeCount(scraperData?.length);
             setScrapeLoading(false);
             await runInserts(scraperData);
-            await updateScrapeMeta({ variables: { key: 'showlist', timestamp: new Date().toISOString() } });
         } catch (err) {
             setScrapeError(err);
             setScrapeLoading(false);
+        } finally {
+            await updateScrapeMeta({ variables: { key: 'showlist', timestamp: new Date().toISOString() } });
         }
     };
 
