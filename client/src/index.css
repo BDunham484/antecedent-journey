@@ -237,7 +237,7 @@ header nav ul li a {
     background-color: var(--background);
     width: 100vw;
     min-height: 90vh;
-    padding: 4vh 0;
+    padding: 16vh 0 4vh 0;
     box-sizing: border-box;
 }
 
@@ -428,6 +428,7 @@ footer {
 
   .control-container {
     width: 85%;
+    height: auto;
     min-height: 50vh;
   }
 
