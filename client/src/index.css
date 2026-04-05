@@ -341,8 +341,9 @@ header nav ul li a {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1.4vh;
+  padding: 1rem 0;
 }
 
 .venue-list-item {
@@ -375,6 +376,10 @@ header nav ul li a {
 .light-green {
   background-color: #2ecc71;
   box-shadow: 0 0 5px 2px rgba(46, 204, 113, 0.65);
+}
+
+.light-idle {
+  background-color: #111111;
 }
 
 @keyframes pulse-light {

@@ -8,13 +8,16 @@ const useAustinListDbUpdater = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [error, setError] = useState(null);
 
-    const runInserts = async (scraperData) => {
-        if (!scraperData || scraperData?.length === 0) return;
-
-        setIsRunning(true);
+    const reset = () => {
         setInsertCount(0);
         setError(null);
-        let count = 0;
+    };
+
+    // Returns true on success, false if an insert error occurred
+    const runInserts = async (scraperData) => {
+        if (!scraperData || scraperData?.length === 0) return true;
+
+        setIsRunning(true);
 
         for (let i = 0; i <= scraperData?.length - 1; i++) {
             try {
@@ -22,21 +25,22 @@ const useAustinListDbUpdater = () => {
                 const { __typename: _ct, ...cleanCustomId } = customId || {};
                 const response = await addConcert({ variables: { ...rest, customId: cleanCustomId } });
                 if (response) {
-                    count++;
-                    setInsertCount(count);
+                    setInsertCount(prev => prev + 1);
                 }
             } catch (err) {
                 console.log('❌❌❌❌ insert error:', err);
                 console.log('❌❌❌❌ scraperData[i]:', scraperData[i]);
                 setError(err);
-                break;
+                setIsRunning(false);
+                return false;
             }
         }
 
         setIsRunning(false);
+        return true;
     };
 
-    return { runInserts, isRunning, insertCount, error };
+    return { runInserts, reset, isRunning, insertCount, error };
 };
 
 export default useAustinListDbUpdater;

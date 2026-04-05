@@ -53,6 +53,7 @@ const Control = () => {
         insertLoading: isVenueUpdaterRunning,
         scrapeCount: venueTotalScraped,
         insertCount: venueConcertCount,
+        venueStatuses,
     } = useAustinTXScraper();
 
     // changelog-start
@@ -125,11 +126,13 @@ const Control = () => {
 
     const austinVenues = ['The 13th Floor', '29th Street Ballroom'];
 
-    const getVenueLightClass = () => {
-        if (!venueSwitch) return 'light-red';
-        if (isVenueScraperLoading || isVenueUpdaterRunning) return 'light-yellow';
-        if (venueTotalScraped > 0) return 'light-green';
-        return 'light-red';
+    const getVenueLightClass = (venue) => {
+        const status = venueStatuses?.[venue];
+        if (!status) return 'light-idle';
+        if (status === 'inserting') return 'light-yellow';
+        if (status === 'success') return 'light-green';
+        if (status === 'error') return 'light-red';
+        return 'light-idle';
     };
 
     return (
@@ -140,7 +143,7 @@ const Control = () => {
                     {/* --- AUSTIN: SHOWLIST --- */}
                     <div className={'control-container'}>
                         <h2>AUSTIN: SHOWLIST</h2>
-                        <div className={'control-date'}>{lastShowlistScrape ? `Last scrape: ${formatScrapeTime(lastShowlistScrape)}` : 'Last scrape: --'}</div>
+                        <div className={'control-date'}>{lastShowlistScrape ? `Last scrape: ${formatScrapeTime(lastShowlistScrape)}` : 'Last run: --'}</div>
                         <Switch
                             onChange={handleControlSwitch}
                             checked={controlSwitch}
@@ -152,6 +155,7 @@ const Control = () => {
                             checkedIcon={false}
                             boxShadow={'#eee3d0'}
                             activeBoxShadow={'#eee3d0'}
+                            disabled={isScraperLoading || isUpdaterRunning || isCleanerLoading}
                         />
                         {controlSwitch &&
                             <CleanByDate
@@ -211,7 +215,7 @@ const Control = () => {
                     {/* --- AUSTIN: VENUES --- */}
                     <div className={'control-container venue-container'}>
                         <h2>AUSTIN: VENUES</h2>
-                        <div className={'control-date'}>{lastVenueScrape ? `Last scrape: ${formatScrapeTime(lastVenueScrape)}` : 'Last scrape: --'}</div>
+                        <div className={'control-date'}>{lastVenueScrape ? `Last run: ${formatScrapeTime(lastVenueScrape)}` : 'Last run: --'}</div>
                         <Switch
                             onChange={handleVenueSwitch}
                             checked={venueSwitch}
@@ -223,6 +227,7 @@ const Control = () => {
                             checkedIcon={false}
                             boxShadow={'#eee3d0'}
                             activeBoxShadow={'#eee3d0'}
+                            disabled={isVenueScraperLoading || isVenueUpdaterRunning}
                         />
                         {/* --- old component approach (kept for reference) ---
                         {venueSwitch &&
@@ -264,7 +269,7 @@ const Control = () => {
                             <div className={'venue-list-col'}>
                                 {austinVenues?.map((v) => (
                                     <div key={v?.replace(/\s+/g, '')} className={'venue-list-item'}>
-                                        <div className={`indicator-light ${getVenueLightClass()}`} />
+                                        <div className={`indicator-light ${getVenueLightClass(v)}`} />
                                         <span>{v}</span>
                                     </div>
                                 ))}
