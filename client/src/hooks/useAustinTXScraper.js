@@ -15,6 +15,17 @@ const useAustinTXScraper = () => {
     const scrapeCount = scraperData?.length;
     const error = scrapeError || insertError || null;
 
+    // changelog-start
+    console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+    console.log('👾👾👾👾 scraperData: ', scraperData);
+    console.log('👾👾👾👾 scrapeCount: ', scrapeCount);
+    console.log('👾👾👾👾 insertLoading: ', insertLoading);
+    console.log('👾👾👾👾 insertCount: ', insertCount);
+    console.log('👾👾👾👾 insertError: ', insertError);
+    console.log('👾👾👾👾👾👾👾👾👾👾👾👾👾👾');
+    console.log(' ');
+    // changelog-end
+
     return { executeQuery, scrapeLoading, insertLoading, scrapeCount, insertCount, error };
 };
 
