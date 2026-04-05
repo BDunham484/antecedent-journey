@@ -1,42 +1,64 @@
-import AustinListDbUpdater from "../components/DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
-import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
-import AustinTXScraper from "../components/Scrapers/AustinTXScraper/AustinTXScraper";
+// import AustinListDbUpdater from "../components/DB_Updaters/AustinListDbUpdater/AustinListDbUpdater";
+// import AustinListScraper from "../components/Scrapers/AustinListScraper/AustinListScraper";
+// import AustinTXScraper from "../components/Scrapers/AustinTXScraper/AustinTXScraper";
+import { useState } from "react";
+import Switch from 'react-switch';
 import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
+import useAustinListScraper from "../hooks/useAustinListScraper";
+import useAustinTXScraper from "../hooks/useAustinTXScraper";
 import { getTodaysDate } from '../utils/helpers';
-import Switch from 'react-switch'
-import { useState } from "react"
 
 const Control = () => {
     const [controlSwitch, setControlSwitch] = useState(false);
-    const [totalScraped, setTotalScraped] = useState(0);
-    const [concertCount, setConcertCount] = useState(0);
     const [cleanCount, setCleanCount] = useState(0);
-    const [isScraperLoading, setIsScraperLoading] = useState(false);
-    const [isUpdaterRunning, setIsUpdaterRunning] = useState(false);
     const [isCleanerLoading, setIsCleanerLoading] = useState(false);
-    const [austinScraper, setAustinScraper] = useState([]);
 
     const [venueSwitch, setVenueSwitch] = useState(false);
-    const [venueTotalScraped, setVenueTotalScraped] = useState(0);
-    const [venueConcertCount, setVenueConcertCount] = useState(0);
-    const [isVenueScraperLoading, setIsVenueScraperLoading] = useState(false);
-    const [isVenueUpdaterRunning, setIsVenueUpdaterRunning] = useState(false);
-    const [austinVenueScraper, setAustinVenueScraper] = useState([]);
+
+    // --- hook approach ---
+    const {
+        executeQuery: runShowlist,
+        scrapeLoading: isScraperLoading,
+        insertLoading: isUpdaterRunning,
+        scrapeCount: totalScraped,
+        insertCount: concertCount,
+    } = useAustinListScraper();
+
+    const {
+        executeQuery: runVenues,
+        scrapeLoading: isVenueScraperLoading,
+        insertLoading: isVenueUpdaterRunning,
+        scrapeCount: venueTotalScraped,
+        insertCount: venueConcertCount,
+    } = useAustinTXScraper();
+
+    // --- old component approach (kept for reference) ---
+    // const [totalScraped, setTotalScraped] = useState(0);
+    // const [concertCount, setConcertCount] = useState(0);
+    // const [isScraperLoading, setIsScraperLoading] = useState(false);
+    // const [isUpdaterRunning, setIsUpdaterRunning] = useState(false);
+    // const [austinScraper, setAustinScraper] = useState([]);
+    // const [venueTotalScraped, setVenueTotalScraped] = useState(0);
+    // const [venueConcertCount, setVenueConcertCount] = useState(0);
+    // const [isVenueScraperLoading, setIsVenueScraperLoading] = useState(false);
+    // const [isVenueUpdaterRunning, setIsVenueUpdaterRunning] = useState(false);
+    // const [austinVenueScraper, setAustinVenueScraper] = useState([]);
 
     const handleControlSwitch = () => {
-        controlSwitch ? setControlSwitch(false) : setControlSwitch(true)
+        if (controlSwitch) {
+            setControlSwitch(false);
+        } else {
+            setControlSwitch(true);
+            runShowlist();
+        }
     }
 
     const handleVenueSwitch = () => {
         if (venueSwitch) {
             setVenueSwitch(false);
-            setVenueTotalScraped(0);
-            setVenueConcertCount(0);
-            setIsVenueScraperLoading(false);
-            setIsVenueUpdaterRunning(false);
-            setAustinVenueScraper([]);
         } else {
             setVenueSwitch(true);
+            runVenues();
         }
     }
 
@@ -44,7 +66,7 @@ const Control = () => {
 
     const getVenueLightClass = () => {
         if (!venueSwitch) return 'light-red';
-        if (isVenueScraperLoading) return 'light-yellow';
+        if (isVenueScraperLoading || isVenueUpdaterRunning) return 'light-yellow';
         if (venueTotalScraped > 0) return 'light-green';
         return 'light-red';
     };
@@ -73,6 +95,13 @@ const Control = () => {
                             activeBoxShadow={'#eee3d0'}
                         />
                         {controlSwitch &&
+                            <CleanByDate
+                                setCleanCount={setCleanCount}
+                                setIsCleanerLoading={setIsCleanerLoading}
+                            />
+                        }
+                        {/* --- old component approach (kept for reference) ---
+                        {controlSwitch &&
                             <div>
                                 <CleanByDate
                                     setCleanCount={setCleanCount}
@@ -84,7 +113,7 @@ const Control = () => {
                                     setTotalScraped={setTotalScraped}
                                     setAustinScraper={setAustinScraper}
                                 />
-                                {austinScraper && austinScraper.length > 0 && (
+                                {austinScraper && austinScraper?.length > 0 && (
                                     <AustinListDbUpdater
                                         austinScraper={austinScraper}
                                         concertCount={concertCount}
@@ -94,7 +123,7 @@ const Control = () => {
                                     />
                                 )}
                             </div>
-                        }
+                        } */}
                         <section className={'control-status'}>
                             <div>
                                 <div className={'status-wrapper'}>
@@ -136,6 +165,7 @@ const Control = () => {
                             boxShadow={'#eee3d0'}
                             activeBoxShadow={'#eee3d0'}
                         />
+                        {/* --- old component approach (kept for reference) ---
                         {venueSwitch &&
                             <div>
                                 <AustinTXScraper
@@ -144,7 +174,7 @@ const Control = () => {
                                     setTotalScraped={setVenueTotalScraped}
                                     setAustinScraper={setAustinVenueScraper}
                                 />
-                                {austinVenueScraper && austinVenueScraper.length > 0 && (
+                                {austinVenueScraper && austinVenueScraper?.length > 0 && (
                                     <AustinListDbUpdater
                                         austinScraper={austinVenueScraper}
                                         concertCount={venueConcertCount}
@@ -154,7 +184,7 @@ const Control = () => {
                                     />
                                 )}
                             </div>
-                        }
+                        } */}
                         <div className={'venue-body'}>
                             <div className={'venue-status-col'}>
                                 <section className={'control-status'}>
@@ -173,8 +203,8 @@ const Control = () => {
                                 </section>
                             </div>
                             <div className={'venue-list-col'}>
-                                {austinVenues.map((v, i) => (
-                                    <div key={i} className={'venue-list-item'}>
+                                {austinVenues?.map((v) => (
+                                    <div key={v?.replace(/\s+/g, '')} className={'venue-list-item'}>
                                         <div className={`indicator-light ${getVenueLightClass()}`} />
                                         <span>{v}</span>
                                     </div>
