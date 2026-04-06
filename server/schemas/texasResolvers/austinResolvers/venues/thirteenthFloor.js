@@ -2,7 +2,7 @@ const playwright = require('playwright');
 const { buildCustomId } = require('../../../../utils/scraper');
 require('dotenv').config();
 
-const venue = 'The 13th Floor';
+const venue = '13th Floor';
 
 const buildConcertObj = (artists, dateTime, price, ticketLink) => {
     const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;

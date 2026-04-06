@@ -3,7 +3,7 @@ const cheerio = require('cheerio');
 const { buildCustomId } = require('../../../../utils/scraper');
 require('dotenv').config();
 
-const venue = 'The ABGB';
+const venue = 'ABGB';
 
 const buildConcertObj = (artists, dateTime, price, ticketLink) => {
     const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
