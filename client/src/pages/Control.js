@@ -12,17 +12,33 @@ import { GET_SCRAPE_META } from "../utils/queries";
 
 const formatScrapeTime = (isoString) => {
     const date = new Date(isoString);
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const day = days[date.getDay()];
-    const month = months[date.getMonth()];
-    const dateNum = String(date.getDate()).padStart(2, '0');
-    const year = date.getFullYear();
+    const now = new Date();
+
+    const sameLocalDate = (a, b) =>
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    let dateLabel;
+    if (sameLocalDate(date, now)) {
+        dateLabel = 'Today';
+    } else if (sameLocalDate(date, yesterday)) {
+        dateLabel = 'Yesterday';
+    } else {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        dateLabel = `${days[date.getDay()]} ${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')} ${date.getFullYear()}`;
+    }
+
     let hours = date.getHours();
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const ampm = hours >= 12 ? 'pm' : 'am';
     hours = hours % 12 || 12;
-    return `${day} ${month} ${dateNum} ${year} ${hours}:${minutes}${ampm}`;
+
+    return `${dateLabel} ${hours}:${minutes}${ampm}`;
 };
 
 const Control = () => {
@@ -145,7 +161,7 @@ const Control = () => {
                     {/* --- AUSTIN: SHOWLIST --- */}
                     <div className={'control-container'}>
                         <h2>AUSTIN: SHOWLIST</h2>
-                        <div className={'control-date'}>{lastShowlistScrape ? `Last scrape: ${formatScrapeTime(lastShowlistScrape)}` : 'Last run: --'}</div>
+                        <div className={'control-date'}>{lastShowlistScrape ? `Last ran: ${formatScrapeTime(lastShowlistScrape)}` : 'Last ran: --'}</div>
                         <Switch
                             onChange={handleControlSwitch}
                             checked={controlSwitch}
@@ -217,7 +233,7 @@ const Control = () => {
                     {/* --- AUSTIN: VENUES --- */}
                     <div className={'control-container venue-container'}>
                         <h2>AUSTIN: VENUES</h2>
-                        <div className={'control-date'}>{lastVenueScrape ? `Last run: ${formatScrapeTime(lastVenueScrape)}` : 'Last run: --'}</div>
+                        <div className={'control-date'}>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
                         <Switch
                             onChange={handleVenueSwitch}
                             checked={venueSwitch}
