@@ -125,7 +125,7 @@ const Control = () => {
     // }, [isScraperLoading, totalScraped, updateScrapeMeta]);
 
     const sortKey = (name) => name.replace(/^The\s+/i, '');
-    const austinVenues = ['13th Floor', '29th Street Ballroom', '3TEN Austin City Limits Live', 'ABGB', "Antone's"]
+    const austinVenues = ['13th Floor', '29th Street Ballroom', '3TEN Austin City Limits Live', 'ABGB', "Antone's", 'Austin City Limits Live at The Moody Theater']
         .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
 
     const getVenueLightClass = (venue) => {
