@@ -124,7 +124,7 @@ const Control = () => {
     //     }
     // }, [isScraperLoading, totalScraped, updateScrapeMeta]);
 
-    const austinVenues = ['The 13th Floor', '29th Street Ballroom', '3TEN Austin City Limits Live', 'The ABGB'];
+    const austinVenues = ['13th Floor', '29th Street Ballroom', '3TEN Austin City Limits Live', 'ABGB', "Antone's"];
 
     const getVenueLightClass = (venue) => {
         const status = venueStatuses?.[venue];
