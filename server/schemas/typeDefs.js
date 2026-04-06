@@ -86,6 +86,7 @@ const typeDefs = gql`
         getTheAbgbData: [Concert]
         getAntonesData: [Concert]
         getMoodyTheaterData: [Concert]
+        getCBoysData: [Concert]
         getScrapeMeta: ScrapeMeta
     }
 
