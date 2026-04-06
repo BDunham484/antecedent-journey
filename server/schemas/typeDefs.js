@@ -82,6 +82,7 @@ const typeDefs = gql`
         getAustinList: [Concert]
         getAustinTXShowData: [Concert]
         get29thStreetBallroomData: [Concert]
+        get3TENAclLiveData: [Concert]
         getScrapeMeta: ScrapeMeta
     }
 
