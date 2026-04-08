@@ -829,10 +829,10 @@ const resolvers = {
 
             const data = results.filter(Boolean).flat();
 
-            console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ getAustinTXShowData: ');
-            console.log('✅✅✅✅ data: ', data);
-            console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-            console.log(' ');
+            // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ getAustinTXShowData: ');
+            // console.log('✅✅✅✅ data: ', data);
+            // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+            // console.log(' ');
 
             return data;
         },
@@ -1362,13 +1362,13 @@ const resolvers = {
             );
 
             // changelog-start
-            console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
-            console.log('🩻🩻🩻🩻 key: ', key);
-            console.log('🩻🩻🩻🩻 timestamp: ', timestamp);
-            console.log('🩻🩻🩻🩻 field: ', field);
-            console.log('🩻🩻🩻🩻 result: ', result);
-            console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
-            console.log(' ');
+            // console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
+            // console.log('🩻🩻🩻🩻 key: ', key);
+            // console.log('🩻🩻🩻🩻 timestamp: ', timestamp);
+            // console.log('🩻🩻🩻🩻 field: ', field);
+            // console.log('🩻🩻🩻🩻 result: ', result);
+            // console.log('🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻🩻');
+            // console.log(' ');
             // changelog-end
 
             return result;
