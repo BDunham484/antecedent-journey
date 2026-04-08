@@ -108,11 +108,11 @@ const getThirteenthFloorData = async () => {
         await browser.close();
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 13th Floor: ');
-    console.log('✅✅✅✅ diceEvents: ', diceEvents);
-    console.log('✅✅✅✅ wpEvents: ', wpEvents);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 13th Floor: ');
+    // console.log('✅✅✅✅ diceEvents: ', diceEvents);
+    // console.log('✅✅✅✅ wpEvents: ', wpEvents);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     const allEvents = [...diceEvents, ...wpEvents];
 

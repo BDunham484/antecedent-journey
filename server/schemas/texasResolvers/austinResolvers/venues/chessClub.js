@@ -87,10 +87,10 @@ const getChessClubData = async () => {
         nextUrl = $('.nav-next a').attr('href') || null;
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Chess Club: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Chess Club: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

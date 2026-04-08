@@ -1,3 +1,4 @@
+const axios = require('axios');
 const playwright = require('playwright');
 const { buildCustomId } = require('../../../../utils/scraper');
 require('dotenv').config();
@@ -5,10 +6,13 @@ require('dotenv').config();
 const venue = "C-Boy's Heart & Soul";
 
 const TIMELY_CALENDAR_URL = 'https://events.timely.fun/r5bk3h1a/';
+const CALENDAR_ID = '54714969';
+const SECONDS_PER_DAY = 86400;
 
-// Direct axios approach failed with 404 — the API requires auth context (cookies/token)
-// that the Angular app sets up at startup. We use Playwright and intercept the events
-// request mid-flight via page.route(), widening the date range to 1 year before it goes out.
+// The Timely API rejects date ranges beyond ~30 days (returns empty data).
+// The API requires an x-api-key header that the Angular app sets at runtime —
+// we use Playwright only to capture that key from the first intercepted request,
+// then close the browser and fetch all 12 monthly windows in parallel via axios.
 
 const buildConcertObj = (artists, dateTime, price, ticketLink) => {
     const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
@@ -45,6 +49,36 @@ const formatStartDatetime = (startDatetime) => {
     return `${monthName} ${day}, ${year} ${hour12}:${minStr} ${ampm}`;
 };
 
+const captureApiKey = async (launchOptions) => {
+    const browser = await playwright.webkit.launch(launchOptions);
+    let apiKey = null;
+
+    try {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
+        await page.route('**/api/calendars/**/events**', async (route) => {
+            if (!apiKey) {
+                const headers = await route.request().headers();
+                apiKey = headers['x-api-key'] || null;
+            }
+            await route.continue();
+        });
+
+        const responsePromise = page.waitForResponse(
+            res => res.url().includes('/api/calendars/') && res.url().includes('/events'),
+            { timeout: 20000 }
+        );
+        await page.goto(TIMELY_CALENDAR_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
+        await responsePromise;
+
+    } finally {
+        await browser.close();
+    }
+
+    return apiKey;
+};
+
 const getCBoysData = async () => {
     console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
     console.log("👁️👁️👁️👁️ C-Boy's Heart & Soul");
@@ -52,8 +86,14 @@ const getCBoysData = async () => {
     console.log(' ');
 
     const now = new Date();
-    const startUtc = Math.floor(now.getTime() / 1000);
-    const endUtc = startUtc + 365 * 24 * 60 * 60; // 1 year out
+    const startOfToday = Math.floor(
+        new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000
+    );
+
+    const chunks = Array.from({ length: 12 }, (_, i) => ({
+        start: startOfToday + i * 30 * SECONDS_PER_DAY,
+        end: startOfToday + (i + 1) * 30 * SECONDS_PER_DAY,
+    }));
 
     const launchOptions = {
         headless: true,
@@ -66,46 +106,50 @@ const getCBoysData = async () => {
         }),
     };
 
-    const browser = await playwright.webkit.launch(launchOptions);
-    let items = null;
-
+    let apiKey;
     try {
-        const context = await browser.newContext();
-        const page = await context.newPage();
-
-        // Intercept the events API request and widen the date range to 1 year
-        await page.route('**/api/calendars/**/events**', async (route) => {
-            const url = new URL(route.request().url());
-            url.searchParams.set('start_date_utc', String(startUtc));
-            url.searchParams.set('end_date_utc', String(endUtc));
-            url.searchParams.delete('view');
-            await route.continue({ url: url.toString() });
-        });
-
-        // Capture the (now widened) response
-        const responsePromise = page.waitForResponse(
-            res => res.url().includes('/api/calendars/') && res.url().includes('/events'),
-            { timeout: 20000 }
-        );
-
-        await page.goto(TIMELY_CALENDAR_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
-
-        const response = await responsePromise;
-        const json = await response.json();
-        items = json?.data?.items ?? null;
-
+        apiKey = await captureApiKey(launchOptions);
     } catch (e) {
-        console.error("❌❌❌❌ [C-Boy's] scrape error:", e.message);
-    } finally {
-        await browser.close();
+        console.error("❌❌❌❌ [C-Boy's] Playwright error:", e.message);
+        return [];
     }
 
-    if (!items || typeof items !== 'object') {
+    if (!apiKey) {
+        console.error("❌❌❌❌ [C-Boy's] failed to capture API key");
+        return [];
+    }
+
+    const axiosHeaders = {
+        'accept': 'application/json, text/plain, */*',
+        'referer': 'https://events.timely.fun/r5bk3h1a/month',
+        'x-api-key': apiKey,
+    };
+
+    const allItemsByDate = {};
+
+    const results = await Promise.all(chunks.map(async ({ start, end }) => {
+        try {
+            const url = `https://events.timely.fun/api/calendars/${CALENDAR_ID}/events?group_by_date=1&timezone=CST6CDT&view=month&per_page=1000&page=1&start_date_utc=${start}&end_date_utc=${end}`;
+            const response = await axios.get(url, { headers: axiosHeaders });
+            return response.data;
+        } catch (e) {
+            console.error("❌❌❌❌ [C-Boy's] chunk fetch failed:", e.message);
+            return null;
+        }
+    }));
+
+    for (const result of results) {
+        if (result?.data?.items && typeof result.data.items === 'object') {
+            Object.assign(allItemsByDate, result.data.items);
+        }
+    }
+
+    if (Object.keys(allItemsByDate).length === 0) {
         console.error("❌❌❌❌ [C-Boy's] no events data captured");
         return [];
     }
 
-    const eventList = Object.values(items).flat();
+    const eventList = Object.values(allItemsByDate).flat();
     const events = [];
 
     for (const event of eventList) {

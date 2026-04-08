@@ -88,10 +88,10 @@ const get3TENAclLiveData = async () => {
         events.push(buildConcertObj(artists, dateTime, null, ticketLink));
     });
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 3TEN Austin City Limits Live: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 3TEN Austin City Limits Live: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

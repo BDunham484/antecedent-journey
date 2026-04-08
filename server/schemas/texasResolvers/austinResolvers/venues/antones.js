@@ -57,10 +57,10 @@ const getAntonesData = async () => {
         events.push(buildConcertObj(title, dateTime, null, ticketLink));
     });
 
-    console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Antone's: ");
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Antone's: ");
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

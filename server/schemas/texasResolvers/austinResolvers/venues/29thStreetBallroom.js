@@ -81,10 +81,10 @@ const get29thStreetBallroomData = async () => {
         return buildConcertObj(artists, dateTime, null, ticketLink);
     }).filter(e => e.artists);
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 29th Street Ballroom: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 29th Street Ballroom: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

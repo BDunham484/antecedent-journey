@@ -80,10 +80,10 @@ const getTheAbgbData = async () => {
         events.push(buildConcertObj(title, dateTime, null, null));
     });
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ The ABGB: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ The ABGB: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

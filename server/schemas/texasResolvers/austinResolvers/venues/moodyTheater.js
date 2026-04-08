@@ -91,10 +91,10 @@ const getMoodyTheaterData = async () => {
         events.push(concertObj);
     });
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Austin City Limits Live at The Moody Theater: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Austin City Limits Live at The Moody Theater: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

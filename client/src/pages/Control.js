@@ -128,20 +128,17 @@ const Control = () => {
         }
     }, [isUpdaterRunning, totalScraped]);
 
-    // useEffect(() => {
-    //     if (venueTotalScraped > 0 && !isVenueScraperLoading) {
-    //         updateScrapeMeta({ variables: { key: 'venues', timestamp: new Date().toISOString() } });
-    //     }
-    // }, [isVenueScraperLoading, venueTotalScraped, updateScrapeMeta]);
-
-    // useEffect(() => {
-    //     if (totalScraped > 0 && !isScraperLoading) {
-    //         updateScrapeMeta({ variables: { key: 'showlist', timestamp: new Date().toISOString() } });
-    //     }
-    // }, [isScraperLoading, totalScraped, updateScrapeMeta]);
-
     const sortKey = (name) => name.replace(/^The\s+/i, '');
-    const austinVenues = ['13th Floor', '29th Street Ballroom', '3TEN Austin City Limits Live', 'ABGB', "Antone's", 'Austin City Limits Live at The Moody Theater', "C-Boy's Heart & Soul", "Chess Club"]
+    const austinVenues = [
+        '13th Floor',
+        '29th Street Ballroom',
+        '3TEN Austin City Limits Live',
+        'ABGB',
+        "Antone's",
+        'Austin City Limits Live at The Moody Theater',
+        "C-Boy's Heart & Soul",
+        "Chess Club",
+    ]
         .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
 
     const getVenueLightClass = (venue) => {
