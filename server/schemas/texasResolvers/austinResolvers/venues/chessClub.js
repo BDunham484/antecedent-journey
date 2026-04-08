@@ -38,25 +38,7 @@ const parseDateTimeText = (rawText) => {
     return `${datePart} ${timePart}`;
 };
 
-const getChessClubData = async () => {
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log('👁️👁️👁️👁️ Chess Club');
-    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
-    console.log(' ');
-
-    let html;
-    try {
-        const response = await axios.get('https://chessclubaustin.com');
-        html = response.data;
-    } catch (e) {
-        console.error('❌❌❌❌ [Chess Club] fetch failed:', e.message);
-        return [];
-    }
-
-    const $ = cheerio.load(html);
-
-    const events = [];
-
+const scrapeEventsFromPage = ($, events) => {
     $('li.recspec-events--event').each((_, el) => {
         const $el = $(el);
 
@@ -79,6 +61,31 @@ const getChessClubData = async () => {
 
         events.push(buildConcertObj(title, dateTime, price, ticketLink));
     });
+};
+
+const getChessClubData = async () => {
+    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+    console.log('👁️👁️👁️👁️ Chess Club');
+    console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
+    console.log(' ');
+
+    const events = [];
+    let nextUrl = 'https://chessclubaustin.com';
+
+    while (nextUrl) {
+        let html;
+        try {
+            const response = await axios.get(nextUrl);
+            html = response.data;
+        } catch (e) {
+            console.error('❌❌❌❌ [Chess Club] fetch failed:', e.message);
+            break;
+        }
+
+        const $ = cheerio.load(html);
+        scrapeEventsFromPage($, events);
+        nextUrl = $('.nav-next a').attr('href') || null;
+    }
 
     console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Chess Club: ');
     console.log('✅✅✅✅ events: ', events);
