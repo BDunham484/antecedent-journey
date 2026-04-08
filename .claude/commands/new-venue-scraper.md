@@ -92,30 +92,18 @@ File path:
 server/schemas/[state]Resolvers/[city]Resolvers/venues/[camelCaseVenueName].js
 ```
 
-The `buildConcertObj` helper is the same across all scrapers — always include it verbatim:
+`buildConcertObj` is a shared factory — do NOT inline it. Import `makeBuildConcertObj` from `concertUtils` and call it once after the `venue` constant:
 
 ```js
-const buildConcertObj = (artists, dateTime, price, ticketLink) => {
-    const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
-    const status = statusMatch ? statusMatch[0].toLowerCase() : null;
-    const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
-    const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
-    const customId = headliner && dateTime && venue ? buildCustomId(headliner, dateTime, venue) : null;
+const { makeBuildConcertObj } = require('../../../../utils/concertUtils');
 
-    return {
-        customId,
-        artists: cleanArtists,
-        date: dateTime,
-        times: dateTime,
-        venue,
-        ticketPrice: price,
-        ticketLink: ticketLink || null,
-        status,
-    };
-};
+const venue = '[VENUE_DISPLAY_NAME]';
+const buildConcertObj = makeBuildConcertObj(venue);
 ```
 
-Use the `require` path depth that matches the actual file location. For files at `austinResolvers/venues/[file].js` the scraper utility path is `../../../../utils/scraper`.
+This handles all date/time parsing, `customId` generation, and status extraction automatically. Do not redefine `buildConcertObj` locally.
+
+Use the `require` path depth that matches the actual file location. For files at `austinResolvers/venues/[file].js` the path is `../../../../utils/concertUtils`.
 
 Use the console.log pattern from the reference implementation:
 ```js

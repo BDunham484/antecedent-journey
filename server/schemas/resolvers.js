@@ -6,7 +6,7 @@ const ScrapeMeta = require('../models/ScrapeMeta');
 const cheerio = require('cheerio');
 const axios = require('axios');
 const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
-const { normalizeDate, buildCustomId } = require('../utils/scraper');
+const { normalizeDate, buildCustomId } = require('../utils/concertUtils');
 
 const resolvers = {
     Query: {

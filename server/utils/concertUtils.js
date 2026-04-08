@@ -46,4 +46,37 @@ const buildCustomId = (headliner, date, venue) => ({
     venue: venue ? venue.split(/[,.\u2019'\s]+/).join('') : ''
 });
 
-module.exports = { normalizeDate, buildCustomId };
+/**
+ * Factory that returns a buildConcertObj function bound to a specific venue.
+ * Parses dateTime into separate date (toDateString format, for querying) and
+ * time (for display) fields.
+ *
+ * Usage: const buildConcertObj = makeBuildConcertObj(venue);
+ */
+const makeBuildConcertObj = (venue) => (artists, dateTime, price, ticketLink) => {
+    const statusMatch = artists ? artists.match(/cancelled|sold\s?out/i) : null;
+    const status = statusMatch ? statusMatch[0].toLowerCase() : null;
+    const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
+    const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
+    const customId = headliner && dateTime && venue ? buildCustomId(headliner, dateTime, venue) : null;
+    const dateStr = dateTime
+        ? (() => {
+            const d = new Date(dateTime.replace(/\s+\d{1,2}:\d{2}.*$/, '').trim());
+            return isNaN(d.getTime()) ? dateTime : d.toDateString();
+        })()
+        : null;
+    const timeStr = dateTime ? (dateTime.match(/\d{1,2}:\d{2}\s*(?:am|pm)?/i)?.[0]?.trim() ?? null) : null;
+
+    return {
+        customId,
+        artists: cleanArtists,
+        date: dateStr,
+        times: timeStr,
+        venue,
+        ticketPrice: price,
+        ticketLink: ticketLink || null,
+        status,
+    };
+};
+
+module.exports = { normalizeDate, buildCustomId, makeBuildConcertObj };
