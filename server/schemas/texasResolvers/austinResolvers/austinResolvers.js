@@ -5,6 +5,7 @@ const { getTheAbgbData } = require('./venues/theAbgb');
 const { getAntonesData } = require('./venues/antones');
 const { getMoodyTheaterData } = require('./venues/moodyTheater');
 const { getCBoysData } = require('./venues/cboys');
+const { getChessClubData } = require('./venues/chessClub');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -14,6 +15,7 @@ const austinResolvers = {
     getAntonesData,
     getMoodyTheaterData,
     getCBoysData,
+    getChessClubData,
 };
 
 module.exports = austinResolvers;
