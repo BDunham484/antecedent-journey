@@ -923,13 +923,17 @@ const resolvers = {
         },
         // changelog-start
         addConcert: async (parent, { ...data }) => {
+            const payload = {
+                ...data,
+                date: data.date ? new Date(data.date) : null,
+            };
             const result = await Concert.findOneAndUpdate(
                 {
-                    'customId.headliner': data.customId.headliner,
-                    'customId.date': data.customId.date,
-                    'customId.venue': data.customId.venue
+                    'customId.headliner': payload.customId.headliner,
+                    'customId.date': payload.customId.date,
+                    'customId.venue': payload.customId.venue
                 },
-                { $set: { ...data } },
+                { $set: { ...payload } },
                 { upsert: true, new: true }
             );
 
@@ -1373,6 +1377,13 @@ const resolvers = {
 
             return result;
         }
-    }
+    },
+    Concert: {
+        date: (parent) => {
+            if (!parent.date) return null;
+            const d = new Date(parent.date);
+            return isNaN(d.getTime()) ? String(parent.date) : d.toISOString();
+        }
+    },
 };
 module.exports = resolvers;
