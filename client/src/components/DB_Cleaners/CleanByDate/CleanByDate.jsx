@@ -1,45 +1,37 @@
 import { useMutation } from "@apollo/client";
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getTodaysDate, getYesterdaysDate } from "../../../utils/helpers";
+import { useCallback, useMemo } from 'react';
 import { DELETE_OLD_CONCERTS } from "../../../utils/mutations";
 
 const CleanByDate = ({ setCleanCount, setIsCleanerLoading }) => {
-    const [deletions, setDeletions] = useState([]);
     const [deleteOldConcerts, { loading }] = useMutation(DELETE_OLD_CONCERTS);
+
     useMemo(() => loading ?
-    setTimeout(() => setIsCleanerLoading(true), 500) :
-    setTimeout(() => setIsCleanerLoading(false), 500)
+        setTimeout(() => setIsCleanerLoading(true), 500) :
+        setTimeout(() => setIsCleanerLoading(false), 500)
     , [loading, setIsCleanerLoading]);
-    const today = useMemo(() => getTodaysDate(), []);
-    const yesterday = useMemo(() => getYesterdaysDate(today), [today]);
+
+    const cutoff = useMemo(() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 1);
+        d.setHours(0, 0, 0, 0);
+        return d.toISOString();
+    }, []);
 
     const deleteThemShits = useCallback(async (date) => {
         try {
-            const results = await deleteOldConcerts({
-                variables: { date: date }
-            });
-            console.log('🍕🍕🍕🍕 results.data: ', results.data);
+            const results = await deleteOldConcerts({ variables: { date } });
             if (results) {
-                setDeletions(results);
+                setCleanCount(results.data?.deleteOldConcerts ?? 0);
             }
-
             return results;
         } catch (err) {
             console.error(err);
         }
-    }, [deleteOldConcerts]);
+    }, [deleteOldConcerts, setCleanCount]);
 
-    const deletedConcerts = useMemo(async () => await deleteThemShits(yesterday), [deleteThemShits, yesterday]);
+    useMemo(async () => await deleteThemShits(cutoff), [deleteThemShits, cutoff]);
 
-    // console.log('🍕🍕🍕🍕 deletedConcerts: ', deletedConcerts);
-    // console.log('🍕🍕🍕🍕 deletions: ', deletions);
-    // console.log('🍕🍕🍕🍕 deletions.data: ', deletions.data);
+    return <></>;
+};
 
-    useEffect(() => setCleanCount(deletions.data?.deleteOldConcerts.length), [deletions, setCleanCount]);
-
-    return (
-        <></>
-    )
-}
-
-export default CleanByDate
+export default CleanByDate;
