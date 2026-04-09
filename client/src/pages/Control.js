@@ -7,6 +7,7 @@ import Switch from 'react-switch';
 import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
 import useAustinListScraper from "../hooks/useAustinListScraper";
 import useAustinTXScraper from "../hooks/useAustinTXScraper";
+import useStaleShowCleaner from "../hooks/useStaleShowCleaner";
 // import { UPDATE_SCRAPE_META } from "../utils/mutations";
 import { GET_SCRAPE_META } from "../utils/queries";
 
@@ -47,6 +48,8 @@ const Control = () => {
     const [isCleanerLoading, setIsCleanerLoading] = useState(false);
 
     const [venueSwitch, setVenueSwitch] = useState(false);
+    const [staleSwitch, setStaleSwitch] = useState(false);
+    const { hasStale, isDeleting, execute } = useStaleShowCleaner();
 
     const { data: scrapeMetaData } = useQuery(GET_SCRAPE_META);
     // const [updateScrapeMeta] = useMutation(UPDATE_SCRAPE_META);
@@ -116,6 +119,13 @@ const Control = () => {
         }
     }
 
+    const handleStaleSwitch = () => {
+        if (!staleSwitch) {
+            setStaleSwitch(true);
+            execute();
+        }
+    };
+
     useEffect(() => {
         if (venueTotalScraped > 0 && !isVenueUpdaterRunning) {
             setVenueSwitch(false);
@@ -127,6 +137,12 @@ const Control = () => {
             setControlSwitch(false);
         }
     }, [isUpdaterRunning, totalScraped]);
+
+    useEffect(() => {
+        if (!isDeleting && staleSwitch) {
+            setStaleSwitch(false);
+        }
+    }, [isDeleting, staleSwitch]);
 
     const sortKey = (name) => name.replace(/^The\s+/i, '');
     const austinVenues = [
@@ -291,6 +307,31 @@ const Control = () => {
                                 ))}
                             </div>
                         </div>
+                    </div>
+
+                    {/* --- STALE SHOWS --- */}
+                    <div className={`control-container${isDeleting ? ' stale-shimmer' : hasStale ? ' stale-alert' : ''}`}>
+                        <h2>STALE SHOWS</h2>
+                        <div className={'control-date'}>
+                            {isDeleting
+                                ? 'Deleting stale shows...'
+                                : hasStale
+                                    ? 'Stale shows detected.'
+                                    : 'No stale shows detected.'}
+                        </div>
+                        <Switch
+                            onChange={handleStaleSwitch}
+                            checked={staleSwitch}
+                            offColor={'#525050'}
+                            onColor={'#525050'}
+                            offHandleColor={'#383737'}
+                            onHandleColor={'#383737'}
+                            uncheckedIcon={false}
+                            checkedIcon={false}
+                            boxShadow={'#eee3d0'}
+                            activeBoxShadow={'#eee3d0'}
+                            disabled={!hasStale || isDeleting}
+                        />
                     </div>
 
                 </div>
