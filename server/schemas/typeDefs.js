@@ -90,6 +90,7 @@ const typeDefs = gql`
         getChessClubData: [Concert]
         getContinentalClubData: [Concert]
         getScrapeMeta: ScrapeMeta
+        hasStaleShows(date: String!): Boolean
     }
 
     type Mutation {

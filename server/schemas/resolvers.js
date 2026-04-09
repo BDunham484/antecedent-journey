@@ -905,6 +905,10 @@ const resolvers = {
         },
         getScrapeMeta: async () => {
             return ScrapeMeta.findOne() || {};
+        },
+        hasStaleShows: async (parent, { date }) => {
+            const found = await Concert.findOne({ date: { $lt: new Date(date) } });
+            return !!found;
         }
     },
     Mutation: {
