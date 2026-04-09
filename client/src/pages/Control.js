@@ -4,7 +4,6 @@
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import Switch from 'react-switch';
-import CleanByDate from "../components/DB_Cleaners/CleanByDate/CleanByDate";
 import useAustinListScraper from "../hooks/useAustinListScraper";
 import useAustinTXScraper from "../hooks/useAustinTXScraper";
 import useStaleShowCleaner from "../hooks/useStaleShowCleaner";
@@ -155,8 +154,7 @@ const Control = () => {
         "C-Boy's Heart & Soul",
         "Chess Club",
         'Continental Club',
-    ]
-        .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
+    ].sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
 
     const getVenueLightClass = (venue) => {
         const status = venueStatuses?.[venue];
@@ -189,12 +187,6 @@ const Control = () => {
                             activeBoxShadow={'#eee3d0'}
                             disabled={isScraperLoading || isUpdaterRunning || isCleanerLoading}
                         />
-                        {controlSwitch &&
-                            <CleanByDate
-                                setCleanCount={setCleanCount}
-                                setIsCleanerLoading={setIsCleanerLoading}
-                            />
-                        }
                         {/* --- old component approach (kept for reference) ---
                         {controlSwitch &&
                             <div>
@@ -220,13 +212,6 @@ const Control = () => {
                             </div>
                         } */}
                         <section className={'control-status'}>
-                            <div>
-                                <div className={'status-wrapper'}>
-                                    <h3 className={'control-status-header'}>CLEAN:</h3>
-                                    <h3 className={'emoji'}>{!controlSwitch ? '🪦' : isCleanerLoading ? '⌛...' : '✅'}</h3>
-                                </div>
-                                <div className="indent">Total: {cleanCount > 0 ? cleanCount : '--'}</div>
-                            </div>
                             <div>
                                 <div className={'status-wrapper'}>
                                     <h3 className={'control-status-header'}>SCRAPE:</h3>

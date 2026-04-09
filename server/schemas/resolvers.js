@@ -114,7 +114,6 @@ const resolvers = {
         },
         //scrape all concerts for the day
         concerts: async (parent, { date }) => {
-            // const date = new Date().toDateString();
             const day = date.slice(8, 10);
             const month = (new Date().getMonth()) + 1;
             const year = new Date().getFullYear();
