@@ -260,11 +260,54 @@ header nav ul li a {
     align-items: center;
     flex-direction: column;
     padding: 3%;
+    position: relative;
+    overflow: hidden;
 }
 
 .venue-container {
   height: auto;
   min-height: 52vh;
+}
+
+.venue-shimmer {
+  border: none !important;
+}
+
+.venue-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    #cc00ff,
+    #4d96ff,
+    #00cfff,
+    #00ff84,
+    #ffd93d,
+    #ff6b6b,
+    #cc00ff
+  );
+  animation: shimmer-border-rotate 4s linear infinite;
+  z-index: 0;
+}
+
+.venue-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: var(--darkest);
+  border-radius: 6px;
+  z-index: 1;
+}
+
+.venue-shimmer > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes shimmer-border-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .control-date {

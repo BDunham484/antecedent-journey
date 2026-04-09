@@ -88,6 +88,7 @@ const typeDefs = gql`
         getMoodyTheaterData: [Concert]
         getCBoysData: [Concert]
         getChessClubData: [Concert]
+        getContinentalClubData: [Concert]
         getScrapeMeta: ScrapeMeta
     }
 

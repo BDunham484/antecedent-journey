@@ -156,7 +156,7 @@ const Control = () => {
                 <div className={'control-panels'}>
 
                     {/* --- AUSTIN: SHOWLIST --- */}
-                    <div className={'control-container'}>
+                    <div className={`control-container${isScraperLoading ? ' venue-shimmer' : ''}`}>
                         <h2>AUSTIN: SHOWLIST</h2>
                         <div className={'control-date'}>{lastShowlistScrape ? `Last ran: ${formatScrapeTime(lastShowlistScrape)}` : 'Last ran: --'}</div>
                         <Switch
@@ -228,7 +228,7 @@ const Control = () => {
                     </div>
 
                     {/* --- AUSTIN: VENUES --- */}
-                    <div className={'control-container venue-container'}>
+                    <div className={`control-container venue-container${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
                         <h2>AUSTIN: VENUES</h2>
                         <div className={'control-date'}>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
                         <Switch
