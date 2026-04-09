@@ -1053,38 +1053,10 @@ const resolvers = {
             return concerts
         },
         deleteOldConcerts: async (parent, { date }) => {
-            //declare empty array for dates
-            const dateArr = [];
-            //function to get the previous date based on the date passed into it
-            const dayBefore = (date) => {
-                const before = new Date(date);
-                before.setDate(before.getDate() - 1);
-                const theLastDay = before.toDateString();
-                return theLastDay;
-            }
-            //save date to another variable for the for loop
-            let arrayDate = date;
-            //for loop that gets previous weeks worth of date and pushes the to array
-            for (let i = 0; i < 180; i++) {
-                let yesterday = dayBefore(arrayDate);
-                dateArr.push(yesterday);
-                arrayDate = yesterday;
-            }
-            const oldConcertsArr = []
-            //map through array of last weeks dates and delete any shows with that date
-            await Promise.all(dateArr.map(async (date) => {
-                const concerts = await Concert.find({ date: date })
-
-                await concerts.map((concert) => {
-                    oldConcertsArr.push(concert._id);
-                })
-            }));
-            const deletedConcerts = await Concert.deleteMany({
-                _id: { $in: oldConcertsArr }
+            const result = await Concert.deleteMany({
+                date: { $lt: new Date(date) }
             });
-            // returns array of deleted dates
-            return dateArr;
-            // return deletedConcerts;
+            return result.deletedCount;
         },
         deleteByIndex: async (parent, { index }) => {
             const concerts = await Concert.find()
