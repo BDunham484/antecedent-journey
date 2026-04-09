@@ -48,7 +48,7 @@ const buildCustomId = (headliner, date, venue) => ({
 
 /**
  * Factory that returns a buildConcertObj function bound to a specific venue.
- * Parses dateTime into separate date (toDateString format, for querying) and
+ * Parses dateTime into separate date (ISO 8601 string, for DB storage) and
  * time (for display) fields.
  *
  * Usage: const buildConcertObj = makeBuildConcertObj(venue);
@@ -62,7 +62,7 @@ const makeBuildConcertObj = (venue) => (artists, dateTime, price, ticketLink) =>
     const dateStr = dateTime
         ? (() => {
             const d = new Date(dateTime.replace(/\s+\d{1,2}:\d{2}.*$/, '').trim());
-            return isNaN(d.getTime()) ? dateTime : d.toDateString();
+            return isNaN(d.getTime()) ? dateTime : d.toISOString();
         })()
         : null;
     const timeStr = dateTime ? (dateTime.match(/\d{1,2}:\d{2}\s*(?:am|pm)?/i)?.[0]?.trim() ?? null) : null;
