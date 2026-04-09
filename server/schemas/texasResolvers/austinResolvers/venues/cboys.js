@@ -178,10 +178,10 @@ const getCBoysData = async () => {
         events.push(buildConcertObj(titleWithStatus, dateTime, cost || null, ticketLink));
     }
 
-    console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ C-Boy's Heart & Soul: ");
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ C-Boy's Heart & Soul: ");
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

@@ -30,7 +30,7 @@ const get29thStreetBallroomData = async () => {
 
     let html;
     try {
-        const response = await axios.get('https://www.29thstreetballroom.com');
+        const response = await axios.get('https://www.29thstreetballroom.com/upcoming');
         html = response.data;
     } catch (e) {
         console.error('❌❌❌❌ 29th Street Ballroom fetch failed:', e.message);
@@ -79,10 +79,10 @@ const get29thStreetBallroomData = async () => {
         return buildConcertObj(artists, dateTime, null, ticketLink);
     }).filter(e => e.artists);
 
-    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 29th Street Ballroom: ');
-    // console.log('✅✅✅✅ events: ', events);
-    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    // console.log(' ');
+    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ 29th Street Ballroom: ');
+    console.log('✅✅✅✅ events: ', events);
+    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    console.log(' ');
 
     return events;
 };
