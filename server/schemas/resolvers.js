@@ -64,8 +64,12 @@ const resolvers = {
         },
         //get all concerts in database
         concertsFromDb: async (parent, { date }) => {
+            const start = new Date(date);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
             const concerts = await Concert.find({
-                date: date
+                date: { $gte: start, $lte: end }
             })
                 .sort({ venue: 'asc' })
                 .populate('yes')
@@ -73,7 +77,7 @@ const resolvers = {
                 .populate('maybe')
                 .exec();
 
-            return concerts
+            return concerts;
         },
         // scrape ip addresses from sslproxies
         ipProxyRotator: async () => {
@@ -812,8 +816,13 @@ const resolvers = {
         // },
         getYesterdaysConcerts: async (parent, { date }) => {
             // console.log('GETYESTERDAYSCONCERTS HAS RUN');
-            const yesterdaysConcerts = await Concert.find({ date: date })
-                .exec();
+            const start = new Date(date);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(date);
+            end.setHours(23, 59, 59, 999);
+            const yesterdaysConcerts = await Concert.find({
+                date: { $gte: start, $lte: end }
+            }).exec();
 
             return yesterdaysConcerts;
         },
