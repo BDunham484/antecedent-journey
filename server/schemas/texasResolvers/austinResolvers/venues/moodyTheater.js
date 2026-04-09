@@ -7,6 +7,16 @@ const venue = 'Austin City Limits Live at The Moody Theater';
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// The Moody Theater shares the exact same CMS as 3TEN (acllive.com). See 3TENAclLive.js
+// for a full explanation of the scraping approach — everything is identical except:
+//   - We filter to data-venue="2" instead of data-venue="3"
+//   - The slug time parser handles half-hours (e.g. "at-7-30-pm" → "7:30 PM"), which
+//     3TEN doesn't need but The Moody does for some shows
+//
+// Server-side rendered — axios + cheerio, no browser needed.
+
 // Parses time from event slug, e.g. "2026-04-08-the-format-at-8-pm" → "8:00 PM"
 // Also handles half-hours: "2026-04-30-maren-morris-at-7-30-pm" → "7:30 PM"
 const parseTimeFromSlug = (slug) => {

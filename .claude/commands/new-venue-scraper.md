@@ -123,6 +123,18 @@ console.log(' ');
 
 Fill in all selectors derived from the source. Do not leave TODO placeholders unless the source was genuinely ambiguous — and if so, call out exactly what needs verification.
 
+After the `buildConcertObj` line and before the main function, add a `HOW THIS SCRAPER WORKS` comment block explaining the scraping process in plain English. Cover:
+- What CMS or platform the venue uses
+- Why you chose axios+cheerio vs Playwright (and what triggers the choice)
+- What selectors are targeted and why any tricky ones work the way they do
+- Any quirks specific to this venue (year inference, slug parsing, pagination, API chunking, etc.)
+
+```js
+// HOW THIS SCRAPER WORKS
+//
+// [Plain-English explanation here. See existing venue files for examples.]
+```
+
 ---
 
 ## Step 5 — Wire into city aggregator
@@ -150,13 +162,28 @@ Add to the `Query` type in `server/schemas/typeDefs.js`:
 
 ---
 
-## Step 7 — resolvers.js
+## Step 7 — Add to venue box in Control.js
+
+Add the venue's display name (exactly matching the `venue` constant in the scraper file) to the `austinVenues` array in `client/src/pages/Control.js`. The array is alphabetically sorted at runtime (ignoring "The" prefixes), so order doesn't matter — just append it:
+
+```js
+const austinVenues = [
+    // existing entries...
+    'Venue Display Name',
+]
+```
+
+This makes the venue appear in the UI status list and wires it into the per-venue insert status indicators.
+
+---
+
+## Step 8 — resolvers.js
 
 No changes needed. `getAustinTXShowData` (and equivalent city-level resolvers) automatically call all scrapers via `Object.values(austinResolvers).map(scraper => scraper())`. Adding a venue to the city aggregator is sufficient.
 
 ---
 
-## Step 8 — Summarize and prompt to commit
+## Step 9 — Summarize and prompt to commit
 
 After all files are written, output a short summary:
 - File created

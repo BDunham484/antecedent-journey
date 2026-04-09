@@ -7,6 +7,25 @@ const venue = 'Chess Club';
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// Chess Club's site runs WordPress with the "recspec-events" plugin for event listings.
+// The page is server-side rendered, so axios + cheerio works — no browser needed.
+//
+// Events are listed as <li class="recspec-events--event"> elements. Within each:
+//   - h2                                         → event/artist title
+//   - time h3                                    → date + time as a single string
+//                                                  (e.g. "Tuesday April 7, 2026 @ 8:00 pm")
+//   - .information a [href]                      → ticket or info link
+//   - .recspec-events--event-content strong/b    → price, identified by starting with "$"
+//                                                  or matching "ALL AGES"
+//
+// The date string includes a day-of-week prefix and uses "@" to separate date from time.
+// parseDateTimeText() strips the day-of-week and reformats it to "Month DD, YYYY HH:MM am/pm".
+//
+// The site paginates — older shows appear on subsequent pages linked via .nav-next a.
+// We loop through all pages until there's no next-page link, collecting events from each.
+
 // Parses "Tuesday April 7, 2026 @ 8:00 pm" → "April 7, 2026 8:00 pm"
 const parseDateTimeText = (rawText) => {
     if (!rawText) return null;

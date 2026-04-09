@@ -7,6 +7,26 @@ const venue = 'ABGB';
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// The ABGB uses a custom events page that is server-side rendered. Axios + cheerio
+// is sufficient — no browser needed.
+//
+// Each event is a <section> inside div.events-holder. Within each section:
+//   - h2                              → event/artist title
+//   - p.event-main-text.event-day     → date string (e.g. "Wednesday April 8th")
+//   - p.event-main-text.event-time    → time range (e.g. "07:00 PM - 09:00 PM")
+//
+// Two quirks require helper functions:
+//   1. The date string includes a day-of-week prefix and ordinal suffixes (1st, 2nd, etc.)
+//      that need to be stripped before parsing. parseDateText() handles this and also
+//      infers the year — the site only shows month and day, so we assume the current year
+//      and bump to next year if the date has already passed.
+//   2. The time is a range ("07:00 PM - 09:00 PM"), but we only want the start time.
+//      parseStartTime() splits on " - " and takes the first part.
+//
+// Price and ticket links are not listed on this page, so both are passed as null.
+
 // Parses "Wednesday April 8th" → "April 8, YYYY"
 // Infers year: current year, bumped to next year if date is already past
 const parseDateText = (rawDate) => {

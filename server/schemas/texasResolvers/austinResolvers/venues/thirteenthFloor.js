@@ -6,6 +6,26 @@ const venue = '13th Floor';
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// The 13th Floor website is WordPress-based and hosts two different kinds of event listings
+// on the same page, so we scrape both separately and merge the results.
+//
+// 1. DICE widget events — The venue uses a DICE.fm ticket widget that injects <article> tags
+//    into the page. Each article contains a <script type="application/ld+json"> block with
+//    structured event data (name, startDate, ticket offers). We prefer this JSON-LD because
+//    it's reliable and consistently formatted. If an article doesn't have JSON-LD, we fall
+//    back to scraping the DOM directly (title link, time element, price span, buy button).
+//
+// 2. WordPress show-wrapper events — Some shows are listed as native WordPress blocks using
+//    a custom "show-wrapper" div structure (not DICE). We scrape these separately by reading
+//    the h2 title, first <p> for date/time, .show-price, and .show-button link.
+//
+// Because the page is JavaScript-rendered (the DICE widget loads client-side), we use
+// Playwright to fully load the page in a headless browser and wait for .dice_events to
+// appear before scraping. Once the DOM is ready, all extraction happens in-browser via
+// page.$$eval(), which runs the selector logic inside the page context.
+
 const getThirteenthFloorData = async () => {
     console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
     console.log('👁️👁️👁️👁️ 13th Floor');

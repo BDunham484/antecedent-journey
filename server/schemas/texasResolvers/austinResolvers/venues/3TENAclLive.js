@@ -7,6 +7,26 @@ const venue = '3TEN Austin City Limits Live';
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// 3TEN and The Moody Theater share the same custom CMS at acllive.com. The page is
+// server-side rendered, so axios + cheerio works fine — no browser needed.
+//
+// Both venues' events appear on the same page (acllive.com/events/venue/...), but each
+// event element carries a data-venue attribute identifying which room it belongs to.
+// We filter to data-venue="3" (3TEN) and ignore everything else.
+//
+// Within each .eventItem:
+//   - h3.title a                  → headline artist
+//   - h4.tagline                  → support acts (appended to title if present)
+//   - .m-date__month/day/year     → date components, assembled into "Month DD, YYYY"
+//   - h3.title a [href]           → event URL slug, from which we parse the start time
+//   - .buttons a.tickets [href]   → relative ticket link, prepended with the domain
+//   - .buttons a.tickets [class]  → checked for soldout/cancelled keywords
+//
+// Time is not in the DOM as a readable string — it's encoded in the event URL slug
+// (e.g. "2026-04-10-earlybirds-club-at-6-pm"). parseTimeFromSlug() extracts it.
+
 // Parses time from event slug, e.g. "2026-04-10-earlybirds-club-at-6-pm" → "6:00 PM"
 const parseTimeFromSlug = (slug) => {
     const match = slug.match(/at-(\d+)-(am|pm)$/i);

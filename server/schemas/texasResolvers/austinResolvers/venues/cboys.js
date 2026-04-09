@@ -5,6 +5,28 @@ require('dotenv').config();
 
 const venue = "C-Boy's Heart & Soul";
 
+// HOW THIS SCRAPER WORKS
+//
+// C-Boy's embeds a Timely calendar widget (events.timely.fun) on their site.
+// The event data lives behind a private REST API that requires an x-api-key header.
+// That key is not in the page source — it's injected at runtime by the Timely Angular app.
+//
+// Step 1 — Capture the API key with Playwright:
+//   We launch a headless browser, navigate to the Timely calendar URL, and intercept
+//   outgoing network requests. The first request to /api/calendars/.../events carries
+//   the x-api-key header we need. Once captured, we close the browser immediately.
+//
+// Step 2 — Fetch all events via axios:
+//   The Timely API silently returns empty data for date ranges longer than ~30 days.
+//   To get a full year of shows, we split the range into 12 consecutive 30-day chunks
+//   and fire all 12 requests in parallel with Promise.all. Each response has a
+//   data.items object keyed by date, containing arrays of event objects. We merge all
+//   chunks into a single date-keyed object, flatten to a list, filter out past events,
+//   and build concert objects from each.
+//
+// Key fields from the Timely API response:
+//   title, start_datetime, cost, cost_external_url, url, event_status
+
 const TIMELY_CALENDAR_URL = 'https://events.timely.fun/r5bk3h1a/';
 const CALENDAR_ID = '54714969';
 const SECONDS_PER_DAY = 86400;

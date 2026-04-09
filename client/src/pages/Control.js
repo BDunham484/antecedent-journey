@@ -138,6 +138,7 @@ const Control = () => {
         'Austin City Limits Live at The Moody Theater',
         "C-Boy's Heart & Soul",
         "Chess Club",
+        'Continental Club',
     ]
         .sort((a, b) => sortKey(a).localeCompare(sortKey(b)));
 

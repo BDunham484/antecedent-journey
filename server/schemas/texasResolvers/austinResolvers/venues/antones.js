@@ -7,6 +7,22 @@ const venue = "Antone's";
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
+// HOW THIS SCRAPER WORKS
+//
+// Antone's runs WordPress with a TixManager ticketing plugin. The events page is
+// server-side rendered, so axios + cheerio is sufficient — no browser needed.
+//
+// Each event lives inside a <div id="tw-event-dialog-{id}"> element. Within that div:
+//   - .tw-name a         → artist/event title
+//   - .tw-event-date     → date string (e.g. "Friday, April 10, 2026")
+//   - .tw-event-time-complete → time string (e.g. "8:00 PM")
+//   - .tw-buy-tix-btn    → ticket purchase link
+//
+// Date and time are scraped separately and concatenated into a single dateTime string.
+// Price is not available on the listing page, so it's passed as null.
+// Sold-out status note: TixManager sometimes uses an en-dash (–) in the sold-out
+// button text rather than a regular hyphen, which can trip up naive text matching.
+
 const getAntonesData = async () => {
     console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
     console.log("👁️👁️👁️👁️ Antone's");

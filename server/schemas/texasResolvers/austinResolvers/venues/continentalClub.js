@@ -5,15 +5,23 @@ require('dotenv').config();
 
 const venue = 'Continental Club';
 
-// Continental Club embeds a Timely calendar filtered to a specific venue ID.
-// The Timely API requires an x-api-key that is set at runtime by the Angular embed.
-// We use Playwright only to capture that key (and the numeric calendar ID) from
-// the first intercepted API request, then close the browser and fetch all 12
-// 30-day windows in parallel via axios.
+// HOW THIS SCRAPER WORKS
 //
-// Timely rejects date ranges beyond ~30 days (returns empty data).
+// Continental Club uses the same Timely calendar platform as C-Boy's. See cboys.js for
+// a full explanation of the Playwright key-capture + parallel axios fetch pattern.
+//
+// The key differences from C-Boy's:
+//   - The Timely account (calendar slug: 74avt53i) hosts multiple venues. We add
+//     venues=678194628 to every API request to filter results to Continental Club Austin
+//     only (venue ID and calendar ID confirmed via DevTools interception on 2026-04-08).
+//   - The calendar ID is hardcoded (54714987) since we confirmed it during development.
+//     C-Boy's extracts it dynamically, but that's only necessary when the ID is unknown.
+//
+// Key fields from the Timely API response:
+//   title, start_datetime, cost (free-text string), cost_external_url, url, event_status
 
 const TIMELY_CALENDAR_URL = 'https://events.timely.fun/74avt53i/?venues=678194628&nofilters=1';
+const CALENDAR_ID = '54714987';
 const VENUE_ID = '678194628';
 const SECONDS_PER_DAY = 86400;
 
@@ -35,10 +43,9 @@ const formatStartDatetime = (startDatetime) => {
     return `${monthName} ${day}, ${year} ${hour12}:${minStr} ${ampm}`;
 };
 
-const captureApiCredentials = async (launchOptions) => {
+const captureApiKey = async (launchOptions) => {
     const browser = await playwright.webkit.launch(launchOptions);
     let apiKey = null;
-    let calendarId = null;
 
     try {
         const context = await browser.newContext();
@@ -48,8 +55,6 @@ const captureApiCredentials = async (launchOptions) => {
             if (!apiKey) {
                 const headers = await route.request().headers();
                 apiKey = headers['x-api-key'] || null;
-                const match = route.request().url().match(/\/api\/calendars\/(\d+)\/events/);
-                if (match) calendarId = match[1];
             }
             await route.continue();
         });
@@ -65,7 +70,7 @@ const captureApiCredentials = async (launchOptions) => {
         await browser.close();
     }
 
-    return { apiKey, calendarId };
+    return apiKey;
 };
 
 const getContinentalClubData = async () => {
@@ -95,16 +100,16 @@ const getContinentalClubData = async () => {
         }),
     };
 
-    let apiKey, calendarId;
+    let apiKey;
     try {
-        ({ apiKey, calendarId } = await captureApiCredentials(launchOptions));
+        apiKey = await captureApiKey(launchOptions);
     } catch (e) {
         console.error('❌❌❌❌ [Continental Club] Playwright error:', e.message);
         return [];
     }
 
-    if (!apiKey || !calendarId) {
-        console.error('❌❌❌❌ [Continental Club] failed to capture API credentials');
+    if (!apiKey) {
+        console.error('❌❌❌❌ [Continental Club] failed to capture API key');
         return [];
     }
 
@@ -118,7 +123,7 @@ const getContinentalClubData = async () => {
 
     const results = await Promise.all(chunks.map(async ({ start, end }) => {
         try {
-            const url = `https://events.timely.fun/api/calendars/${calendarId}/events?group_by_date=1&timezone=CST6CDT&view=month&per_page=1000&page=1&start_date_utc=${start}&end_date_utc=${end}&venues=${VENUE_ID}`;
+            const url = `https://events.timely.fun/api/calendars/${CALENDAR_ID}/events?group_by_date=1&venues=${VENUE_ID}&timezone=America/Chicago&view=month&per_page=1000&page=1&start_date_utc=${start}&end_date_utc=${end}`;
             const response = await axios.get(url, { headers: axiosHeaders });
             return response.data;
         } catch (e) {
