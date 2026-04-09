@@ -12,6 +12,15 @@ export const getTodaysDate = () => {
     return date;
 }
 
+export const formatConcertDate = (isoString) => {
+    if (!isoString) return '--';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return isoString;
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${days[date.getDay()]} ${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')} ${date.getFullYear()}`;
+};
 
 export const createProxyObject = (data) => {
     let randomNumber = Math.floor(Math.random() * 100);

@@ -332,3 +332,9 @@ export const GET_AUSTIN_TX_SHOW_DATA = gql`
         }
     }
 `;
+
+export const GET_HAS_STALE_SHOWS = gql`
+    query hasStaleShows($date: String!) {
+        hasStaleShows(date: $date)
+    }
+`;
