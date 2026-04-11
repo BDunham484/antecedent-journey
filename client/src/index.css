@@ -1,13 +1,42 @@
 :root {
+  /* === CORE COLORS === */
   --background: #000;
   --dark: #525050;
   --darker: #383737;
   --darkest: #202020;
   --main-text: #EEE3D0;
+  --accent: antiquewhite;
   --button: #386472;
   --cancel: #a23e25;
-  --primary-font: 'Kodchasan', sans-serif;
-  --secondary-font: 'Bungee Hairline', cursive;
+
+  /* === TYPOGRAPHY === */
+  --font-primary: 'Kodchasan', sans-serif;
+  --font-secondary: 'Bungee Hairline', cursive;
+  --font-body: 'Montserrat', sans-serif;
+
+  /* === INDICATOR LIGHTS === */
+  --indicator-success: #2ecc71;
+  --indicator-success-glow: rgba(46, 204, 113, 0.65);
+  --indicator-warning: #f1c40f;
+  --indicator-warning-glow: rgba(241, 196, 15, 0.65);
+  --indicator-danger: #c0392b;
+  --indicator-danger-glow: rgba(192, 57, 43, 0.65);
+  --indicator-idle: #111111;
+
+  /* === STALE / ALERT === */
+  --stale-primary: #8b1a1a;
+  --stale-secondary: #c0392b;
+  --stale-tertiary: #e74c3c;
+  --stale-glow: rgba(192, 57, 43, 0.35);
+  --stale-glow-hidden: rgba(139, 26, 26, 0);
+
+  /* === SHIMMER === */
+  --shimmer-purple: #cc00ff;
+  --shimmer-blue: #4d96ff;
+  --shimmer-cyan: #00cfff;
+  --shimmer-green: #00ff84;
+  --shimmer-yellow: #ffd93d;
+  --shimmer-red: #ff6b6b;
 }
 
 * {
@@ -86,7 +115,7 @@ a {
 
 .form-card p {
   margin-top: 4vh;
-  font-family: var(--primary-font);
+  font-family: var(--font-primary);
   font-size: 25px;
   letter-spacing: 5px;
 }
@@ -97,7 +126,7 @@ a {
   flex-direction: column;
   align-items: center;
   margin: 2vh 8vh 0 8vh;
-  font-family: var(--secondary-font);
+  font-family: var(--font-secondary);
 } */
 
 .form-div {
@@ -106,11 +135,11 @@ a {
   flex-direction: column;
   align-items: center;
   margin: 2vh 8vh 0 8vh;
-  font-family: var(--secondary-font);
+  font-family: var(--font-secondary);
 }
 
 .form-card label {
-  font-family: var(--secondary-font);
+  font-family: var(--font-secondary);
   letter-spacing: 3px;
   font-weight: bold;
 }
@@ -129,7 +158,7 @@ a {
   border: none;
   border-radius: 10px;
   color: var(--main-text);
-  font-family: var(--secondary-font);
+  font-family: var(--font-secondary);
   font-weight: bold;
   letter-spacing: 3px;
   font-size: 20px;
