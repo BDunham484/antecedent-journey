@@ -119,75 +119,97 @@ const Control = () => {
                 <div className='control-panels'>
                     {/* --- STALE SHOWS --- */}
                     <div className={`control-container${isDeleting ? ' stale-shimmer' : hasStale ? ' stale-alert' : ''}`}>
-                        <h2>STALE SHOWS</h2>
-                        <div className='control-date'>
-                            {isDeleting
-                                ? 'Deleting stale shows...'
-                                : hasStale
-                                    ? 'Stale shows detected.'
-                                    : 'No stale shows detected.'}
+                        <div className='control-header'>
+                            <div>
+                                <h2>STALE SHOWS</h2>
+                                <div>
+                                    {isDeleting
+                                        ? 'Deleting stale shows...'
+                                        : hasStale
+                                            ? 'Stale shows detected.'
+                                            : 'No stale shows detected.'}
+                                </div>
+                            </div>
+                            <Switch
+                                {...switchTheme}
+                                onChange={handleStaleSwitch}
+                                checked={staleSwitch}
+                                disabled={!hasStale || isDeleting}
+                            />
                         </div>
-                        <Switch
-                            {...switchTheme}
-                            onChange={handleStaleSwitch}
-                            checked={staleSwitch}
-                            disabled={!hasStale || isDeleting}
-                        />
                     </div>
                     {/* --- AUSTIN: SHOWLIST --- */}
                     <div className={`control-container${isScraperLoading ? ' venue-shimmer' : ''}`}>
-                        <h2>AUSTIN: SHOWLIST</h2>
-                        <div className={'control-date'}>{lastShowlistScrape ? `Last ran: ${formatScrapeTime(lastShowlistScrape)}` : 'Last ran: --'}</div>
-                        <Switch
-                            {...switchTheme}
-                            onChange={handleControlSwitch}
-                            checked={controlSwitch}
-                            disabled={isScraperLoading || isUpdaterRunning}
-                        />
+                        <div className='control-header'>
+                            <div>
+                                <h2>AUSTIN: SHOWLIST</h2>
+                                <div>{lastShowlistScrape ? `Last ran: ${formatScrapeTime(lastShowlistScrape)}` : 'Last ran: --'}</div>
+                            </div>
+                            <Switch
+                                {...switchTheme}
+                                onChange={handleControlSwitch}
+                                checked={controlSwitch}
+                                disabled={isScraperLoading || isUpdaterRunning}
+                            />
+                        </div>
                         <section className='control-status'>
                             <div>
                                 <div className='status-wrapper'>
-                                    <h3 className='control-status-header'>SCRAPE:</h3>
+                                    <h3>SCRAPE: {totalScraped > 0 ? totalScraped : '--'}</h3>
                                     <h3 className='emoji'>{!controlSwitch ? '🪦' : isScraperLoading ? '⌛...' : '✅'}</h3>
                                 </div>
-                                <div className='indent'>Total: {totalScraped > 0 ? totalScraped : '--'}</div>
                             </div>
                             <div>
                                 <div className='status-wrapper'>
-                                    <h3 className='control-status-header'>INSERT:</h3>
+                                    <h3>INSERT: {concertCount > 0 ? concertCount : '--'}</h3>
                                     <h3 className='emoji'>{!controlSwitch ? '🪦' : isUpdaterRunning ? '⌛...' : '✅'}</h3>
                                 </div>
-                                <div className='indent'>Total: {concertCount > 0 ? concertCount : '--'}</div>
                             </div>
                         </section>
                     </div>
                     {/* --- AUSTIN: VENUES --- */}
                     <div className={`control-container venue-container${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
-                        <h2>AUSTIN: VENUES</h2>
-                        <div className='control-date'>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
-                        <Switch
-                            {...switchTheme}
-                            onChange={handleVenueSwitch}
-                            checked={venueSwitch}
-                            disabled={isVenueScraperLoading || isVenueUpdaterRunning}
-                        />
+                        <div className='control-header'>
+                            <div>
+                                <h2>AUSTIN: VENUES</h2>
+                                <div>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
+                            </div>
+                            <Switch
+                                {...switchTheme}
+                                onChange={handleVenueSwitch}
+                                checked={venueSwitch}
+                                disabled={isVenueScraperLoading || isVenueUpdaterRunning}
+                            />
+                        </div>
+                        <section className='control-status'>
+                                    <div>
+                                        <div className='status-wrapper'>
+                                            <h3>SCRAPE: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</h3>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className='status-wrapper'>
+                                            <h3>INSERT: {venueConcertCount > 0 ? venueConcertCount : '--'}</h3>
+                                        </div>
+                                    </div>
+                                </section>
                         <div className='venue-body'>
-                            <div className='venue-status-col'>
+                            {/* <div className='venue-status-col'>
                                 <section className='control-status'>
                                     <div>
                                         <div className='status-wrapper'>
-                                            <h3 className='control-status-header'>SCRAPE:</h3>
+                                            <h3>SCRAPE:</h3>
                                         </div>
                                         <div className='indent'>Total: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</div>
                                     </div>
                                     <div>
                                         <div className='status-wrapper'>
-                                            <h3 className='control-status-header'>INSERT:</h3>
+                                            <h3>INSERT:</h3>
                                         </div>
                                         <div className='indent'>Total: {venueConcertCount > 0 ? venueConcertCount : '--'}</div>
                                     </div>
                                 </section>
-                            </div>
+                            </div> */}
                             <div className='venue-list-col'>
                                 {austinVenues?.map((v) => (
                                     <div key={v?.replace(/\s+/g, '')} className='venue-list-item'>

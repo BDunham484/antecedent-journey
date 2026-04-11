@@ -22,6 +22,37 @@ export const formatConcertDate = (isoString) => {
     return `${days[date.getUTCDay()]} ${months[date.getUTCMonth()]} ${String(date.getUTCDate()).padStart(2, '0')} ${date.getUTCFullYear()}`;
 };
 
+export const formatScrapeTime = (isoString) => {
+    const date = new Date(isoString);
+    const now = new Date();
+
+    const sameLocalDate = (a, b) =>
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate();
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+
+    let dateLabel;
+    if (sameLocalDate(date, now)) {
+        dateLabel = 'Today';
+    } else if (sameLocalDate(date, yesterday)) {
+        dateLabel = 'Yesterday';
+    } else {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        dateLabel = `${days[date.getDay()]} ${months[date.getMonth()]} ${String(date.getDate()).padStart(2, '0')} ${date.getFullYear()}`;
+    }
+
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12 || 12;
+
+    return `${dateLabel} ${hours}:${minutes}${ampm}`;
+};
+
 export const createProxyObject = (data) => {
     let randomNumber = Math.floor(Math.random() * 100);
 
