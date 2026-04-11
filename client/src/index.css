@@ -308,13 +308,13 @@ header nav ul li a {
   inset: -50%;
   background: conic-gradient(
     from 0deg,
-    #cc00ff,
-    #4d96ff,
-    #00cfff,
-    #00ff84,
-    #ffd93d,
-    #ff6b6b,
-    #cc00ff
+    var(--shimmer-purple),
+    var(--shimmer-blue),
+    var(--shimmer-cyan),
+    var(--shimmer-green),
+    var(--shimmer-yellow),
+    var(--shimmer-red),
+    var(--shimmer-purple)
   );
   animation: shimmer-border-rotate 4s linear infinite;
   z-index: 0;
