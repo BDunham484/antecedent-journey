@@ -24,11 +24,11 @@
   --indicator-idle: #111111;
 
   /* === STALE / ALERT === */
-  --stale-primary: #8b1a1a;
-  --stale-secondary: #c0392b;
+  --stale-primary: #c0392b;
+  --stale-secondary: #ff4444;
   --stale-tertiary: #e74c3c;
-  --stale-glow: rgba(192, 57, 43, 0.35);
-  --stale-glow-hidden: rgba(139, 26, 26, 0);
+  --stale-glow: rgba(255, 68, 68, 0.5);
+  --stale-glow-hidden: rgba(192, 57, 43, 0);
 
   /* === SHIMMER === */
   --shimmer-purple: #cc00ff;
@@ -272,7 +272,7 @@ header nav ul li a {
 
 .control-panels {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 2vw;
   justify-content: center;
   align-items: flex-start;
@@ -304,10 +304,30 @@ header nav ul li a {
   /* background: rgba(128, 0, 128, 0.2); */
 }
 
-.venue-container {
+.control-status {
+  /* background-color: #386472; */
+  /* min-height: 20vh; */
+  width: 100%;
+  /* width: 12vw; */
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: space-between;
+}
+
+.status-wrapper {
+  /* background-color: #525050; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  width: 12vw;
+}
+
+/* .venue-container {
   height: auto;
   min-height: 52vh;
-}
+} */
 
 .venue-shimmer {
   border: none !important;
@@ -403,10 +423,6 @@ header nav ul li a {
   z-index: 2;
 }
 
-/* .control-date {
-  margin-bottom: 3vh;
-} */
-
 .control-scrapeButton {
   background-color: var(--darker);
   padding: 15px;
@@ -415,37 +431,11 @@ header nav ul li a {
   border-radius: 8px;
 }
 
-.control-status {
-  /* background-color: #386472; */
-  /* min-height: 20vh; */
-  width: 100%;
-  /* width: 12vw; */
-  display: flex;
-  /* flex-direction: column; */
-  align-items: center;
-  justify-content: space-between;
-}
-
-.status-wrapper {
-  /* background-color: #525050; */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8rem;
-  width: 12vw;
-}
-
 .emoji {
   display: flex;
   align-items: center;
   padding-bottom: 4%;
 }
-
-/* .control-status-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-} */
 
 .control-scrapeButton:hover {
   cursor: pointer;
