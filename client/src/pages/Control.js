@@ -7,6 +7,7 @@ import useAustinTXScraper from '../hooks/useAustinTXScraper';
 import useStaleShowCleaner from '../hooks/useStaleShowCleaner';
 import { formatScrapeTime } from '../utils/helpers';
 import { GET_SCRAPE_META } from '../utils/queries';
+import VenueList from '../components/VenueList';
 
 const switchTheme = {
     offColor: '#525050',        // --dark
@@ -210,14 +211,7 @@ const Control = () => {
                                     </div>
                                 </section>
                             </div> */}
-                            <div className='venue-list-col'>
-                                {austinVenues?.map((v) => (
-                                    <div key={v?.replace(/\s+/g, '')} className='venue-list-item'>
-                                        <div className={`indicator-light ${getVenueLightClass(v)}`} />
-                                        <span>{v}</span>
-                                    </div>
-                                ))}
-                            </div>
+                            <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
                         </div>
                     </div>
                 </div>
