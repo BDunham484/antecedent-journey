@@ -5,7 +5,7 @@ const VenueList = ({ venues, getStatusClass }) => {
     const colB = sorted.slice(mid);
 
     const renderItem = (venue) => (
-        <div key={venue.name.replace(/\s+/g, '')} className='venue-list-item'>
+        <div key={venue.key} className='venue-list-item'>
             <div className={`indicator-light ${getStatusClass(venue.name)}`} />
             <span>{venue.name}</span>
         </div>
