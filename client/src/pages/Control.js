@@ -2,8 +2,10 @@ import { useQuery } from '@apollo/client';
 import ListControlBox from '../components/controls/listControl/ListControlBox';
 import StaleShowControlBox from '../components/controls/staleShowsControl/StaleShowsControlBox';
 import VenueControlBox from '../components/controls/venueControl/VenueControlBox';
+import FocusedVenueControlBox from '../components/controls/focusedVenueControl/FocusedVenueControlBox';
 import useAustinListScraper from '../hooks/useAustinListScraper';
 import useAustinTXScraper from '../hooks/useAustinTXScraper';
+import useFocusedVenueScraper from '../hooks/useFocusedVenueScraper';
 import { GET_SCRAPE_META } from '../utils/queries';
 
 const Control = () => {
@@ -29,6 +31,15 @@ const Control = () => {
         venueStatuses,
     } = useAustinTXScraper();
 
+    const {
+        run: runFocused,
+        scrapeLoading: isFocusedScrapeLoading,
+        insertLoading: isFocusedInsertLoading,
+        scrapeCount: focusedTotalScraped,
+        insertCount: focusedInsertCount,
+        venueStatuses: focusedVenueStatuses,
+    } = useFocusedVenueScraper();
+
     // changelog-start
     console.log('⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️⚰️');
     console.log('⚰️⚰️⚰️⚰️ lastShowlistScrape: ', lastShowlistScrape);
@@ -49,6 +60,16 @@ const Control = () => {
                 <div className='control-panels'>
                     {/* --- STALE SHOWS --- */}
                     <StaleShowControlBox />
+                    {/* --- AUSTIN: FOCUSED --- */}
+                    <FocusedVenueControlBox
+                        scrapeMetaData={scrapeMetaData}
+                        run={runFocused}
+                        isScrapeLoading={isFocusedScrapeLoading}
+                        isInsertLoading={isFocusedInsertLoading}
+                        totalScraped={focusedTotalScraped}
+                        insertCount={focusedInsertCount}
+                        venueStatuses={focusedVenueStatuses}
+                    />
                     {/* --- AUSTIN: SHOWLIST --- */}
                     <ListControlBox
                         scrapeMetaData={scrapeMetaData}
