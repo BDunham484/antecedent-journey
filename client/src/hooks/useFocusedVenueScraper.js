@@ -18,6 +18,7 @@ const useFocusedVenueScraper = () => {
     const [venueStatuses, setVenueStatuses] = useState({});
 
     const run = async (selectedKeys) => {
+        if (!selectedKeys?.length) return;
         setScrapeLoading(true);
         setScrapeCount(0);
         setScrapeError(null);
