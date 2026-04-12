@@ -1,27 +1,28 @@
-import { useQuery } from "@apollo/client/react/hooks/useQuery";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Switch from 'react-switch';
 import austinVenues from "../../data/states/texas/austin";
+import { switchTheme } from "../../definitions/constants";
 import { formatScrapeTime } from "../../utils/helpers";
-import { GET_SCRAPE_META } from "../../utils/queries";
 import VenueList from "../VenueList";
 
-const switchTheme = {
-    offColor: '#525050',        // --dark
-    onColor: '#525050',         // --dark
-    offHandleColor: '#383737',  // --darker
-    onHandleColor: '#383737',   // --darker
-    boxShadow: '#eee3d0',       // --main-text
-    activeBoxShadow: '#eee3d0', // --main-text
-    uncheckedIcon: false,
-    checkedIcon: false,
-};
-
-const VenueControlBox = ({ runVenues, isVenueScraperLoading, isVenueUpdaterRunning, venueTotalScraped, venueConcertCount, venueStatuses }) => {
-    const { data: scrapeMetaData } = useQuery(GET_SCRAPE_META);
+const VenueControlBox = ({
+    scrapeMetaData,
+    runVenues,
+    isVenueScraperLoading,
+    isVenueUpdaterRunning,
+    venueTotalScraped,
+    venueConcertCount,
+    venueStatuses,
+}) => {
     const lastVenueScrape = scrapeMetaData?.getScrapeMeta?.lastVenueScrape ?? null;
 
     const [venueSwitch, setVenueSwitch] = useState(false);
+
+    useEffect(() => {
+        if (venueTotalScraped > 0 && !isVenueUpdaterRunning) {
+            setVenueSwitch(false);
+        }
+    }, [isVenueUpdaterRunning, venueTotalScraped]);
 
     const handleVenueSwitch = () => {
         if (venueSwitch) {
