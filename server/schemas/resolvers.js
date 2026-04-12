@@ -844,6 +844,20 @@ const resolvers = {
 
             return data;
         },
+        getAustinFocusedShowData: async (parent, { venues }) => {
+            console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯');
+            console.log('🎯🎯🎯🎯 getAustinFocusedShowData venues: ', venues);
+            console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯');
+            console.log(' ');
+
+            const results = await Promise.all(
+                venues
+                    .filter(key => austinResolvers[key])
+                    .map(key => austinResolvers[key]())
+            );
+
+            return results.filter(Boolean).flat();
+        },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);
             const $ = cheerio.load(data);
@@ -1342,7 +1356,12 @@ const resolvers = {
             throw new AuthenticationError('You need to be logged in!');
         },
         updateScrapeMeta: async (parent, { key, timestamp }) => {
-            const field = key === 'showlist' ? 'lastShowlistScrape' : 'lastVenueScrape';
+            const fieldMap = {
+                showlist: 'lastShowlistScrape',
+                venues: 'lastVenueScrape',
+                focused: 'lastFocusedScrape',
+            };
+            const field = fieldMap[key] ?? 'lastVenueScrape';
             const result = ScrapeMeta.findOneAndUpdate(
                 {},
                 { [field]: timestamp },

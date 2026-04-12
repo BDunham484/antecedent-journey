@@ -63,6 +63,7 @@ const typeDefs = gql`
     type ScrapeMeta {
         lastShowlistScrape: String
         lastVenueScrape: String
+        lastFocusedScrape: String
     }
 
     type Query {
@@ -81,6 +82,7 @@ const typeDefs = gql`
         austinTxConcertScraper(urlData: [String], date: String, proxy: Proxy): [[Concert]]
         getAustinList: [Concert]
         getAustinTXShowData: [Concert]
+        getAustinFocusedShowData(venues: [String!]!): [Concert]
         get29thStreetBallroomData: [Concert]
         get3TENAclLiveData: [Concert]
         getTheAbgbData: [Concert]
