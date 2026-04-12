@@ -1361,7 +1361,9 @@ const resolvers = {
                 venues: 'lastVenueScrape',
                 focused: 'lastFocusedScrape',
             };
-            const field = fieldMap[key] ?? 'lastVenueScrape';
+            const field = fieldMap[key];
+            if (!field) throw new Error(`Unknown ScrapeMeta key: "${key}"`);
+
             const result = await ScrapeMeta.findOneAndUpdate(
                 {},
                 { [field]: timestamp },
