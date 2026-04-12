@@ -1362,7 +1362,7 @@ const resolvers = {
                 focused: 'lastFocusedScrape',
             };
             const field = fieldMap[key] ?? 'lastVenueScrape';
-            const result = ScrapeMeta.findOneAndUpdate(
+            const result = await ScrapeMeta.findOneAndUpdate(
                 {},
                 { [field]: timestamp },
                 { upsert: true, new: true }
