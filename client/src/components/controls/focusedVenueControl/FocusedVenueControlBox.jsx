@@ -82,6 +82,7 @@ const FocusedVenueControlBox = ({
             setFocusedSwitch(false);
         } else {
             setFocusedSwitch(true);
+            setIsOpen(false);
             run(selectedVenues.map(v => v.key));
         }
     };
