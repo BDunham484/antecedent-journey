@@ -1,15 +1,15 @@
 const austinVenues = [
-    '13th Floor',
-    '29th Street Ballroom',
-    '3TEN Austin City Limits Live',
-    'ABGB',
-    "Antone's",
-    'Austin City Limits Live at The Moody Theater',
-    "C-Boy's Heart & Soul",
-    'Chess Club',
-    'Continental Club',
+    { name: '13th Floor',                                   key: 'getThirteenthFloorData' },
+    { name: '29th Street Ballroom',                         key: 'get29thStreetBallroomData' },
+    { name: '3TEN Austin City Limits Live',                 key: 'get3TENAclLiveData' },
+    { name: 'ABGB',                                         key: 'getTheAbgbData' },
+    { name: "Antone's",                                     key: 'getAntonesData' },
+    { name: 'Austin City Limits Live at The Moody Theater', key: 'getMoodyTheaterData' },
+    { name: "C-Boy's Heart & Soul",                         key: 'getCBoysData' },
+    { name: 'Chess Club',                                   key: 'getChessClubData' },
+    { name: 'Continental Club',                             key: 'getContinentalClubData' },
 ].sort((a, b) =>
-    a.replace(/^The\s+/i, '').localeCompare(b.replace(/^The\s+/i, ''))
+    a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );
 
 export default austinVenues;
