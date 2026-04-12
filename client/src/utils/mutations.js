@@ -243,6 +243,7 @@ export const UPDATE_SCRAPE_META = gql`
         updateScrapeMeta(key: $key, timestamp: $timestamp) {
             lastShowlistScrape
             lastVenueScrape
+            lastFocusedScrape
         }
     }
 `;
