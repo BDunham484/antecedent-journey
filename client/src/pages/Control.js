@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import Switch from 'react-switch';
+import VenueList from '../components/VenueList';
 import austinVenues from '../data/states/texas/austin';
 import useAustinListScraper from '../hooks/useAustinListScraper';
 import useAustinTXScraper from '../hooks/useAustinTXScraper';
 import useStaleShowCleaner from '../hooks/useStaleShowCleaner';
 import { formatScrapeTime } from '../utils/helpers';
 import { GET_SCRAPE_META } from '../utils/queries';
-import VenueList from '../components/VenueList';
 
 const switchTheme = {
     offColor: '#525050',        // --dark
@@ -169,7 +169,7 @@ const Control = () => {
                         </section>
                     </div>
                     {/* --- AUSTIN: VENUES --- */}
-                    <div className={`control-container venue-container${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
+                    <div className={`control-container ${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
                         <div className='control-header'>
                             <div>
                                 <h2>AUSTIN: VENUES</h2>
@@ -183,34 +183,18 @@ const Control = () => {
                             />
                         </div>
                         <section className='control-status'>
-                                    <div>
-                                        <div className='status-wrapper'>
-                                            <h3>SCRAPE: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</h3>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div className='status-wrapper'>
-                                            <h3>INSERT: {venueConcertCount > 0 ? venueConcertCount : '--'}</h3>
-                                        </div>
-                                    </div>
-                                </section>
+                            <div>
+                                <div className='status-wrapper'>
+                                    <h3>SCRAPE: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</h3>
+                                </div>
+                            </div>
+                            <div>
+                                <div className='status-wrapper'>
+                                    <h3>INSERT: {venueConcertCount > 0 ? venueConcertCount : '--'}</h3>
+                                </div>
+                            </div>
+                        </section>
                         <div className='venue-body'>
-                            {/* <div className='venue-status-col'>
-                                <section className='control-status'>
-                                    <div>
-                                        <div className='status-wrapper'>
-                                            <h3>SCRAPE:</h3>
-                                        </div>
-                                        <div className='indent'>Total: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</div>
-                                    </div>
-                                    <div>
-                                        <div className='status-wrapper'>
-                                            <h3>INSERT:</h3>
-                                        </div>
-                                        <div className='indent'>Total: {venueConcertCount > 0 ? venueConcertCount : '--'}</div>
-                                    </div>
-                                </section>
-                            </div> */}
                             <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
                         </div>
                     </div>
