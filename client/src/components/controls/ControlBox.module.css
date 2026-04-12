@@ -1,0 +1,164 @@
+.controlContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 30vw;
+    border: solid 2px var(--accent);
+    border-radius: 0.8rem;
+    background-color: var(--darkest);
+    padding: 2%;
+    gap: 1.3rem;
+    position: relative;
+}
+
+.controlHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.controlStatus {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.statusWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.3rem;
+    width: 12vw;
+}
+
+/* --- VENUE SHIMMER --- */
+
+.venueShimmer {
+    border: none !important;
+}
+
+.venueShimmer::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+        from 0deg,
+        var(--shimmer-purple),
+        var(--shimmer-blue),
+        var(--shimmer-cyan),
+        var(--shimmer-green),
+        var(--shimmer-yellow),
+        var(--shimmer-red),
+        var(--shimmer-purple)
+    );
+    animation: shimmer-border-rotate 4s linear infinite;
+    z-index: 0;
+}
+
+.venueShimmer::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--darkest);
+    border-radius: 0.6rem;
+    z-index: 1;
+}
+
+.venueShimmer > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* --- STALE ALERT --- */
+
+.staleAlert {
+    border: solid 2px var(--stale-primary) !important;
+    animation: pulse-red-border 1.8s ease-in-out infinite;
+}
+
+/* --- STALE SHIMMER --- */
+
+.staleShimmer {
+    border: none !important;
+}
+
+.staleShimmer::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: conic-gradient(
+        var(--darkest) 0deg,
+        var(--darkest) 200deg,
+        var(--stale-primary) 220deg,
+        var(--stale-secondary) 260deg,
+        var(--stale-tertiary) 290deg,
+        var(--stale-secondary) 320deg,
+        var(--stale-primary) 340deg,
+        var(--darkest) 360deg
+    );
+    animation: shimmer-border-rotate 2s linear infinite;
+    z-index: 0;
+}
+
+.staleShimmer::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: var(--darkest);
+    border-radius: 0.6rem;
+    z-index: 1;
+}
+
+.staleShimmer > * {
+    position: relative;
+    z-index: 2;
+}
+
+/* --- MEDIA QUERIES --- */
+
+@media screen and (max-width: 500px) {
+    .controlContainer {
+        width: 85%;
+        height: auto;
+        min-height: 50vh;
+    }
+
+    .controlStatus {
+        width: 50vw;
+    }
+
+    .statusWrapper {
+        width: 50vw;
+    }
+}
+
+@media screen and (max-width: 800px) and (min-width: 501px) {
+    .controlContainer {
+        width: 85%;
+    }
+
+    .controlStatus {
+        width: 30vw;
+    }
+
+    .statusWrapper {
+        width: 30vw;
+    }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 801px) {
+    .controlContainer {
+        width: 65%;
+    }
+
+    .controlStatus {
+        width: 20vw;
+    }
+
+    .statusWrapper {
+        width: 20vw;
+    }
+}

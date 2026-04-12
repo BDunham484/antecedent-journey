@@ -1,0 +1,6 @@
+.venueBody {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 1vw;
+}

@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
-import ListControlBox from '../components/listControl/ListControlBox';
-import StaleShowControlBox from '../components/staleShowsControl/StaleShowsControlBox';
-import VenueControlBox from '../components/venueControl/VenueControlBox';
+import ListControlBox from '../components/controls/listControl/ListControlBox';
+import StaleShowControlBox from '../components/controls/staleShowsControl/StaleShowsControlBox';
+import VenueControlBox from '../components/controls/venueControl/VenueControlBox';
 import useAustinListScraper from '../hooks/useAustinListScraper';
 import useAustinTXScraper from '../hooks/useAustinTXScraper';
 import { GET_SCRAPE_META } from '../utils/queries';

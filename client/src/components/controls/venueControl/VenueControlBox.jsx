@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import Switch from 'react-switch';
-import austinVenues from "../../data/states/texas/austin";
-import { switchTheme } from "../../definitions/constants";
-import { formatScrapeTime } from "../../utils/helpers";
-import VenueList from "../VenueList";
+import austinVenues from "../../../data/states/texas/austin";
+import { switchTheme } from "../../../definitions/constants";
+import { formatScrapeTime } from "../../../utils/helpers";
+import VenueList from "../../VenueList";
+import sharedStyles from '../ControlBox.module.css';
+import ownStyles from './VenueControlBox.module.css';
+
+const { controlContainer, controlHeader, controlStatus, statusWrapper, venueShimmer } = sharedStyles;
+const { venueBody } = ownStyles;
 
 const VenueControlBox = ({
     scrapeMetaData,
@@ -43,8 +48,8 @@ const VenueControlBox = ({
     };
 
     return (
-        <div className={`control-container ${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
-            <div className='control-header'>
+        <div className={`${controlContainer}${isVenueScraperLoading ? ` ${venueShimmer}` : ''}`}>
+            <div className={controlHeader}>
                 <div>
                     <h2>AUSTIN: VENUES</h2>
                     <div>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
@@ -56,19 +61,19 @@ const VenueControlBox = ({
                     disabled={isVenueScraperLoading || isVenueUpdaterRunning}
                 />
             </div>
-            <section className='control-status'>
+            <section className={controlStatus}>
                 <div>
-                    <div className='status-wrapper'>
+                    <div className={statusWrapper}>
                         <h3>SCRAPE: {venueTotalScraped > 0 ? venueTotalScraped : '--'}</h3>
                     </div>
                 </div>
                 <div>
-                    <div className='status-wrapper'>
+                    <div className={statusWrapper}>
                         <h3>INSERT: {venueConcertCount > 0 ? venueConcertCount : '--'}</h3>
                     </div>
                 </div>
             </section>
-            <div className='venue-body'>
+            <div className={venueBody}>
                 <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
             </div>
         </div>

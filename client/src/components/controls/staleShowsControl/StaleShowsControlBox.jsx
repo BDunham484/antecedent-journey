@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import Switch from 'react-switch';
-import { switchTheme } from "../../definitions/constants";
-import useStaleShowCleaner from "../../hooks/useStaleShowCleaner";
+import { switchTheme } from "../../../definitions/constants";
+import useStaleShowCleaner from "../../../hooks/useStaleShowCleaner";
+import sharedStyles from '../ControlBox.module.css';
+
+const { controlContainer, controlHeader, staleAlert, staleShimmer } = sharedStyles;
 
 const StaleShowControlBox = () => {
     const { hasStale, isDeleting, execute } = useStaleShowCleaner();
@@ -22,8 +25,8 @@ const StaleShowControlBox = () => {
     };
 
     return (
-        <div className={`control-container${isDeleting ? ' stale-shimmer' : hasStale ? ' stale-alert' : ''}`}>
-            <div className='control-header'>
+        <div className={`${controlContainer}${isDeleting ? ` ${staleShimmer}` : hasStale ? ` ${staleAlert}` : ''}`}>
+            <div className={controlHeader}>
                 <div>
                     <h2>STALE SHOWS</h2>
                     <div>
