@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import Switch from 'react-switch';
-import VenueList from '../components/VenueList';
-import austinVenues from '../data/states/texas/austin';
+import VenueControlBox from '../components/venueControl/VenueControlBox';
 import useAustinListScraper from '../hooks/useAustinListScraper';
 import useAustinTXScraper from '../hooks/useAustinTXScraper';
 import useStaleShowCleaner from '../hooks/useStaleShowCleaner';
@@ -71,14 +70,14 @@ const Control = () => {
         }
     }
 
-    const handleVenueSwitch = () => {
-        if (venueSwitch) {
-            setVenueSwitch(false);
-        } else {
-            setVenueSwitch(true);
-            runVenues();
-        }
-    }
+    // const handleVenueSwitch = () => {
+    //     if (venueSwitch) {
+    //         setVenueSwitch(false);
+    //     } else {
+    //         setVenueSwitch(true);
+    //         runVenues();
+    //     }
+    // }
 
     const handleStaleSwitch = () => {
         if (!staleSwitch) {
@@ -105,14 +104,14 @@ const Control = () => {
         }
     }, [isDeleting, staleSwitch]);
 
-    const getVenueLightClass = (venue) => {
-        const status = venueStatuses?.[venue];
-        if (!status) return 'light-idle';
-        if (status === 'inserting') return 'light-yellow';
-        if (status === 'success') return 'light-green';
-        if (status === 'error') return 'light-red';
-        return 'light-idle';
-    };
+    // const getVenueLightClass = (venue) => {
+    //     const status = venueStatuses?.[venue];
+    //     if (!status) return 'light-idle';
+    //     if (status === 'inserting') return 'light-yellow';
+    //     if (status === 'success') return 'light-green';
+    //     if (status === 'error') return 'light-red';
+    //     return 'light-idle';
+    // };
 
     return (
         <div>
@@ -169,7 +168,16 @@ const Control = () => {
                         </section>
                     </div>
                     {/* --- AUSTIN: VENUES --- */}
-                    <div className={`control-container ${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
+                    {/* // changelog-start */}
+                    <VenueControlBox
+                        runVenues={runVenues}
+                        isVenueScraperLoading={isVenueScraperLoading}
+                        isVenueUpdaterRunning={isVenueUpdaterRunning}
+                        venueTotalScraped={venueTotalScraped}
+                        venueConcertCount={venueConcertCount}
+                        venueStatuses={venueStatuses}
+                    />
+                    {/* <div className={`control-container ${isVenueScraperLoading ? ' venue-shimmer' : ''}`}>
                         <div className='control-header'>
                             <div>
                                 <h2>AUSTIN: VENUES</h2>
@@ -197,7 +205,8 @@ const Control = () => {
                         <div className='venue-body'>
                             <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
                         </div>
-                    </div>
+                    </div> */}
+                    {/* // changelog-end */}
                 </div>
             </main>
         </div>
