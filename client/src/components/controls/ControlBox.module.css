@@ -10,6 +10,7 @@
     padding: 2%;
     gap: 1.3rem;
     position: relative;
+    overflow: hidden;
 }
 
 .controlHeader {
@@ -43,7 +44,10 @@
 .venueShimmer::before {
     content: '';
     position: absolute;
-    inset: -50%;
+    width: 200%;
+    aspect-ratio: 1;
+    top: 50%;
+    left: 50%;
     background: conic-gradient(
         from 0deg,
         var(--shimmer-purple),
@@ -88,7 +92,10 @@
 .staleShimmer::before {
     content: '';
     position: absolute;
-    inset: -50%;
+    width: 200%;
+    aspect-ratio: 1;
+    top: 50%;
+    left: 50%;
     background: conic-gradient(
         var(--darkest) 0deg,
         var(--darkest) 200deg,
@@ -115,6 +122,24 @@
 .staleShimmer > * {
     position: relative;
     z-index: 2;
+}
+
+/* --- KEYFRAMES --- */
+
+@keyframes shimmer-border-rotate {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pulse-red-border {
+    0%, 100% {
+        border-color: var(--stale-primary);
+        box-shadow: 0 0 0 0 var(--stale-glow-hidden);
+    }
+    50% {
+        border-color: var(--stale-secondary);
+        box-shadow: 0 0 0.6rem 0.2rem var(--stale-glow);
+    }
 }
 
 /* --- MEDIA QUERIES --- */

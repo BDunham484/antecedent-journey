@@ -80,7 +80,7 @@
     border: 1px solid var(--accent);
     border-top: none;
     border-radius: 0 0 0.4rem 0.4rem;
-    z-index: 10;
+    z-index: 1000;
     overflow: hidden;
 }
 

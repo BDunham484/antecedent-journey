@@ -291,23 +291,6 @@ header nav ul li a {
 }
 
 
-@keyframes shimmer-border-rotate {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-
-@keyframes pulse-red-border {
-  0%, 100% {
-    border-color: var(--stale-primary);
-    box-shadow: 0 0 0 0 var(--stale-glow-hidden);
-  }
-  50% {
-    border-color: var(--stale-secondary);
-    box-shadow: 0 0 0.6rem 0.2rem var(--stale-glow);
-  }
-}
-
 
 .venue-list-col {
   flex: 1;
