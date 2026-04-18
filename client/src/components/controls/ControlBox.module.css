@@ -10,7 +10,7 @@
     padding: 2%;
     gap: 1.3rem;
     position: relative;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .controlHeader {
