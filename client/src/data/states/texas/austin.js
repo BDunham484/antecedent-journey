@@ -9,6 +9,7 @@ const austinVenues = [
     { name: 'Chess Club',                                   key: 'getChessClubData' },
     { name: 'Continental Club',                             key: 'getContinentalClubData' },
     { name: 'Drinks Backyard',                              key: 'getDrinksBackyardData' },
+    { name: 'Elephant Room',                                key: 'getElephantRoomData' },
 ].sort((a, b) =>
     a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );
