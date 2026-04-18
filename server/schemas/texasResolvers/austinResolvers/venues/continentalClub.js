@@ -187,6 +187,10 @@ const getContinentalClubData = async () => {
 
         events.push(buildConcertObj(titleWithStatus, dateTime, cost || null, ticketLink));
     }
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Continental Club: Austin: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

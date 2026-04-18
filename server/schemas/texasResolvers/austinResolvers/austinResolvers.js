@@ -7,6 +7,7 @@ const { getMoodyTheaterData } = require('./venues/moodyTheater');
 const { getCBoysData } = require('./venues/cboys');
 const { getChessClubData } = require('./venues/chessClub');
 const { getContinentalClubData } = require('./venues/continentalClub');
+const { getDrinksBackyardData } = require('./venues/drinksBackyard');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -18,6 +19,7 @@ const austinResolvers = {
     getCBoysData,
     getChessClubData,
     getContinentalClubData,
+    getDrinksBackyardData,
 };
 
 module.exports = austinResolvers;
