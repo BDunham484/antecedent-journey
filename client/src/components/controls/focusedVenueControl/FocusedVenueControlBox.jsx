@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Switch from 'react-switch';
 import austinVenues from "../../../data/states/texas/austin";
 import { switchTheme } from "../../../definitions/constants";
 import { formatScrapeTime } from "../../../utils/helpers";
-import VenueList from "../../VenueList";
 import sharedStyles from '../ControlBox.module.css';
 import ownStyles from './FocusedVenueControlBox.module.css';
 
@@ -17,17 +16,11 @@ const {
 
 const {
     venueBody,
-    dropdownWrapper,
-    dropdownTrigger,
-    dropdownPlaceholder,
-    dropdownArrow,
-    pill,
-    pillRemove,
-    dropdownMenu,
-    dropdownItem,
-    selected,
-    checkbox,
-    checked,
+    venueCol,
+    venueItem,
+    venueItemUnselected,
+    venueItemSelected,
+    venueItemLocked,
 } = ownStyles;
 
 const FocusedVenueControlBox = ({
@@ -43,28 +36,19 @@ const FocusedVenueControlBox = ({
 
     const [focusedSwitch, setFocusedSwitch] = useState(false);
     const [selectedVenues, setSelectedVenues] = useState([]);
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
 
-    // Auto-reset switch when insert run completes
+    // Reset switch and clear selection when scrape+insert run completes
     useEffect(() => {
         if (totalScraped > 0 && !isInsertLoading) {
             setFocusedSwitch(false);
+            setSelectedVenues([]);
         }
     }, [isInsertLoading, totalScraped]);
 
-    // Close dropdown on outside click
-    useEffect(() => {
-        const handleOutsideClick = (e) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () => document.removeEventListener('mousedown', handleOutsideClick);
-    }, []);
+    const isLocked = focusedSwitch || isScrapeLoading || isInsertLoading;
 
     const toggleVenue = (venue) => {
+        if (isLocked) return;
         setSelectedVenues(prev =>
             prev.find(v => v.key === venue.key)
                 ? prev.filter(v => v.key !== venue.key)
@@ -72,17 +56,11 @@ const FocusedVenueControlBox = ({
         );
     };
 
-    const removeVenue = (e, venue) => {
-        e.stopPropagation();
-        setSelectedVenues(prev => prev.filter(v => v.key !== venue.key));
-    };
-
     const handleSwitch = () => {
         if (focusedSwitch) {
             setFocusedSwitch(false);
         } else {
             setFocusedSwitch(true);
-            setIsOpen(false);
             run(selectedVenues.map(v => v.key));
         }
     };
@@ -97,6 +75,30 @@ const FocusedVenueControlBox = ({
     };
 
     const isDisabled = selectedVenues.length === 0 || isScrapeLoading || isInsertLoading;
+
+    const sorted = [...austinVenues].sort((a, b) => a.name.localeCompare(b.name));
+    const mid = Math.ceil(sorted.length / 2);
+    const colA = sorted.slice(0, mid);
+    const colB = sorted.slice(mid);
+
+    const getItemClass = (venue) => {
+        const isSelected = !!selectedVenues.find(v => v.key === venue.key);
+        const selectionClass = isSelected ? venueItemSelected : venueItemUnselected;
+        return isLocked
+            ? `${venueItem} ${selectionClass} ${venueItemLocked}`
+            : `${venueItem} ${selectionClass}`;
+    };
+
+    const renderVenue = (venue) => (
+        <div
+            key={venue.key}
+            className={getItemClass(venue)}
+            onClick={() => toggleVenue(venue)}
+        >
+            <div className={`indicator-light ${getVenueLightClass(venue.name)}`} />
+            <span>{venue.name}</span>
+        </div>
+    );
 
     return (
         <div className={`${controlContainer}${isScrapeLoading ? ` ${venueShimmer}` : ''}`}>
@@ -113,43 +115,6 @@ const FocusedVenueControlBox = ({
                 />
             </div>
 
-            {/* Dropdown */}
-            <div className={dropdownWrapper} ref={dropdownRef}>
-                <div className={dropdownTrigger} onClick={() => setIsOpen(prev => !prev)}>
-                    {selectedVenues.length === 0 ? (
-                        <span className={dropdownPlaceholder}>Select venues...</span>
-                    ) : (
-                        selectedVenues.map(venue => (
-                            <span key={venue.key} className={pill}>
-                                {venue.name}
-                                <button className={pillRemove} onClick={(e) => removeVenue(e, venue)}>×</button>
-                            </span>
-                        ))
-                    )}
-                    <span className={dropdownArrow}>▾</span>
-                </div>
-                {isOpen && (
-                    <div className={dropdownMenu}>
-                        {austinVenues.map(venue => {
-                            const isSelected = !!selectedVenues.find(v => v.key === venue.key);
-                            return (
-                                <div
-                                    key={venue.key}
-                                    className={`${dropdownItem}${isSelected ? ` ${selected}` : ''}`}
-                                    onClick={() => toggleVenue(venue)}
-                                >
-                                    <div className={`${checkbox}${isSelected ? ` ${checked}` : ''}`}>
-                                        {isSelected ? '✓' : ''}
-                                    </div>
-                                    {venue.name}
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
-
-            {/* Status row */}
             <section className={controlStatus}>
                 <div>
                     <div className={statusWrapper}>
@@ -163,12 +128,10 @@ const FocusedVenueControlBox = ({
                 </div>
             </section>
 
-            {/* Venue list */}
-            {selectedVenues.length > 0 && (
-                <div className={venueBody}>
-                    <VenueList venues={selectedVenues} getStatusClass={getVenueLightClass} />
-                </div>
-            )}
+            <div className={venueBody}>
+                <div className={venueCol}>{colA.map(renderVenue)}</div>
+                <div className={venueCol}>{colB.map(renderVenue)}</div>
+            </div>
         </div>
     );
 };
