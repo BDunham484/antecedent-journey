@@ -7,6 +7,21 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const austinResolvers = require('./texasResolvers/austinResolvers/austinResolvers');
 const { normalizeDate, buildCustomId } = require('../utils/concertUtils');
+const { runWithConcurrencyLimit } = require('../utils/scraperUtils');
+
+// Playwright scrapers launch a full WebKit browser subprocess — cap concurrency
+// to 1 so only one browser is ever alive at a time, regardless of how many
+// Playwright venues are added in the future. Tune PLAYWRIGHT_CONCURRENCY if
+// Render's memory ceiling is raised.
+// Cheerio/axios scrapers are lightweight (HTTP + HTML parse only), so a higher
+// ceiling is safe. Tune CHEERIO_CONCURRENCY if network pressure appears at scale.
+const PLAYWRIGHT_SCRAPER_KEYS = new Set([
+    'getThirteenthFloorData',
+    'getCBoysData',
+    'getContinentalClubData',
+]);
+const PLAYWRIGHT_CONCURRENCY = 1;
+const CHEERIO_CONCURRENCY = 10;
 
 const resolvers = {
     Query: {
@@ -831,11 +846,20 @@ const resolvers = {
             console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
             console.log(' ');
 
-            const results = await Promise.all(
-                Object.values(austinResolvers).map(scraper => scraper())
-            );
+            const scraperEntries = Object.entries(austinResolvers);
+            const playwrightTasks = scraperEntries
+                .filter(([key]) => PLAYWRIGHT_SCRAPER_KEYS.has(key))
+                .map(([, scraper]) => scraper);
+            const cheerioTasks = scraperEntries
+                .filter(([key]) => !PLAYWRIGHT_SCRAPER_KEYS.has(key))
+                .map(([, scraper]) => scraper);
 
-            const data = results.filter(Boolean).flat();
+            const [playwrightResults, cheerioResults] = await Promise.all([
+                runWithConcurrencyLimit(playwrightTasks, PLAYWRIGHT_CONCURRENCY),
+                runWithConcurrencyLimit(cheerioTasks, CHEERIO_CONCURRENCY),
+            ]);
+
+            const data = [...playwrightResults, ...cheerioResults].filter(Boolean).flat();
 
             // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ getAustinTXShowData: ');
             // console.log('✅✅✅✅ data: ', data);
@@ -850,13 +874,20 @@ const resolvers = {
             console.log('🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯🎯');
             console.log(' ');
 
-            const results = await Promise.all(
-                venues
-                    .filter(key => austinResolvers[key])
-                    .map(key => austinResolvers[key]())
-            );
+            const validKeys = venues.filter(key => austinResolvers[key]);
+            const playwrightTasks = validKeys
+                .filter(key => PLAYWRIGHT_SCRAPER_KEYS.has(key))
+                .map(key => austinResolvers[key]);
+            const cheerioTasks = validKeys
+                .filter(key => !PLAYWRIGHT_SCRAPER_KEYS.has(key))
+                .map(key => austinResolvers[key]);
 
-            return results.filter(Boolean).flat();
+            const [playwrightResults, cheerioResults] = await Promise.all([
+                runWithConcurrencyLimit(playwrightTasks, PLAYWRIGHT_CONCURRENCY),
+                runWithConcurrencyLimit(cheerioTasks, CHEERIO_CONCURRENCY),
+            ]);
+
+            return [...playwrightResults, ...cheerioResults].filter(Boolean).flat();
         },
         getAustinList: async (parent, args) => {
             const { data } = await axios.get(`https://austin.showlists.net/`);

@@ -59,12 +59,34 @@ const makeBuildConcertObj = (venue) => (artists, dateTime, price, ticketLink) =>
     const cleanArtists = artists ? artists.replace(/cancelled[:\s-]*/i, '').replace(/sold\s?out[:\s-]*/i, '').trim() : null;
     const headliner = cleanArtists ? cleanArtists.split(',')[0].split(/\s+with\s+/i)[0].trim().replace(/\//g, ':') : null;
     const customId = headliner && dateTime && venue ? buildCustomId(headliner, dateTime, venue) : null;
+    // changelog-start
     const dateStr = dateTime
         ? (() => {
-            const d = new Date(dateTime.replace(/\s+\d{1,2}:\d{2}.*$/, '').trim());
+            // Strip time portion from various date formats:
+            //   "2026-04-18T01:00:00Z"        (ISO — passes through new Date() directly)
+            //   "April 18, 2026 at 8:00 PM"   (WP "at" separator)
+            //   "Friday, April 18 | 8:00 PM"  (WP pipe separator)
+            //   "Fri Apr 18 8:00 pm"           (plain space-separated)
+            const stripped = dateTime
+                .replace(/\s*[|@]\s*\d{1,2}:\d{2}.*$/i, '')  // pipe/at + time
+                .replace(/\s+at\s+\d{1,2}:\d{2}.*$/i, '')     // "at H:MM..."
+                .replace(/\s+\d{1,2}:\d{2}.*$/, '')            // plain " H:MM..."
+                .replace(/[―–—|]/g, ' ')                        // normalize separators
+                .replace(/(\d+)(st|nd|rd|th)/gi, '$1')          // strip ordinal suffixes
+                .trim();
+            const hasYear = /\d{4}/.test(stripped);
+            const toParse = hasYear ? stripped : `${stripped} ${new Date().getFullYear()}`;
+            const d = new Date(toParse);
             return isNaN(d.getTime()) ? dateTime : d.toISOString();
         })()
         : null;
+    // const dateStr = dateTime
+    //     ? (() => {
+    //         const d = new Date(dateTime.replace(/\s+\d{1,2}:\d{2}.*$/, '').trim());
+    //         return isNaN(d.getTime()) ? dateTime : d.toISOString();
+    //     })()
+    //     : null;
+    // changelog-end
     const timeStr = dateTime ? (dateTime.match(/\d{1,2}:\d{2}\s*(?:am|pm)?/i)?.[0]?.trim() ?? null) : null;
 
     return {

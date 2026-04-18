@@ -25,7 +25,7 @@ Once source is provided, analyze it to determine:
 
 ### Ticket platform
 Identify from script src URLs, embed tags, class names, or JSON-LD `@type` values. Common platforms:
-- **DICE** — `dice.fm`, `dice_events`, `EventListWidget`, JSON-LD `MusicEvent` in `<script type="application/ld+json">` inside `<article>` tags
+- **DICE** — `dice.fm`, `dice_events`, `EventListWidget`. The widget renders via styled-components — no `<article>` elements or JSON-LD. Data comes from the `partners-endpoint.dice.fm` API intercepted inside Playwright; see the DICE gotcha in Patterns and gotchas below.
 - **Eventbrite** — `eventbrite.com`, `.eventbrite-widget`
 - **Ticketmaster** — `ticketmaster.com`, `tm-button`
 - **Tixr** — `tixr.com`
@@ -40,7 +40,7 @@ Extract the specific CSS selectors and DOM paths for:
 - Ticket link (href)
 - Event status (cancelled / sold out) — check for JSON-LD `eventStatus`, class names, or text patterns
 
-For DICE specifically: prefer JSON-LD structured data from `article script[type="application/ld+json"]` over DOM scraping. Fall back to DOM only if JSON-LD is absent.
+For DICE specifically: do not attempt DOM scraping — the widget renders via styled-components with no stable selectors or JSON-LD. Use the API interception pattern documented in the DICE gotcha below.
 
 ### waitForSelector (Playwright only)
 Identify the best selector to wait on — the container that confirms the dynamic content has loaded.
@@ -76,6 +76,51 @@ try {
     return [];
 }
 ```
+
+### DICE — API interception via waitForResponse
+
+The DICE widget renders via styled-components — no `<article>` elements, no JSON-LD, no stable DOM selectors. The widget calls `partners-endpoint.dice.fm/api/v2/events` at runtime.
+
+**Do not attempt direct axios.** The endpoint returns 401 without browser context. Playwright is required.
+
+**Do not rely on `waitForSelector('.dice_events')` alone.** The `.dice_events` container mounts *before* the API call fires. Awaiting only the selector will close the browser before the response arrives.
+
+**Required pattern** — create `waitForResponse` before `page.goto`, then await it after `waitForSelector`:
+
+```js
+const diceResponsePromise = page.waitForResponse(
+    res => res.url().includes('partners-endpoint.dice.fm'),
+    { timeout: 20000 }
+).catch(e => {
+    console.error('❌❌❌❌ [VENUE] DICE API timeout:', e.message);
+    return null;
+});
+
+await page.goto(url);
+await page.waitForSelector('.dice_events');
+
+const diceResponse = await diceResponsePromise;
+if (diceResponse) {
+    const json = await diceResponse.json();
+    const diceRaw = json.data ?? [];
+}
+```
+
+**DICE v2 API field mapping:**
+```js
+const totalCents = event.ticket_types?.[0]?.price?.total;
+return {
+    artists:     event.name || null,
+    dateTime:    event.date || null,   // already ISO 8601
+    price:       totalCents != null ? (totalCents / 100).toFixed(2) : null,
+    ticketLink:  event.perm_name
+                     ? `https://dice.fm/event/${event.perm_name}`
+                     : (event.url || null),
+    eventStatus: event.status === 'cancelled' ? 'EventCancelled' : null,
+};
+```
+
+Reference implementation: `server/schemas/texasResolvers/austinResolvers/venues/thirteenthFloor.js`
 
 ---
 
@@ -179,7 +224,18 @@ This makes the venue appear in the UI status list and wires it into the per-venu
 
 ## Step 8 — resolvers.js
 
-No changes needed. `getAustinTXShowData` (and equivalent city-level resolvers) automatically call all scrapers via `Object.values(austinResolvers).map(scraper => scraper())`. Adding a venue to the city aggregator is sufficient.
+If the new venue uses **Playwright**, add its query name to `PLAYWRIGHT_SCRAPER_KEYS` in `server/schemas/resolvers.js`:
+
+```js
+const PLAYWRIGHT_SCRAPER_KEYS = new Set([
+    // existing entries...
+    '[QUERY_NAME]',
+]);
+```
+
+This ensures the scraper runs under the Playwright concurrency limit (currently 1) rather than the Cheerio limit, preventing multiple browser subprocesses from running simultaneously.
+
+If the venue uses **Cheerio/axios only**, no changes to `resolvers.js` are needed — it will automatically be picked up at the correct concurrency limit.
 
 ---
 
