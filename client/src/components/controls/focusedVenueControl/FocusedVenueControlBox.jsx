@@ -15,6 +15,7 @@ const {
 } = sharedStyles;
 
 const {
+    separator,
     venueBody,
     venueCol,
     venueItem,
@@ -115,6 +116,15 @@ const FocusedVenueControlBox = ({
                 />
             </div>
 
+            <hr className={separator} />
+
+            <div className={venueBody}>
+                <div className={venueCol}>{colA.map(renderVenue)}</div>
+                <div className={venueCol}>{colB.map(renderVenue)}</div>
+            </div>
+
+            <hr className={separator} />
+
             <section className={controlStatus}>
                 <div>
                     <div className={statusWrapper}>
@@ -127,11 +137,6 @@ const FocusedVenueControlBox = ({
                     </div>
                 </div>
             </section>
-
-            <div className={venueBody}>
-                <div className={venueCol}>{colA.map(renderVenue)}</div>
-                <div className={venueCol}>{colB.map(renderVenue)}</div>
-            </div>
         </div>
     );
 };

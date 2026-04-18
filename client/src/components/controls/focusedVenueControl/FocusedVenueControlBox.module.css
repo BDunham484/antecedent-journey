@@ -1,3 +1,9 @@
+.separator {
+    border: none;
+    border-top: 1px solid var(--darker);
+    width: 100%;
+}
+
 .venueBody {
     display: flex;
     flex-direction: row;
