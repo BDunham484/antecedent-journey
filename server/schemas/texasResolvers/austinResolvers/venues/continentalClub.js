@@ -7,19 +7,27 @@ const venue = 'Continental Club';
 
 // HOW THIS SCRAPER WORKS
 //
-// Continental Club uses the Timely calendar platform (events.timely.fun), the same as
-// C-Boy's. The Timely embed is domain-restricted — the x-api-key header is only injected
-// by the Timely Angular app when it's loaded inside an iframe on an authorized domain
-// (continentalclub.com). Navigating directly to the Timely URL does not trigger the
-// authenticated API call.
+// Continental Club uses the Timely calendar platform (events.timely.fun), the same as C-Boy's.
+// The overall pattern is identical — Playwright captures x-api-key, axios fetches 12 monthly
+// chunks — but three implementation details differ from C-Boy's:
 //
 // Step 1 — Capture credentials with Playwright:
-//   We launch a headless browser and navigate to continentalclub.com/austin (the venue's
-//   own page). This causes the browser to load the Timely iframe within the authorized
-//   domain context, which triggers the Angular app to inject the x-api-key. We intercept
-//   the outgoing /api/calendars/.../events request to capture both the API key (from the
-//   x-api-key header) and the calendar ID (from the request URL). Once captured, the
-//   browser closes immediately.
+//   Navigate directly to TIMELY_URL (the Timely calendar page with the venue filter in the URL).
+//   The Angular app makes a GET to /api/calendars/.../events carrying x-api-key. We intercept
+//   that request with page.route() to capture both the key and the calendar ID.
+//
+//   Why Chromium (not WebKit): WebKit's route handler does not fire for these requests.
+//
+//   Why serviceWorkers: 'block': The Timely Angular app delegates API fetches to a service
+//   worker, which bypasses page.route() entirely. Blocking SWs forces Angular to make the
+//   call directly so our route handler can see it.
+//
+//   Why venues= in TIMELY_URL: Without the venue filter in the navigation URL, the Angular
+//   app only calls /filters/custom and never makes the /events request at all.
+//
+//   Why regex for route pattern and waitForResponse: The hostname "events.timely.fun" contains
+//   the string "/events" (via "//events"), causing string .includes('/events') to false-match
+//   every request to this domain.
 //
 // Step 2 — Fetch all events via axios:
 //   Same chunked strategy as C-Boy's: 12 consecutive 30-day windows fired in parallel
@@ -31,6 +39,9 @@ const venue = 'Continental Club';
 
 const VENUE_ID = '678194628';
 const SECONDS_PER_DAY = 86400;
+// Slug 74avt53i and VENUE_ID captured via network interception on continentalclub.com/austin.
+// venues param is required in the URL — without it the Angular app skips the /events call.
+const TIMELY_URL = `https://events.timely.fun/74avt53i/month?venues=${VENUE_ID}&nofilters=1`;
 
 const buildConcertObj = makeBuildConcertObj(venue);
 
@@ -51,15 +62,15 @@ const formatStartDatetime = (startDatetime) => {
 };
 
 const captureApiCredentials = async (launchOptions) => {
-    const browser = await playwright.webkit.launch(launchOptions);
+    const browser = await playwright.chromium.launch(launchOptions);
     let apiKey = null;
     let calendarId = null;
 
     try {
-        const context = await browser.newContext();
+        const context = await browser.newContext({ serviceWorkers: 'block' });
         const page = await context.newPage();
 
-        await page.route('**/api/calendars/**/events**', async (route) => {
+        await page.route(/\/api\/calendars\/\d+\/events/, async (route) => {
             if (!apiKey) {
                 const headers = await route.request().headers();
                 apiKey = headers['x-api-key'] || null;
@@ -70,10 +81,10 @@ const captureApiCredentials = async (launchOptions) => {
         });
 
         const responsePromise = page.waitForResponse(
-            res => res.url().includes('/api/calendars/') && res.url().includes('/events'),
+            res => /\/api\/calendars\/\d+\/events/.test(res.url()),
             { timeout: 60000 }
         );
-        await page.goto('https://continentalclub.com/austin', { waitUntil: 'networkidle', timeout: 60000 });
+        await page.goto(TIMELY_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
         await responsePromise;
 
     } finally {
@@ -176,11 +187,6 @@ const getContinentalClubData = async () => {
 
         events.push(buildConcertObj(titleWithStatus, dateTime, cost || null, ticketLink));
     }
-
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Continental Club: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
 
     return events;
 };
