@@ -5,121 +5,44 @@
     gap: 1vw;
 }
 
-/* --- DROPDOWN --- */
-
-.dropdownWrapper {
-    position: relative;
-    width: 100%;
-}
-
-.dropdownTrigger {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    width: 100%;
-    min-height: 3.2rem;
-    padding: 0.5rem 0.8rem;
-    background: var(--darkest);
-    border: 1px solid var(--accent);
-    border-radius: 0.4rem;
-    cursor: pointer;
-    box-sizing: border-box;
-}
-
-.dropdownTrigger:hover {
-    border-color: var(--main-text);
-}
-
-.dropdownPlaceholder {
-    color: var(--dark);
-    font-size: 1.1rem;
+.venueCol {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.dropdownArrow {
-    margin-left: auto;
-    color: var(--dark);
-    font-size: 1rem;
-    flex-shrink: 0;
-}
-
-.pill {
+.venueItem {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    background: var(--darker);
-    border: 1px solid var(--accent);
-    border-radius: 1rem;
-    padding: 0.1rem 0.6rem;
-    font-size: 1rem;
-    color: var(--main-text);
-    white-space: nowrap;
+    gap: 7px;
+    padding: 2px 3px;
+    border-radius: 3px;
 }
 
-.pillRemove {
+.venueItemUnselected {
+    color: var(--dark);
+    cursor: pointer;
+}
+
+.venueItemUnselected:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.venueItemSelected {
+    color: var(--main-text);
+    cursor: pointer;
+}
+
+.venueItemSelected:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Must come after selection-class hover rules — overrides background on same specificity */
+.venueItemLocked {
+    cursor: default;
+}
+
+.venueItemLocked:hover {
     background: none;
-    border: none;
-    color: var(--dark);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0;
-    line-height: 1;
-}
-
-.pillRemove:hover {
-    color: var(--main-text);
-}
-
-.dropdownMenu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--darkest);
-    border: 1px solid var(--accent);
-    border-top: none;
-    border-radius: 0 0 0.4rem 0.4rem;
-    z-index: 1000;
-    overflow: hidden;
-}
-
-.dropdownItem {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-    font-size: 1.1rem;
-    color: var(--main-text);
-}
-
-.dropdownItem:hover {
-    background: var(--darker);
-}
-
-.dropdownItem.selected {
-    color: var(--main-text);
-}
-
-.dropdownItem:not(.selected) {
-    color: var(--dark);
-}
-
-.checkbox {
-    width: 1.2rem;
-    height: 1.2rem;
-    border-radius: 0.2rem;
-    border: 1px solid var(--dark);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-.checkbox.checked {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--main-text);
 }
