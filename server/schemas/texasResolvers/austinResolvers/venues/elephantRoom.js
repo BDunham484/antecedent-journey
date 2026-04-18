@@ -117,10 +117,10 @@ const getElephantRoomData = async () => {
         scrapeEventsFromHtml(html, events);
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Elephant Room: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Elephant Room: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };
