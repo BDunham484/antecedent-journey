@@ -76,10 +76,10 @@ async function getEmosData() {
         if (concert) events.push(concert);
     });
 
-    console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Emo's: ");
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log("✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Emo's: ");
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 }
