@@ -4,13 +4,13 @@
     align-items: flex-start;
     justify-content: flex-start;
     width: 30vw;
-    border: solid 2px var(--accent);
+    border: solid 1px var(--accent);
     border-radius: 0.8rem;
     background-color: var(--darkest);
     padding: 2%;
     gap: 1.3rem;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .controlHeader {
@@ -79,7 +79,7 @@
 /* --- STALE ALERT --- */
 
 .staleAlert {
-    border: solid 2px var(--stale-primary) !important;
+    border: solid 1px var(--stale-primary) !important;
     animation: pulse-red-border 1.8s ease-in-out infinite;
 }
 

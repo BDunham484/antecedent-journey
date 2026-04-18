@@ -249,7 +249,7 @@ Replace with:
 .control-container {
     width: 30vw;
     height: 52vh;
-    border: solid 2px var(--accent);
+    border: solid 1px var(--accent);
 ```
 
 - [ ] **Step 6: Replace `antiquewhite` in `.control-scrapeButton`**
@@ -431,7 +431,7 @@ Find:
 Replace with:
 ```css
 .stale-alert {
-  border: solid 2px var(--stale-primary) !important;
+  border: solid 1px var(--stale-primary) !important;
   animation: pulse-red-border 1.8s ease-in-out infinite;
 }
 ```

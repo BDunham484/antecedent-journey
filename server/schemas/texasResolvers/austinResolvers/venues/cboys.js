@@ -27,7 +27,7 @@ const venue = "C-Boy's Heart & Soul";
 // Key fields from the Timely API response:
 //   title, start_datetime, cost, cost_external_url, url, event_status
 
-const TIMELY_CALENDAR_URL = 'https://events.timely.fun/r5bk3h1a/';
+const TIMELY_CALENDAR_URL = 'https://events.timely.fun/r5bk3h1a/month';
 const CALENDAR_ID = '54714969';
 const SECONDS_PER_DAY = 86400;
 
@@ -55,14 +55,17 @@ const formatStartDatetime = (startDatetime) => {
 };
 
 const captureApiKey = async (launchOptions) => {
-    const browser = await playwright.webkit.launch(launchOptions);
+    const browser = await playwright.chromium.launch(launchOptions);
     let apiKey = null;
 
     try {
-        const context = await browser.newContext();
+        // serviceWorkers: 'block' — Timely's Angular app delegates fetch to a SW,
+        // which bypasses page.route(). Blocking forces Angular to call the API directly.
+        const context = await browser.newContext({ serviceWorkers: 'block' });
         const page = await context.newPage();
 
-        await page.route('**/api/calendars/**/events**', async (route) => {
+        // Regex required — glob '**/api/calendars/**/events**' does not fire in Chromium.
+        await page.route(/\/api\/calendars\/\d+\/events/, async (route) => {
             if (!apiKey) {
                 const headers = await route.request().headers();
                 apiKey = headers['x-api-key'] || null;
@@ -70,8 +73,9 @@ const captureApiKey = async (launchOptions) => {
             await route.continue();
         });
 
+        // Regex required — hostname is events.timely.fun so .includes('/events') false-matches.
         const responsePromise = page.waitForResponse(
-            res => res.url().includes('/api/calendars/') && res.url().includes('/events'),
+            res => /\/api\/calendars\/\d+\/events/.test(res.url()),
             { timeout: 20000 }
         );
         await page.goto(TIMELY_CALENDAR_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });

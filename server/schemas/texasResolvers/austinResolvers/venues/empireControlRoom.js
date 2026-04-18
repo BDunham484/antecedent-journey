@@ -71,10 +71,10 @@ const getEmpireControlRoomData = async () => {
         events.push(buildConcertObj(title, dateText, price, ticketLink));
     });
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Empire Control Room & Garage: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Empire Control Room & Garage: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };
