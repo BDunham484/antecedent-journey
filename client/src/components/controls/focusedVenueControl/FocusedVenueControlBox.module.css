@@ -73,7 +73,28 @@
 
 .chevron {
     color: var(--dark);
-    font-size: 0.85rem;
-    margin-left: 6px;
+    font-size: 1.2rem;
+    margin-left: 8px;
     user-select: none;
+    vertical-align: middle;
+}
+
+.collapseWrapper {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.3s ease;
+    overflow: hidden;
+    width: 100%;
+}
+
+.collapseWrapperClosed {
+    grid-template-rows: 0fr;
+}
+
+.collapseInner {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
 }

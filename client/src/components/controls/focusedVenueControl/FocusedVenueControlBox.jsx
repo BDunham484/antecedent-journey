@@ -25,6 +25,9 @@ const {
     headerClickable,
     headerLocked,
     chevron,
+    collapseWrapper,
+    collapseWrapperClosed,
+    collapseInner,
 } = ownStyles;
 
 const FocusedVenueControlBox = ({
@@ -137,18 +140,17 @@ const FocusedVenueControlBox = ({
                 </div>
             </div>
 
-            {isExpanded ? (
-                <>
-                    <hr className={separator} />
+            <hr className={separator} />
+
+            <div className={`${collapseWrapper}${isExpanded ? '' : ` ${collapseWrapperClosed}`}`}>
+                <div className={collapseInner}>
                     <div className={venueBody}>
                         <div className={venueCol}>{colA.map(renderVenue)}</div>
                         <div className={venueCol}>{colB.map(renderVenue)}</div>
                     </div>
                     <hr className={separator} />
-                </>
-            ) : (
-                <hr className={separator} />
-            )}
+                </div>
+            </div>
 
             <section className={controlStatus}>
                 <div>
