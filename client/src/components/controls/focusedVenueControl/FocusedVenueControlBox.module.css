@@ -63,7 +63,6 @@
     border-radius: 4px;
 }
 
-/* Must come after headerClickable hover — overrides on same specificity */
 .headerLocked {
     cursor: default;
 }
