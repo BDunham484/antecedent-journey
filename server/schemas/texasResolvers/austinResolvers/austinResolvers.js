@@ -22,6 +22,9 @@ const { getMohawkData } = require('./venues/mohawk');
 const { getMoodyAmphitheaterData } = require('./venues/moodyAmphitheater');
 const { getParamountTheatreData } = require('./venues/paramountTheatre');
 const { getParkerJazzClubData } = require('./venues/parkerJazzClub');
+const { getRadioCoffeeBeerSouthData } = require('./venues/radioCoffeeBeerSouth');
+const { getRadioEastData } = require('./venues/radioEast');
+const { getRadioRosewoodData } = require('./venues/radioRosewood');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -48,6 +51,9 @@ const austinResolvers = {
     getMoodyAmphitheaterData,
     getParamountTheatreData,
     getParkerJazzClubData,
+    getRadioCoffeeBeerSouthData,
+    getRadioEastData,
+    getRadioRosewoodData,
 };
 
 module.exports = austinResolvers;

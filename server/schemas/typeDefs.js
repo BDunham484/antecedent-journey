@@ -106,6 +106,9 @@ const typeDefs = gql`
         getMoodyAmphitheaterData: [Concert]
         getParamountTheatreData: [Concert]
         getParkerJazzClubData: [Concert]
+        getRadioCoffeeBeerSouthData: [Concert]
+        getRadioEastData: [Concert]
+        getRadioRosewoodData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }

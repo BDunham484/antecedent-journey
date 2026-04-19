@@ -23,6 +23,9 @@ const austinVenues = [
     { name: 'Moody Amphitheater',                           key: 'getMoodyAmphitheaterData' },
     { name: 'Paramount Theatre',                            key: 'getParamountTheatreData' },
     { name: 'Parker Jazz Club',                             key: 'getParkerJazzClubData' },
+    { name: 'Radio Coffee and Beer',                        key: 'getRadioCoffeeBeerSouthData' },
+    { name: 'Radio East',                                   key: 'getRadioEastData' },
+    { name: 'Radio Rosewood',                               key: 'getRadioRosewoodData' },
 ].sort((a, b) =>
     a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );
