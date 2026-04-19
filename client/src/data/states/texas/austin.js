@@ -27,6 +27,7 @@ const austinVenues = [
     { name: 'Radio East',                                   key: 'getRadioEastData' },
     { name: 'Radio Rosewood',                               key: 'getRadioRosewoodData' },
     { name: 'Sagebrush',                                    key: 'getSagebrushData' },
+    { name: 'Sahara Lounge',                                key: 'getSaharaLoungeData' },
 ].sort((a, b) =>
     a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );

@@ -110,6 +110,7 @@ const typeDefs = gql`
         getRadioEastData: [Concert]
         getRadioRosewoodData: [Concert]
         getSagebrushData: [Concert]
+        getSaharaLoungeData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }
