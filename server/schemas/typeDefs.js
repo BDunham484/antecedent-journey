@@ -100,6 +100,7 @@ const typeDefs = gql`
         getGuerosData: [Concert]
         getHoleInTheWallData: [Concert]
         getHotelVegasData: [Concert]
+        getKingdomData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }

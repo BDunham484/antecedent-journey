@@ -14,13 +14,19 @@ Do not ask for rendering type, ticket platform, selectors, or page source — fe
 
 ## Step 2 — Fetch and analyze the source
 
-Use WebFetch on the venue URL to retrieve the page source. Then analyze it to determine:
+Use WebFetch on the venue URL to retrieve the page source. If WebFetch fails (403, empty response, or returns only a shell with no event data), ask the user to save the page source as a file:
+
+> "WebFetch failed or returned unusable content. Please open the venue's events page in a browser, hit **Ctrl+U** (View Page Source), and save the file to `.claude/tmp/[venue_name]_source.html`. Then let me know the filename."
+
+Once the file is available, use targeted Bash/grep searches rather than reading the whole file — these files can be very large (multi-MB, single-line browser source viewer format). Search for ticket platform strings, class names, JSON-LD, and event structure patterns.
+
+Then analyze to determine:
 
 ### Rendering type
 - **Cheerio (server-side):** Static HTML — event data is present in the raw source with no widget placeholders
 - **Playwright (JS-rendered):** Source contains ticket widget embed tags, empty container divs that get populated client-side, or script tags loading external ticket platforms (DICE, Eventbrite, Ticketmaster, etc.)
 - **Hybrid:** Some events are static WordPress/CMS blocks, others are widget-rendered — use Playwright and scrape both sections separately (see 13th Floor as the reference implementation in `server/schemas/texasResolvers/austinResolvers/venues/thirteenthFloor.js`)
-- If WebFetch returns only a shell (empty containers, widget embeds, no event data) — that itself confirms JS-rendered. Identify the platform from script src URLs and class names in the shell, then apply the known pattern. Only ask the user for a source excerpt if the platform cannot be identified from the shell alone.
+- If the source file contains only a shell (empty containers, widget embeds, no event data) — that itself confirms JS-rendered. Identify the platform from script src URLs and class names in the shell, then apply the known pattern.
 - If the source suggests a pattern not covered above, describe what you observe and recommend an approach before proceeding
 
 ### Ticket platform

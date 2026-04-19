@@ -103,10 +103,10 @@ async function getHotelVegasData() {
         });
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Hotel Vegas: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Hotel Vegas: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 }
