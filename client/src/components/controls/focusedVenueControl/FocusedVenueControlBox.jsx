@@ -37,6 +37,7 @@ const FocusedVenueControlBox = ({
 
     const [focusedSwitch, setFocusedSwitch] = useState(false);
     const [selectedVenues, setSelectedVenues] = useState([]);
+    const [showStatuses, setShowStatuses] = useState(false);
 
     // Reset switch and clear selection when scrape+insert run completes
     useEffect(() => {
@@ -50,6 +51,7 @@ const FocusedVenueControlBox = ({
 
     const toggleVenue = (venue) => {
         if (isLocked) return;
+        setShowStatuses(false);
         setSelectedVenues(prev =>
             prev.find(v => v.key === venue.key)
                 ? prev.filter(v => v.key !== venue.key)
@@ -62,11 +64,13 @@ const FocusedVenueControlBox = ({
             setFocusedSwitch(false);
         } else {
             setFocusedSwitch(true);
+            setShowStatuses(true);
             run(selectedVenues.map(v => v.key));
         }
     };
 
     const getVenueLightClass = (venueName) => {
+        if (!showStatuses) return 'light-idle';
         const status = venueStatuses?.[venueName];
         if (!status) return 'light-idle';
         if (status === 'inserting') return 'light-yellow';
