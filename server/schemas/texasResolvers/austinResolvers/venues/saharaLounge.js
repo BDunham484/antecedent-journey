@@ -144,10 +144,10 @@ const getSaharaLoungeData = async () => {
         scrapeMonth($, events);
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Sahara Lounge: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Sahara Lounge: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };

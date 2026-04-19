@@ -27,6 +27,8 @@ const { getRadioEastData } = require('./venues/radioEast');
 const { getRadioRosewoodData } = require('./venues/radioRosewood');
 const { getSagebrushData } = require('./venues/sagebrush');
 const { getSaharaLoungeData } = require('./venues/saharaLounge');
+const { getSamsTownPointData } = require('./venues/samsTownPoint');
+const { getSaxonPubData } = require('./venues/saxonPub');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -58,6 +60,8 @@ const austinResolvers = {
     getRadioRosewoodData,
     getSagebrushData,
     getSaharaLoungeData,
+    getSamsTownPointData,
+    getSaxonPubData,
 };
 
 module.exports = austinResolvers;
