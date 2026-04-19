@@ -103,6 +103,7 @@ const typeDefs = gql`
         getKingdomData: [Concert]
         getMohawkData: [Concert]
         getMoodyAmphitheaterData: [Concert]
+        getParamountTheatreData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }

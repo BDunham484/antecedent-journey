@@ -19,6 +19,7 @@ const { getHotelVegasData } = require('./venues/hotelVegas');
 const { getKingdomData } = require('./venues/kingdom');
 const { getMohawkData } = require('./venues/mohawk');
 const { getMoodyAmphitheaterData } = require('./venues/moodyAmphitheater');
+const { getParamountTheatreData } = require('./venues/paramountTheatre');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -42,6 +43,7 @@ const austinResolvers = {
     getKingdomData,
     getMohawkData,
     getMoodyAmphitheaterData,
+    getParamountTheatreData,
 };
 
 module.exports = austinResolvers;

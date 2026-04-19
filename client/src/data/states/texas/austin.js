@@ -20,6 +20,7 @@ const austinVenues = [
     { name: 'Kingdom',                                      key: 'getKingdomData' },
     { name: 'Mohawk',                                       key: 'getMohawkData' },
     { name: 'Moody Amphitheater',                           key: 'getMoodyAmphitheaterData' },
+    { name: 'Paramount Theatre',                            key: 'getParamountTheatreData' },
 ].sort((a, b) =>
     a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );
