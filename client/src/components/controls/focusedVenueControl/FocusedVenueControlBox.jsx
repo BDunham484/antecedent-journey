@@ -22,6 +22,9 @@ const {
     venueItemUnselected,
     venueItemSelected,
     venueItemLocked,
+    headerClickable,
+    headerLocked,
+    chevron,
 } = ownStyles;
 
 const FocusedVenueControlBox = ({
@@ -38,6 +41,7 @@ const FocusedVenueControlBox = ({
     const [focusedSwitch, setFocusedSwitch] = useState(false);
     const [selectedVenues, setSelectedVenues] = useState([]);
     const [showStatuses, setShowStatuses] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
 
     // Reset switch and clear selection when scrape+insert run completes
     useEffect(() => {
@@ -48,6 +52,11 @@ const FocusedVenueControlBox = ({
     }, [isInsertLoading, totalScraped]);
 
     const isLocked = focusedSwitch || isScrapeLoading || isInsertLoading;
+
+    const toggleExpanded = () => {
+        if (isLocked) return;
+        setIsExpanded(prev => !prev);
+    };
 
     const toggleVenue = (venue) => {
         if (isLocked) return;
@@ -107,27 +116,39 @@ const FocusedVenueControlBox = ({
 
     return (
         <div className={`${controlContainer}${isScrapeLoading ? ` ${venueShimmer}` : ''}`}>
-            <div className={controlHeader}>
+            <div
+                className={`${controlHeader} ${isLocked ? headerLocked : headerClickable}`}
+                onClick={toggleExpanded}
+            >
                 <div>
-                    <h2>AUSTIN: FOCUSED</h2>
+                    <h2>
+                        AUSTIN: FOCUSED
+                        <span className={chevron}>{isExpanded ? '▲' : '▾'}</span>
+                    </h2>
                     <div>{lastFocusedScrape ? `Last ran: ${formatScrapeTime(lastFocusedScrape)}` : 'Last ran: --'}</div>
                 </div>
-                <Switch
-                    {...switchTheme}
-                    onChange={handleSwitch}
-                    checked={focusedSwitch}
-                    disabled={isDisabled}
-                />
+                <div onClick={e => e.stopPropagation()}>
+                    <Switch
+                        {...switchTheme}
+                        onChange={handleSwitch}
+                        checked={focusedSwitch}
+                        disabled={isDisabled}
+                    />
+                </div>
             </div>
 
-            <hr className={separator} />
-
-            <div className={venueBody}>
-                <div className={venueCol}>{colA.map(renderVenue)}</div>
-                <div className={venueCol}>{colB.map(renderVenue)}</div>
-            </div>
-
-            <hr className={separator} />
+            {isExpanded ? (
+                <>
+                    <hr className={separator} />
+                    <div className={venueBody}>
+                        <div className={venueCol}>{colA.map(renderVenue)}</div>
+                        <div className={venueCol}>{colB.map(renderVenue)}</div>
+                    </div>
+                    <hr className={separator} />
+                </>
+            ) : (
+                <hr className={separator} />
+            )}
 
             <section className={controlStatus}>
                 <div>
