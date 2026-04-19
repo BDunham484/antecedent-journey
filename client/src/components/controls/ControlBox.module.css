@@ -147,16 +147,6 @@
 @media screen and (max-width: 500px) {
     .controlContainer {
         width: 85%;
-        height: auto;
-        min-height: 50vh;
-    }
-
-    .controlStatus {
-        width: 50vw;
-    }
-
-    .statusWrapper {
-        width: 50vw;
     }
 }
 
@@ -164,26 +154,10 @@
     .controlContainer {
         width: 85%;
     }
-
-    .controlStatus {
-        width: 30vw;
-    }
-
-    .statusWrapper {
-        width: 30vw;
-    }
 }
 
 @media screen and (max-width: 1024px) and (min-width: 801px) {
     .controlContainer {
         width: 65%;
-    }
-
-    .controlStatus {
-        width: 20vw;
-    }
-
-    .statusWrapper {
-        width: 20vw;
     }
 }
