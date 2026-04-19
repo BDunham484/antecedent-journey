@@ -4,6 +4,7 @@ const { get3TENAclLiveData } = require('./venues/3TENAclLive');
 const { getTheAbgbData } = require('./venues/theAbgb');
 const { getAntonesData } = require('./venues/antones');
 const { getMoodyTheaterData } = require('./venues/moodyTheater');
+const { getBrushyStreetCommonsData } = require('./venues/brushyStreetCommons');
 const { getCBoysData } = require('./venues/cboys');
 const { getChessClubData } = require('./venues/chessClub');
 const { getContinentalClubData } = require('./venues/continentalClub');
@@ -20,6 +21,7 @@ const { getKingdomData } = require('./venues/kingdom');
 const { getMohawkData } = require('./venues/mohawk');
 const { getMoodyAmphitheaterData } = require('./venues/moodyAmphitheater');
 const { getParamountTheatreData } = require('./venues/paramountTheatre');
+const { getParkerJazzClubData } = require('./venues/parkerJazzClub');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -28,6 +30,7 @@ const austinResolvers = {
     getTheAbgbData,
     getAntonesData,
     getMoodyTheaterData,
+    getBrushyStreetCommonsData,
     getCBoysData,
     getChessClubData,
     getContinentalClubData,
@@ -44,6 +47,7 @@ const austinResolvers = {
     getMohawkData,
     getMoodyAmphitheaterData,
     getParamountTheatreData,
+    getParkerJazzClubData,
 };
 
 module.exports = austinResolvers;

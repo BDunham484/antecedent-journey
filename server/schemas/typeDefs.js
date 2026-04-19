@@ -88,6 +88,7 @@ const typeDefs = gql`
         getTheAbgbData: [Concert]
         getAntonesData: [Concert]
         getMoodyTheaterData: [Concert]
+        getBrushyStreetCommonsData: [Concert]
         getCBoysData: [Concert]
         getChessClubData: [Concert]
         getContinentalClubData: [Concert]
@@ -104,6 +105,7 @@ const typeDefs = gql`
         getMohawkData: [Concert]
         getMoodyAmphitheaterData: [Concert]
         getParamountTheatreData: [Concert]
+        getParkerJazzClubData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }
