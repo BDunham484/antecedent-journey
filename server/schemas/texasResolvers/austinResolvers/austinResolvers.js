@@ -25,6 +25,7 @@ const { getParkerJazzClubData } = require('./venues/parkerJazzClub');
 const { getRadioCoffeeBeerSouthData } = require('./venues/radioCoffeeBeerSouth');
 const { getRadioEastData } = require('./venues/radioEast');
 const { getRadioRosewoodData } = require('./venues/radioRosewood');
+const { getSagebrushData } = require('./venues/sagebrush');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -54,6 +55,7 @@ const austinResolvers = {
     getRadioCoffeeBeerSouthData,
     getRadioEastData,
     getRadioRosewoodData,
+    getSagebrushData,
 };
 
 module.exports = austinResolvers;
