@@ -11,6 +11,7 @@ const { getDrinksBackyardData } = require('./venues/drinksBackyard');
 const { getElephantRoomData } = require('./venues/elephantRoom');
 const { getEmosData } = require('./venues/emos');
 const { getEmpireControlRoomData } = require('./venues/empireControlRoom');
+const { getFlamingoCantinaData } = require('./venues/flamingoCantina');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -26,6 +27,7 @@ const austinResolvers = {
     getElephantRoomData,
     getEmosData,
     getEmpireControlRoomData,
+    getFlamingoCantinaData,
 };
 
 module.exports = austinResolvers;
