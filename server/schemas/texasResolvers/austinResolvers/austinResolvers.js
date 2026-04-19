@@ -17,6 +17,7 @@ const { getGuerosData } = require('./venues/gueros');
 const { getHoleInTheWallData } = require('./venues/holeInTheWall');
 const { getHotelVegasData } = require('./venues/hotelVegas');
 const { getKingdomData } = require('./venues/kingdom');
+const { getMohawkData } = require('./venues/mohawk');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -38,6 +39,7 @@ const austinResolvers = {
     getHoleInTheWallData,
     getHotelVegasData,
     getKingdomData,
+    getMohawkData,
 };
 
 module.exports = austinResolvers;
