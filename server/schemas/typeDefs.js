@@ -96,6 +96,8 @@ const typeDefs = gql`
         getEmosData: [Concert]
         getEmpireControlRoomData: [Concert]
         getFlamingoCantinaData: [Concert]
+        getGermaniaAmpData: [Concert]
+        getGuerosData: [Concert]
         getScrapeMeta: ScrapeMeta
         hasStaleShows(date: String!): Boolean
     }
