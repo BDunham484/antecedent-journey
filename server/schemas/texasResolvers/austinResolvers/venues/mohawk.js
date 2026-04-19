@@ -74,10 +74,10 @@ const getMohawkData = async () => {
         events.push(buildConcertObj(artists, dateTime, price, ticketLink));
     }
 
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Mohawk: ');
-    console.log('✅✅✅✅ events: ', events);
-    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    console.log(' ');
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Mohawk: ');
+    // console.log('✅✅✅✅ events: ', events);
+    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    // console.log(' ');
 
     return events;
 };
