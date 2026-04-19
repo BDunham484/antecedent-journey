@@ -126,7 +126,7 @@ const FocusedVenueControlBox = ({
                 <div>
                     <h2>
                         AUSTIN: FOCUSED
-                        <span className={chevron}>{isExpanded ? '▲' : '▾'}</span>
+                        <span className={chevron}>{isExpanded ? '▲' : '▼'}</span>
                     </h2>
                     <div>{lastFocusedScrape ? `Last ran: ${formatScrapeTime(lastFocusedScrape)}` : 'Last ran: --'}</div>
                 </div>

@@ -10,7 +10,7 @@
     padding: 2%;
     gap: 1.3rem;
     position: relative;
-    /* overflow: hidden; */
+    overflow: hidden;
 }
 
 .controlHeader {
@@ -38,7 +38,7 @@
 /* --- VENUE SHIMMER --- */
 
 .venueShimmer {
-    border: none !important;
+    border: 1px solid transparent !important;
 }
 
 .venueShimmer::before {
@@ -86,7 +86,7 @@
 /* --- STALE SHIMMER --- */
 
 .staleShimmer {
-    border: none !important;
+    border: 1px solid transparent !important;
 }
 
 .staleShimmer::before {

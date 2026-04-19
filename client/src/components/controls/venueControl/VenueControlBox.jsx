@@ -8,7 +8,16 @@ import sharedStyles from '../ControlBox.module.css';
 import ownStyles from './VenueControlBox.module.css';
 
 const { controlContainer, controlHeader, controlStatus, statusWrapper, venueShimmer } = sharedStyles;
-const { venueBody } = ownStyles;
+const {
+    venueBody,
+    separator,
+    headerClickable,
+    headerLocked,
+    chevron,
+    collapseWrapper,
+    collapseWrapperClosed,
+    collapseInner,
+} = ownStyles;
 
 const VenueControlBox = ({
     scrapeMetaData,
@@ -22,6 +31,14 @@ const VenueControlBox = ({
     const lastVenueScrape = scrapeMetaData?.getScrapeMeta?.lastVenueScrape ?? null;
 
     const [venueSwitch, setVenueSwitch] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(true);
+
+    const isLocked = venueSwitch || isVenueScraperLoading || isVenueUpdaterRunning;
+
+    const toggleExpanded = () => {
+        if (isLocked) return;
+        setIsExpanded(prev => !prev);
+    };
 
     useEffect(() => {
         if (venueTotalScraped > 0 && !isVenueUpdaterRunning) {
@@ -49,18 +66,38 @@ const VenueControlBox = ({
 
     return (
         <div className={`${controlContainer}${isVenueScraperLoading ? ` ${venueShimmer}` : ''}`}>
-            <div className={controlHeader}>
+            <div
+                className={`${controlHeader} ${isLocked ? headerLocked : headerClickable}`}
+                onClick={toggleExpanded}
+            >
                 <div>
-                    <h2>AUSTIN: VENUES</h2>
+                    <h2>
+                        AUSTIN: VENUES
+                        <span className={chevron}>{isExpanded ? '▲' : '▼'}</span>
+                    </h2>
                     <div>{lastVenueScrape ? `Last ran: ${formatScrapeTime(lastVenueScrape)}` : 'Last ran: --'}</div>
                 </div>
-                <Switch
-                    {...switchTheme}
-                    onChange={handleVenueSwitch}
-                    checked={venueSwitch}
-                    disabled={isVenueScraperLoading || isVenueUpdaterRunning}
-                />
+                <div onClick={e => e.stopPropagation()}>
+                    <Switch
+                        {...switchTheme}
+                        onChange={handleVenueSwitch}
+                        checked={venueSwitch}
+                        disabled={isVenueScraperLoading || isVenueUpdaterRunning}
+                    />
+                </div>
             </div>
+
+            <hr className={separator} />
+
+            <div className={`${collapseWrapper}${isExpanded ? '' : ` ${collapseWrapperClosed}`}`}>
+                <div className={collapseInner}>
+                    <div className={venueBody}>
+                        <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
+                    </div>
+                    <hr className={separator} />
+                </div>
+            </div>
+
             <section className={controlStatus}>
                 <div>
                     <div className={statusWrapper}>
@@ -73,9 +110,6 @@ const VenueControlBox = ({
                     </div>
                 </div>
             </section>
-            <div className={venueBody}>
-                <VenueList venues={austinVenues} getStatusClass={getVenueLightClass} />
-            </div>
         </div>
     );
 };
