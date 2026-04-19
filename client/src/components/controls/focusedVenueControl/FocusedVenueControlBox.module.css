@@ -53,3 +53,28 @@
 .venueItemLocked:hover {
     background: none;
 }
+
+.headerClickable {
+    cursor: pointer;
+}
+
+.headerClickable:hover {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+
+/* Must come after headerClickable hover — overrides on same specificity */
+.headerLocked {
+    cursor: default;
+}
+
+.headerLocked:hover {
+    background: none;
+}
+
+.chevron {
+    color: var(--dark);
+    font-size: 0.85rem;
+    margin-left: 6px;
+    user-select: none;
+}
