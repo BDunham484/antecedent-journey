@@ -1,4 +1,4 @@
-const axios = require('axios');
+const playwright = require('playwright');
 const cheerio = require('cheerio');
 const { makeBuildConcertObj } = require('../../../../utils/concertUtils');
 
@@ -8,39 +8,28 @@ const buildConcertObj = makeBuildConcertObj(venue);
 // HOW THIS SCRAPER WORKS
 //
 // Hotel Vegas uses WordPress with the All-in-One Event Calendar plugin (ai1ec / Timely).
-// The main calendar page server-side renders only the current date range. Additional pages
-// are fetched via AJAX using a slug-based pagination URL:
-//   https://texashotelvegas.com/all-events/action~agenda/page_offset~N/cat_ids~2351/request_format~html/
+// The site is behind Cloudflare, which blocks datacenter IPs (e.g. Render) with a JS
+// challenge. Playwright passes that challenge; axios alone does not.
 //
-// cat_ids~2351 scopes results to Hotel Vegas events. request_format~html tells the server to
-// return an HTML fragment using the same templates as the static render, so our selectors
-// work identically across all pages.
+// Page 0: full page load via page.goto, wait for div.ai1ec-event, grab page.content().
+// Pages 1+: use page.evaluate(fetch(...)) to make AJAX requests from within the browser
+//   session so they inherit Cloudflare clearance cookies.
 //
-// We use axios + cheerio because the event data is fully server-rendered — no browser needed.
-// A User-Agent header is required; without it the server returns 403.
+// cat_ids~2351 scopes results to Hotel Vegas events. request_format~html tells the server
+// to return an HTML fragment. We parse both with the same cheerio selectors.
 //
-// Page 0 omits the page_offset segment; pages 1+ include page_offset~N. We loop until a page
-// returns no div.ai1ec-event elements, up to MAX_PAGES as a safety ceiling.
+// Each div.ai1ec-event carries a data-ticket-url attribute for external ticketing.
+// When absent (free/no-cover shows) we fall back to a.ai1ec-load-event href.
 //
-// Each div.ai1ec-event carries a data-ticket-url attribute when an external ticketing platform
-// is linked. When absent (free/no-cover shows), we fall back to the event detail URL from
-// a.ai1ec-load-event.
+// The div.ai1ec-event-time contains "MMM D @ h:mm a – h:mm a" with no year. We inject
+// current or next year by comparing the month index to today's month.
 //
-// The div.ai1ec-event-time contains date and start time as "MMM D @ h:mm a – h:mm a" with no
-// year. We strip the "@", dash, and end-time, then inject the current or next year by comparing
-// the parsed month to today: if the month number is less than the current month, it belongs to
-// next year. The resulting "MMM D YYYY h:mm am" string is clean enough for new Date() and for
-// concertUtils' normalizeDate to produce a valid customId.
+// Proxy support: if PROXY / PROXY_USERNAME / PROXY_PASSWORD env vars are set,
+// Playwright routes traffic through that proxy (same pattern as other Playwright scrapers).
 
 const BASE_URL = 'https://texashotelvegas.com';
 const MONTH_ABBRS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const MAX_PAGES = 6;
-
-const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'en-US,en;q=0.9',
-};
 
 function buildDateTimeString(timeText) {
     // timeText: "Apr 19 @ 3:00 pm – 10:00 pm"
@@ -54,20 +43,21 @@ function buildDateTimeString(timeText) {
     return `${monthAbbr} ${day} ${year} ${time}`;
 }
 
-async function fetchPage(offset) {
-    const url = offset === 0
-        ? `${BASE_URL}/all-events/action~agenda/cat_ids~2351/request_format~html/`
-        : `${BASE_URL}/all-events/action~agenda/page_offset~${offset}/cat_ids~2351/request_format~html/`;
-
-    let html;
-    try {
-        const response = await axios.get(url, { timeout: 15000, headers: HEADERS });
-        html = response.data;
-    } catch (e) {
-        console.error('❌❌❌❌ Hotel Vegas fetch failed (offset ' + offset + '):', e.message);
-        return null;
-    }
-    return html;
+function parseEventsFromHtml(html) {
+    const $ = cheerio.load(html);
+    const results = [];
+    $('div.ai1ec-event').each((_, el) => {
+        const $el = $(el);
+        const artists = $el.find('span.ai1ec-event-title').text().trim() || null;
+        const timeText = $el.find('div.ai1ec-event-time').text().trim();
+        const dateTime = buildDateTimeString(timeText);
+        const rawTicketUrl = $el.attr('data-ticket-url');
+        const ticketLink = rawTicketUrl && rawTicketUrl !== '#'
+            ? rawTicketUrl
+            : ($el.find('a.ai1ec-load-event').attr('href') || null);
+        results.push({ artists, dateTime, ticketLink });
+    });
+    return results;
 }
 
 async function getHotelVegasData() {
@@ -76,37 +66,59 @@ async function getHotelVegasData() {
     console.log('👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️👁️');
     console.log(' ');
 
-    const events = [];
+    const launchOptions = {
+        headless: true,
+        ...(process.env.PROXY && {
+            proxy: {
+                server: process.env.PROXY,
+                username: process.env.PROXY_USERNAME,
+                password: process.env.PROXY_PASSWORD,
+            }
+        }),
+    };
 
-    for (let offset = 0; offset < MAX_PAGES; offset++) {
-        const html = await fetchPage(offset);
-        if (!html) break;
+    const browser = await playwright.webkit.launch(launchOptions);
+    const rawEvents = [];
 
-        const $ = cheerio.load(html);
-        const eventEls = $('div.ai1ec-event');
-        if (eventEls.length === 0) break;
+    try {
+        const context = await browser.newContext();
+        const page = await context.newPage();
 
-        eventEls.each((_, el) => {
-            const $el = $(el);
-
-            const artists = $el.find('span.ai1ec-event-title').text().trim() || null;
-            const timeText = $el.find('div.ai1ec-event-time').text().trim();
-            const dateTime = buildDateTimeString(timeText);
-
-            const rawTicketUrl = $el.attr('data-ticket-url');
-            const ticketLink = rawTicketUrl && rawTicketUrl !== '#'
-                ? rawTicketUrl
-                : ($el.find('a.ai1ec-load-event').attr('href') || null);
-
-            const concert = buildConcertObj(artists, dateTime, null, ticketLink);
-            if (concert) events.push(concert);
+        await page.goto(`${BASE_URL}/all-events/action~agenda/cat_ids~2351/`, {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000,
         });
+        await page.waitForSelector('div.ai1ec-event', { timeout: 20000 });
+
+        const page0Events = parseEventsFromHtml(await page.content());
+        rawEvents.push(...page0Events);
+
+        for (let offset = 1; offset < MAX_PAGES && rawEvents.length > 0; offset++) {
+            const url = `${BASE_URL}/all-events/action~agenda/page_offset~${offset}/cat_ids~2351/request_format~html/`;
+            const html = await page.evaluate(async (fetchUrl) => {
+                const r = await fetch(fetchUrl);
+                return r.text();
+            }, url);
+
+            const pageEvents = parseEventsFromHtml(html);
+            if (pageEvents.length === 0) break;
+            rawEvents.push(...pageEvents);
+        }
+
+    } catch (e) {
+        console.error('❌❌❌❌ [Hotel Vegas] scrape error:', e.message);
+    } finally {
+        await browser.close();
     }
 
-    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Hotel Vegas: ');
-    // console.log('✅✅✅✅ events: ', events);
-    // console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
-    // console.log(' ');
+    const events = rawEvents
+        .map(({ artists, dateTime, ticketLink }) => buildConcertObj(artists, dateTime, null, ticketLink))
+        .filter(Boolean);
+
+    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅ Hotel Vegas: ');
+    console.log('✅✅✅✅ events: ', events);
+    console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅');
+    console.log(' ');
 
     return events;
 }
