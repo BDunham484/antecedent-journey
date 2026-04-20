@@ -11,12 +11,11 @@ const buildConcertObj = makeBuildConcertObj(venue);
 // The site is behind Cloudflare, which blocks datacenter IPs (e.g. Render) with a JS
 // challenge. Playwright passes that challenge; axios alone does not.
 //
-// Page 0: full page load via page.goto, wait for div.ai1ec-event, grab page.content().
-// Pages 1+: use page.evaluate(fetch(...)) to make AJAX requests from within the browser
-//   session so they inherit Cloudflare clearance cookies.
+// All pages are loaded via page.goto (not fetch/AJAX) so every navigation gets a proper
+// Cloudflare challenge pass. request_format~html is omitted — the server returns the full
+// page regardless, and our cheerio selectors work on both.
 //
-// cat_ids~2351 scopes results to Hotel Vegas events. request_format~html tells the server
-// to return an HTML fragment. We parse both with the same cheerio selectors.
+// cat_ids~2351 scopes results to Hotel Vegas events.
 //
 // Each div.ai1ec-event carries a data-ticket-url attribute for external ticketing.
 // When absent (free/no-cover shows) we fall back to a.ai1ec-load-event href.
@@ -84,23 +83,15 @@ async function getHotelVegasData() {
         const context = await browser.newContext();
         const page = await context.newPage();
 
-        await page.goto(`${BASE_URL}/all-events/action~agenda/cat_ids~2351/`, {
-            waitUntil: 'domcontentloaded',
-            timeout: 30000,
-        });
-        await page.waitForSelector('div.ai1ec-event', { timeout: 20000 });
+        for (let offset = 0; offset < MAX_PAGES; offset++) {
+            const url = offset === 0
+                ? `${BASE_URL}/all-events/action~agenda/cat_ids~2351/`
+                : `${BASE_URL}/all-events/action~agenda/page_offset~${offset}/cat_ids~2351/`;
 
-        const page0Events = parseEventsFromHtml(await page.content());
-        rawEvents.push(...page0Events);
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.waitForSelector('div.ai1ec-event', { timeout: 20000 }).catch(() => {});
 
-        for (let offset = 1; offset < MAX_PAGES && rawEvents.length > 0; offset++) {
-            const url = `${BASE_URL}/all-events/action~agenda/page_offset~${offset}/cat_ids~2351/request_format~html/`;
-            const html = await page.evaluate(async (fetchUrl) => {
-                const r = await fetch(fetchUrl);
-                return r.text();
-            }, url);
-
-            const pageEvents = parseEventsFromHtml(html);
+            const pageEvents = parseEventsFromHtml(await page.content());
             if (pageEvents.length === 0) break;
             rawEvents.push(...pageEvents);
         }
