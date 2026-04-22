@@ -29,6 +29,7 @@ const { getSagebrushData } = require('./venues/sagebrush');
 const { getSaharaLoungeData } = require('./venues/saharaLounge');
 const { getSamsTownPointData } = require('./venues/samsTownPoint');
 const { getSaxonPubData } = require('./venues/saxonPub');
+const { getScootInnData } = require('./venues/scootInn');
 
 const austinResolvers = {
     getThirteenthFloorData,
@@ -62,6 +63,7 @@ const austinResolvers = {
     getSaharaLoungeData,
     getSamsTownPointData,
     getSaxonPubData,
+    getScootInnData,
 };
 
 module.exports = austinResolvers;
