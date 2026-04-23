@@ -31,6 +31,7 @@ const austinVenues = [
     { name: "Sam's Town Point",                             key: 'getSamsTownPointData' },
     { name: 'Saxon Pub',                                   key: 'getSaxonPubData' },
     { name: 'Scoot Inn',                                   key: 'getScootInnData' },
+    { name: "Soundspace at Captain Quack's",               key: 'getSoundspaceData' },
 ].sort((a, b) =>
     a.name.replace(/^The\s+/i, '').localeCompare(b.name.replace(/^The\s+/i, ''))
 );
