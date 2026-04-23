@@ -98,12 +98,13 @@
     left: 50%;
     background: conic-gradient(
         var(--darkest) 0deg,
-        var(--darkest) 200deg,
-        var(--stale-primary) 220deg,
-        var(--stale-secondary) 260deg,
-        var(--stale-tertiary) 290deg,
-        var(--stale-secondary) 320deg,
-        var(--stale-primary) 340deg,
+        var(--darkest) 250deg,
+        rgba(255, 210, 0, 0.2) 264deg,
+        rgba(255, 185, 0, 0.65) 292deg,
+        #ffcc00 313deg,
+        #cc1100 333deg,
+        #800010 343deg,
+        var(--darkest) 350deg,
         var(--darkest) 360deg
     );
     animation: shimmer-border-rotate 2s linear infinite;

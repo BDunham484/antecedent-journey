@@ -49,11 +49,11 @@
   --indicator-idle: #111111;
 
   /* === STALE / ALERT === */
-  --stale-primary: #c0392b;
-  --stale-secondary: #ff4444;
-  --stale-tertiary: #e74c3c;
-  --stale-glow: rgba(255, 68, 68, 0.5);
-  --stale-glow-hidden: rgba(192, 57, 43, 0);
+  --stale-primary: #ff2020;
+  --stale-secondary: #ff5a5a;
+  --stale-tertiary: #ff3333;
+  --stale-glow: rgba(255, 45, 45, 0.65);
+  --stale-glow-hidden: rgba(255, 20, 20, 0);
 
   /* === SHIMMER === */
   --shimmer-purple: #cc00ff;
