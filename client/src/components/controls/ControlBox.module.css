@@ -49,14 +49,14 @@
     top: 50%;
     left: 50%;
     background: conic-gradient(
-        from 0deg,
-        var(--shimmer-purple),
-        var(--shimmer-blue),
-        var(--shimmer-cyan),
-        var(--shimmer-green),
-        var(--shimmer-yellow),
-        var(--shimmer-red),
-        var(--shimmer-purple)
+        var(--darkest) 0deg,
+        var(--darkest) 248deg,
+        rgba(0, 180, 220, 0.25) 263deg,
+        rgba(0, 207, 255, 0.65) 293deg,
+        var(--shimmer-cyan) 312deg,
+        var(--shimmer-purple) 333deg,
+        var(--darkest) 344deg,
+        var(--darkest) 360deg
     );
     animation: shimmer-border-rotate 4s linear infinite;
     z-index: 0;
